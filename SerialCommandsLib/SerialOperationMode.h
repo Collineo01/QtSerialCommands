@@ -1,3 +1,9 @@
+/* Copyright (C) Nicola Demers - All Rights Reserved
+* Unauthorized copying of this file, via any medium is strictly prohibited
+* Proprietary and confidential
+* Written by Nicola Demers <nicola.demers93@gmail.com>, July 2017
+*/
+
 /*! \class SerialOperationMode
 *
 *	\brief Conteneur pour les modes d'opération d'une commande

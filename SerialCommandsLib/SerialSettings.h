@@ -1,3 +1,9 @@
+/* Copyright (C) Nicola Demers - All Rights Reserved
+* Unauthorized copying of this file, via any medium is strictly prohibited
+* Proprietary and confidential
+* Written by Nicola Demers <nicola.demers93@gmail.com>, July 2017
+*/
+
 /*! \class QSerialSettings
 *
 *	\brief Conteneur des paramètres d'un appareil de communication série. Permet la sauvegarde et le chargement de fichier ini.

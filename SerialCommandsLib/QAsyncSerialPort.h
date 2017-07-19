@@ -1,4 +1,9 @@
-#pragma once
+/* Copyright (C) Nicola Demers - All Rights Reserved
+* Unauthorized copying of this file, via any medium is strictly prohibited
+* Proprietary and confidential
+* Written by Nicola Demers <nicola.demers93@gmail.com>, July 2017
+*/
+
 
 /*! \class QAsyncSerialPort
 *
@@ -7,6 +12,8 @@
 *	Gère la connexion de l'appareil avec le port série (openSerialPort() et closeSerialPort()).
 *	Envoie des signaux par rapport aux erreurs de communication série.
 */
+
+#pragma once
 
 
 #include "serialcommandslib_global.h"
