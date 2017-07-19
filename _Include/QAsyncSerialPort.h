@@ -9,7 +9,7 @@
 */
 
 
-#include "serialcommandslib_global.h"
+
 
 #include <QVector>
 #include <QTimer>

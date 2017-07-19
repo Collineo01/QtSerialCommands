@@ -16,7 +16,7 @@ Get-ChildItem $projectPath -Filter *.h |
 Foreach-Object {
     $content = Get-Content $_.FullName
 
-	$content | ForEach-Object { $_ -replace " SERIALCOMMANDSLIB_EXPORT", "" } | Set-Content ($_.BaseName + '.h')
+	$content | ForEach-Object { $_ -replace " SERIALCOMMANDSLIB_EXPORT", "" } | ForEach-Object { $_ -replace '#include "serialcommandslib_global.h"', "" } | Set-Content ($_.BaseName + '.h')
 }
 
 Copy-Item "$currentPath\x64\Release\$projectName.lib" "$currentPath\_Lib\$projectName.lib"

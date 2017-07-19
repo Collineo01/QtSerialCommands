@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QSerialDevice_t {
     QByteArrayData data[10];
-    char stringdata0[134];
+    char stringdata0[133];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,16 +35,16 @@ QT_MOC_LITERAL(0, 0, 13), // "QSerialDevice"
 QT_MOC_LITERAL(1, 14, 22), // "handleMatchingResponse"
 QT_MOC_LITERAL(2, 37, 0), // ""
 QT_MOC_LITERAL(3, 38, 8), // "response"
-QT_MOC_LITERAL(4, 47, 14), // "QSerialCommand"
-QT_MOC_LITERAL(5, 62, 7), // "command"
-QT_MOC_LITERAL(6, 70, 21), // "handleMessageReceived"
-QT_MOC_LITERAL(7, 92, 7), // "message"
-QT_MOC_LITERAL(8, 100, 23), // "handleConnectionUpdated"
-QT_MOC_LITERAL(9, 124, 9) // "connected"
+QT_MOC_LITERAL(4, 47, 13), // "SerialCommand"
+QT_MOC_LITERAL(5, 61, 7), // "command"
+QT_MOC_LITERAL(6, 69, 21), // "handleMessageReceived"
+QT_MOC_LITERAL(7, 91, 7), // "message"
+QT_MOC_LITERAL(8, 99, 23), // "handleConnectionUpdated"
+QT_MOC_LITERAL(9, 123, 9) // "connected"
 
     },
     "QSerialDevice\0handleMatchingResponse\0"
-    "\0response\0QSerialCommand\0command\0"
+    "\0response\0SerialCommand\0command\0"
     "handleMessageReceived\0message\0"
     "handleConnectionUpdated\0connected"
 };

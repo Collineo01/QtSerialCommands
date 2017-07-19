@@ -8,7 +8,7 @@
 #ifndef SERIALOPERATIONMODE_H
 #define SERIALOPERATIONMODE_H
 
-#include "serialcommandslib_global.h"
+
 
 class SerialOperationMode
 {

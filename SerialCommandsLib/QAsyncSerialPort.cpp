@@ -1,5 +1,5 @@
 #include "QAsyncSerialPort.h"
-#include <QDebug>
+//#include <QDebug>
 #include <QCoreApplication>
 #include <QTime>
 

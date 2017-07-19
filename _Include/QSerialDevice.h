@@ -1,6 +1,6 @@
 #pragma once
 
-#include "serialcommandslib_global.h"
+
 
 #include <QObject>
 #include <QMap>

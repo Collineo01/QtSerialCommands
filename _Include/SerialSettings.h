@@ -10,7 +10,7 @@
 #ifndef Q_SERIALSETTINGS_H
 #define Q_SERIALSETTINGS_H
 
-#include "serialcommandslib_global.h"
+
 
 #include <QString>
 #include "QCommandSerialPort.h"

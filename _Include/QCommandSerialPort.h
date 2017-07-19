@@ -27,7 +27,7 @@
 #ifndef QCOMMANDSERIALPORT_H
 #define QCOMMANDSERIALPORT_H
 
-#include "serialcommandslib_global.h"
+
 
 #include <QList>
 #include <QPair>

@@ -25,7 +25,7 @@
 #ifndef QSERIALCOMMAND_H
 #define QSERIALCOMMAND_H
 
-#include "serialcommandslib_global.h"
+
 
 #include <QString>
 #include <QByteArray>

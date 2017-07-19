@@ -11,4 +11,4 @@
   SerialOperationMode.cpp
   SerialSettings.cpp
   Generating Code...
-  SerialCommandsLib.vcxproj -> C:\Collineo\Logiciels2015\SerialCommandsLib\StaticLibrary\x64\Release\SerialCommandsLib.lib
+  SerialCommandsLib.vcxproj -> C:\Collineo\Logiciels2015\Libraries\SerialCommandsLib\x64\Release\SerialCommandsLib.lib
