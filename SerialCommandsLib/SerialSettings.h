@@ -26,7 +26,8 @@ class SERIALCOMMANDSLIB_EXPORT SerialSettings
 
 public:
 	SerialSettings();
-	SerialSettings(int comPort);
+	SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
+	SerialSettings(QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
 	~SerialSettings();
 
 

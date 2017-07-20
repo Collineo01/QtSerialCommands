@@ -29,10 +29,21 @@ SerialSettings::SerialSettings()
 
 }
 
-SerialSettings::SerialSettings(int comPort)
+SerialSettings::SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate)
 	:
 	mPortName{ "COM" + QString::number(comPort) },
-	mBaudRate{ QAsyncSerialPort::BaudRate::BR9600 },
+	mBaudRate{ baudRate },
+	mStopBits{ QSerialPort::StopBits::OneStop },
+	mDataBits{ QSerialPort::DataBits::Data8 },
+	mParity{ QSerialPort::Parity::NoParity },
+	mFlowControl{ QSerialPort::FlowControl::NoFlowControl }
+{
+
+}
+
+SerialSettings::SerialSettings(QAsyncSerialPort::BaudRate baudRate)
+	:
+	mBaudRate{ baudRate },
 	mStopBits{ QSerialPort::StopBits::OneStop },
 	mDataBits{ QSerialPort::DataBits::Data8 },
 	mParity{ QSerialPort::Parity::NoParity },
