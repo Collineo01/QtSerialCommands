@@ -15,34 +15,17 @@ QString const SerialSettings::DATABITS{ "dataBits" };
 QString const SerialSettings::PARITY{ "parity" };
 QString const SerialSettings::FLOWCONTROL{ "flowControl" };
 
-// TODO : Constructeur par défaut
 
-SerialSettings::SerialSettings()
+SerialSettings::SerialSettings(QAsyncSerialPort::BaudRate baudRate)
 	:
-	mPortName{ QString() },
-	mBaudRate{ QAsyncSerialPort::BaudRate::BRUnknown },
-	mStopBits{ QSerialPort::StopBits::UnknownStopBits },
-	mDataBits{ QSerialPort::DataBits::UnknownDataBits },
-	mParity{ QSerialPort::Parity::UnknownParity },
-	mFlowControl{ QSerialPort::FlowControl::UnknownFlowControl }
+	mBaudRate{ baudRate }
 {
-
+	loadGeneric();
 }
 
 SerialSettings::SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate)
 	:
 	mPortName{ "COM" + QString::number(comPort) },
-	mBaudRate{ baudRate },
-	mStopBits{ QSerialPort::StopBits::OneStop },
-	mDataBits{ QSerialPort::DataBits::Data8 },
-	mParity{ QSerialPort::Parity::NoParity },
-	mFlowControl{ QSerialPort::FlowControl::NoFlowControl }
-{
-
-}
-
-SerialSettings::SerialSettings(QAsyncSerialPort::BaudRate baudRate)
-	:
 	mBaudRate{ baudRate },
 	mStopBits{ QSerialPort::StopBits::OneStop },
 	mDataBits{ QSerialPort::DataBits::Data8 },
@@ -79,7 +62,6 @@ void SerialSettings::load(QString fileName) {
 
 void SerialSettings::loadGeneric()
 {
-	mBaudRate = QAsyncSerialPort::BaudRate::BR9600;
 	mStopBits = QSerialPort::StopBits::OneStop;
 	mDataBits = QSerialPort::DataBits::Data8;
 	mParity = QSerialPort::Parity::NoParity;

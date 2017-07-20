@@ -25,9 +25,8 @@ class SerialSettings
 {
 
 public:
-	SerialSettings();
-	SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
 	SerialSettings(QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
+	SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
 	~SerialSettings();
 
 

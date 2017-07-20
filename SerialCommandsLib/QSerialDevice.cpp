@@ -105,7 +105,6 @@ void QSerialDevice::changeComPort(int comPort)
 {
 	//mSerial->closeSerialPort();
 	mPortSettings->mPortName = "COM" + QString::number(comPort);
-	mPortSettings->loadGeneric();
 	mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
 }
 
