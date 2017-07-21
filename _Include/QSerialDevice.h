@@ -42,12 +42,16 @@ public:
 	//}
 
 	virtual void init();
+	void connectComPort();
 
 	bool isConnected() { return mIsConnected; }
 
 	void changeComPort(int comPort);
 
 	bool portIsOpened();
+
+	void sendCommand(QString command, QList<QVariant> params = QList<QVariant>());
+	QByteArray sendBlockingCommand(QString command, QList<QVariant> params = QList<QVariant>());
 
 
 protected:
@@ -57,9 +61,6 @@ protected:
 	QMap<QString, QString> mDeviceMessages;
 
 	bool mIsConnected;
-
-	void sendCommand(QString command, QList<QVariant> params = QList<QVariant>());
-	QByteArray sendBlockingCommand(QString command, QList<QVariant> params = QList<QVariant>());
 
 	virtual void fillDictionary() = 0;
 	virtual void fillDeviceMessages() = 0;

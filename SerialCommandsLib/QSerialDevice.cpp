@@ -24,11 +24,11 @@ QSerialDevice::QSerialDevice(QCommandSerialPort * sharedSerial, SerialSettings *
 	mPortSettings{ settings }, // TODO : remplacer par une instance au lieu d'un pointeur (doit créer le copy constructor)
 	mSerial{ sharedSerial }
 {
-	if (mSerial == nullptr)
+	if (sharedSerial == nullptr)
 	{
 		mSerial = new QCommandSerialPort;
 	}
-	if (mPortSettings == nullptr)
+	if (settings == nullptr)
 	{
 		mPortSettings = new SerialSettings(DEFAULT_COM_PORT);
 	}
@@ -91,20 +91,17 @@ void QSerialDevice::init()
 
 	// Remplir le dictionnaire de messages
 	fillDeviceMessages();
-
-	// Connexion au port série (doit être appelé après avoir remplis les dictionnaires. Une fois connecté, des commandes sont automatiquement envoyées)
-	if (!mSerial->isOpen()) {
-		mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
-	}
-	else {
-		handleConnectionUpdated(true);
-	}
 }
 
 void QSerialDevice::changeComPort(int comPort)
 {
-	//mSerial->closeSerialPort();
+	mSerial->closeSerialPort();
 	mPortSettings->mPortName = "COM" + QString::number(comPort);
+	connectComPort();
+}
+
+void QSerialDevice::connectComPort()
+{
 	mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
 }
 
