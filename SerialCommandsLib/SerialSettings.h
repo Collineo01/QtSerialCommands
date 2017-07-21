@@ -19,7 +19,7 @@
 #include "serialcommandslib_global.h"
 
 #include <QString>
-#include "QCommandSerialPort.h"
+#include "QAsyncSerialPort.h"
 
 class SERIALCOMMANDSLIB_EXPORT SerialSettings
 {

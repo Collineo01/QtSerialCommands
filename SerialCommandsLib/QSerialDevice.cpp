@@ -51,18 +51,22 @@ QSerialDevice::~QSerialDevice()
 // Slots
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void QSerialDevice::handleConnectionUpdated(bool connected)
+void QSerialDevice::handleConnectionUpdated(bool connected, bool connectionFailed)
 {
 	mIsConnected = connected;
 
 	if (connected)
 	{
 		initDevice();
-		qDebug() << "Connection successful on " + mPortSettings->mPortName;
+		qDebug() << "Connection successful on " + mSerial->portName();
+	}
+	else if (connectionFailed)
+	{
+		qDebug() << "Connection failed on " + mSerial->portName();
 	}
 	else
 	{
-		qDebug() << "Connection failed on " + mPortSettings->mPortName;
+		qDebug() << "Connection closed on " + mSerial->portName();
 	}
 }
 
@@ -84,29 +88,37 @@ void QSerialDevice::sendCommand(QString command, QList<QVariant> params)
 	mSerial->writeToBuffer(commandAndParams);
 }
 
-void QSerialDevice::init()
+void QSerialDevice::init(QString terminator)
 {
 	// Remplir le dictionnaire de commandes
 	fillDictionary();
 
 	// Remplir le dictionnaire de messages
 	fillDeviceMessages();
+
+	// Messages que peut envoyer l'appareil (clés du dictionnaire de messages)
+	mSerial->setDeviceMessages(mDeviceMessages.keys(), terminator);
 }
 
 void QSerialDevice::changeComPort(int comPort)
 {
-	mSerial->closeSerialPort();
 	mPortSettings->mPortName = "COM" + QString::number(comPort);
-	connectComPort();
+	mSerial->changeSerialSettings(mPortSettings);
 }
 
-void QSerialDevice::connectComPort()
+bool QSerialDevice::connectComPort()
 {
-	mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
+	return mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
+}
+
+void QSerialDevice::closeComPort()
+{
+	mSerial->closeSerialPort();
 }
 
 bool QSerialDevice::portIsOpened()
 {
+	qDebug() << "test";
 	return mSerial->isOpen();
 }
 

@@ -45,7 +45,7 @@ private:
 	qint64 mBytesWritten;
 
 	public slots:
-	void openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl); // public??
+	bool openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl); // public??
 	virtual void closeSerialPort();
 
 	private slots:
@@ -57,7 +57,7 @@ private:
 signals:
 	void dataRead(QByteArray data);
 	//void responseRead(QString response);
-	void connectionUpdated(bool connected);
+	void connectionUpdated(bool connected, bool connectionFailed = false);
 	void messageSent();
 	void updated(QString message);
 

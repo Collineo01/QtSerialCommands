@@ -86,7 +86,10 @@ void QAsyncSerialPort::readData() {
 	emit dataRead(data);
 }
 
-void QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl) {
+bool QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl) 
+{
+	bool success = false;
+
 	setPortName(portName);
 	if (!setBaudRate(static_cast<int>(baudRate))) {
 		emit updated("Failed to set BaudRate");
@@ -111,22 +114,25 @@ void QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSeri
 	if (open(QIODevice::ReadWrite)) {
 		//qDebug() << "Connected to the device for writing and reading!";
 		emit updated("Connected to the device for writing and reading!");
+		success = true;
 	}
 	else {
 		//qDebug() << "Unable to connect to the device for writing and reading!";
 		emit updated("Unable to connect to the device for writing and reading!");
 	}
-	emit connectionUpdated(isOpen());
+	emit connectionUpdated(success, !success);
+
+	return success;
 }
 
 void QAsyncSerialPort::closeSerialPort()
 {
 	if (isOpen()) {
+		close();
 		emit connectionUpdated(false);
 		emit updated("Disconnected");
 		//qDebug() << "Disconnected";
 	}
-	close();
 }
 
 

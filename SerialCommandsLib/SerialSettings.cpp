@@ -5,6 +5,7 @@
 */
 
 #include "SerialSettings.h"
+
 #include <QSettings>
 #include <QCoreApplication>
 

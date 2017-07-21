@@ -28,6 +28,7 @@ QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSi
 	connect(&mCommandTimer, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::developmentModeSwitched, this, &QCommandSerialPort::handleDevelopmentMode, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::disconnectRequest, this, &QCommandSerialPort::handleDisconnectRequest, Qt::QueuedConnection);
+	connect(this, &QCommandSerialPort::changeSerialSettingsRequest, this, &QCommandSerialPort::handleChangeSerialSettingsRequest, Qt::QueuedConnection);
 }
 
 QCommandSerialPort::~QCommandSerialPort()
@@ -308,6 +309,20 @@ void QCommandSerialPort::handleDevelopmentMode(bool devMode) {
 
 void QCommandSerialPort::closeSerialPort() {
 	emit disconnectRequest();
+
+	QEventLoop loop;
+	loop.connect(this, &QCommandSerialPort::disconnectDone, &loop, &QEventLoop::quit);
+	loop.exec();
+}
+
+void QCommandSerialPort::changeSerialSettings(SerialSettings * portSettings) {
+	if (isOpen()){
+		emit changeSerialSettingsRequest(portSettings);
+
+		QEventLoop loop;
+		loop.connect(this, &QCommandSerialPort::changeSerialSettingsDone, &loop, &QEventLoop::quit);
+		loop.exec();
+	}
 }
 
 void QCommandSerialPort::handleDisconnectRequest() {
@@ -316,6 +331,14 @@ void QCommandSerialPort::handleDisconnectRequest() {
 	mResponses.clear();
 	mCommandTimer.stop();
 	QAsyncSerialPort::closeSerialPort();
+	emit disconnectDone();
+}
+
+void QCommandSerialPort::handleChangeSerialSettingsRequest(SerialSettings * portSettings)
+{
+	handleDisconnectRequest();
+	QAsyncSerialPort::openSerialPort(portSettings->mPortName, portSettings->mBaudRate, portSettings->mDataBits, portSettings->mParity, portSettings->mStopBits, portSettings->mFlowControl);
+	emit changeSerialSettingsDone();
 }
 
 

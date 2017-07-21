@@ -41,8 +41,9 @@ public:
 	//	mSerial.writeToBuffer(commandAndParams);
 	//}
 
-	virtual void init();
-	void connectComPort();
+	virtual void init(QString terminator);
+	bool connectComPort();
+	void closeComPort();
 
 	bool isConnected() { return mIsConnected; }
 
@@ -74,5 +75,5 @@ private:
 	protected slots:
 	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
 	virtual void handleMessageReceived(QString const &message) = 0;
-	virtual void handleConnectionUpdated(bool connected);
+	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
 };

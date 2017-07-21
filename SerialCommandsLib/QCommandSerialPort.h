@@ -40,6 +40,8 @@
 #include "QAsyncSerialPort.h"
 #include "SerialCommand.h"
 #include "SerialOperationMode.h"
+#include "SerialSettings.h"
+
 
 class QVariant;
 class QStringList;
@@ -62,6 +64,8 @@ public:
 	bool developmentMode() { return mDevelopmentMode; }
 	void setDevelopmentMode(bool devMode);
 	void setDeviceMessages(QStringList messages, QString terminator);
+
+	void changeSerialSettings(SerialSettings * portSettings);
 
 
 private:
@@ -87,17 +91,18 @@ private:
 	QByteArray mBlockingResponse;
 
 
-	public slots:
+public slots:
 	void writeToBuffer(QPair<SerialCommand const &, QList<QVariant>> command);
 	QByteArray sendBlockingCommand(SerialCommand command, QList<QVariant> params);
 	void manageMessageSent();
 	virtual void closeSerialPort() override;
 
-	private slots:
+private slots:
 	void handleResponse(QByteArray data);
 	void handlePullCommandTimeout();
 	void handleDevelopmentMode(bool devMode);
 	void handleDisconnectRequest();
+	void handleChangeSerialSettingsRequest(SerialSettings * portSettings);
 
 signals:
 	void responseMatchesCommand(QByteArray response, SerialCommand command);
@@ -106,8 +111,11 @@ signals:
 	void sendBufferTooLarge(); //
 	void responsesBufferTooLarge();
 	void disconnectRequest();
+	void disconnectDone();
 	void blockingResponseReceived();
 	void readySendBlocking();
+	void changeSerialSettingsRequest(SerialSettings * portSettings);
+	void changeSerialSettingsDone();
 };
 
 

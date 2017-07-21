@@ -19,7 +19,7 @@
 
 
 #include <QString>
-#include "QCommandSerialPort.h"
+#include "QAsyncSerialPort.h"
 
 class SerialSettings
 {

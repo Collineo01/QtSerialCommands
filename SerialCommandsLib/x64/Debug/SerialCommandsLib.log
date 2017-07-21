@@ -1,2 +1,7 @@
-﻿  QSerialDevice.cpp
+﻿  moc_QCommandSerialPort.cpp
+  moc_QSerialDevice.cpp
+  QCommandSerialPort.cpp
+  QSerialDevice.cpp
+  SerialSettings.cpp
+  Generating Code...
   SerialCommandsLib.vcxproj -> C:\Collineo\Logiciels2015\Libraries\SerialCommandsLib\x64\Debug\SerialCommandsLib.lib
