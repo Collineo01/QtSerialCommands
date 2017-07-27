@@ -368,7 +368,7 @@ void QCommandSerialPort::setDeviceMessages(QStringList messages, QString termina
 QByteArray QCommandSerialPort::takeFirstResponse() {
 	QRegularExpressionMatch match = QRegularExpression(".*" + mTerminator).match(mResponses);
 	if (match.hasMatch()) {
-		QString firstMatch = match.captured(0);
+		QString firstMatch = match.captured(0).remove(mTerminator);
 		return firstMatch.toLatin1();
 	}
 	return QByteArray();
