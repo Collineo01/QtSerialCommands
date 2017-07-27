@@ -18,7 +18,9 @@ QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSi
 	mResponsesSize{ responsesBufferSize },
 	mCurrentOperationMode{ SerialOperationMode::BlockingMode::Blocking, SerialOperationMode::FluxMode::Pull },
 	mDevelopmentMode{ false },
-	mWaitingForBlockingResponse{ false }
+	mBlockingCommandSent{ nullptr },
+	m_ResponseMatchesLastCommand{ false },
+	m_LastCommandIsBlocking{ false }
 {
 	mCommandTimer.setSingleShot(true);
 
@@ -47,6 +49,9 @@ void QCommandSerialPort::sendFromBuffer() {
 		mCurrentOperationMode = command.operationMode();
 		const QList<QVariant> &params = mCommandsToSend[0].second;
 		sendMessage(command.commandToSend(params));
+
+		m_LastCommandIsBlocking = command.operationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking;
+		m_LastCommandSent = command;
 	}
 }
 
@@ -65,26 +70,25 @@ void QCommandSerialPort::writeToBuffer(QPair<SerialCommand const &, QList<QVaria
 
 QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<QVariant> params)
 {
-	if (!mCommandsSent.isEmpty() && mCommandsToSend.size() != 1)
+	if (!m_LastCommandSent.name().isNull() && !m_LastCommandIsBlocking && !mCommandsSent.isEmpty() || !mCommandsToSend.isEmpty())
 	{
-		QEventLoop waitForEmpty;
-		waitForEmpty.connect(this, &QCommandSerialPort::readySendBlocking, &waitForEmpty, &QEventLoop::quit);
-		while (!mCommandsSent.isEmpty())
+		while (!m_ResponseMatchesLastCommand) {
 			QCoreApplication::processEvents();
-		waitForEmpty.exec();
+		}
+		m_ResponseMatchesLastCommand = false;
 	}
 
-	mWaitingForBlockingResponse = true;
+	mBlockingCommandSent = &command;
 
 	QEventLoop loop;
-	loop.connect(this, &QCommandSerialPort::blockingResponseReceived, &loop, &QEventLoop::quit);
+	loop.connect(this, &QCommandSerialPort::blockingResponseReceived, &loop, &QEventLoop::quit, Qt::QueuedConnection);
 
 	QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, params);
-	mCommandsToSend.append(commandAndParams);
-	sendFromBuffer();
+	writeToBuffer(commandAndParams);
+
 	loop.exec();
 
-	mWaitingForBlockingResponse = false;
+	mBlockingCommandSent = nullptr;
 
 	return mBlockingResponse;
 }
@@ -147,7 +151,7 @@ void QCommandSerialPort::analyseAllResponses()
 				else {
 					commandAndParams = mCommandsSent.erase(commandAndParams);
 				}
-				if (mWaitingForBlockingResponse)
+				if (mBlockingCommandSent != nullptr && *mBlockingCommandSent == command)
 				{
 					mBlockingResponse = response;
 					emit blockingResponseReceived();
@@ -155,6 +159,10 @@ void QCommandSerialPort::analyseAllResponses()
 				else
 				{
 					emit responseMatchesCommand(response, command);
+					if (command == m_LastCommandSent)
+					{
+						m_ResponseMatchesLastCommand = true;
+					}
 				}
 				continue;
 			}
@@ -177,10 +185,6 @@ void QCommandSerialPort::analyseAllResponses()
 			removeFirstResponse(message);
 			message = takeFirstResponse();
 		}
-	}
-	if (mCommandsSent.isEmpty() && mCommandsToSend.size() == 1)
-	{
-		emit readySendBlocking();
 	}
 }
 
@@ -294,7 +298,7 @@ void QCommandSerialPort::handlePullCommandTimeout() {
 	//	writeToBuffer(mCommandsSent.takeLast());
 	//}
 	//else {
-		mCommandsSent.removeLast();
+	mCommandsSent.removeLast();
 	//}
 }
 
@@ -311,16 +315,16 @@ void QCommandSerialPort::closeSerialPort() {
 	emit disconnectRequest();
 
 	QEventLoop loop;
-	loop.connect(this, &QCommandSerialPort::disconnectDone, &loop, &QEventLoop::quit);
+	loop.connect(this, &QCommandSerialPort::disconnectDone, &loop, &QEventLoop::quit, Qt::QueuedConnection);
 	loop.exec();
 }
 
 void QCommandSerialPort::changeSerialSettings(SerialSettings * portSettings) {
-	if (isOpen()){
+	if (isOpen()) {
 		emit changeSerialSettingsRequest(portSettings);
 
 		QEventLoop loop;
-		loop.connect(this, &QCommandSerialPort::changeSerialSettingsDone, &loop, &QEventLoop::quit);
+		loop.connect(this, &QCommandSerialPort::changeSerialSettingsDone, &loop, &QEventLoop::quit, Qt::QueuedConnection);
 		loop.exec();
 	}
 }
@@ -387,4 +391,3 @@ bool QCommandSerialPort::alreadySent(QPair<SerialCommand, QList<QVariant>> comma
 	}
 	return false;
 }
-

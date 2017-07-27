@@ -75,7 +75,11 @@ private:
 	int mSendBufferSize;
 	int mResponsesSize;
 	bool mDevelopmentMode;
-	bool mWaitingForBlockingResponse;
+	SerialCommand * mBlockingCommandSent;
+
+	SerialCommand m_LastCommandSent;
+	bool m_LastCommandIsBlocking;
+	bool m_ResponseMatchesLastCommand;
 
 	void sendFromBuffer();
 	void readData();
@@ -91,13 +95,13 @@ private:
 	QByteArray mBlockingResponse;
 
 
-public slots:
+	public slots:
 	void writeToBuffer(QPair<SerialCommand const &, QList<QVariant>> command);
 	QByteArray sendBlockingCommand(SerialCommand command, QList<QVariant> params);
 	void manageMessageSent();
 	virtual void closeSerialPort() override;
 
-private slots:
+	private slots:
 	void handleResponse(QByteArray data);
 	void handlePullCommandTimeout();
 	void handleDevelopmentMode(bool devMode);
@@ -113,7 +117,6 @@ signals:
 	void disconnectRequest();
 	void disconnectDone();
 	void blockingResponseReceived();
-	void readySendBlocking();
 	void changeSerialSettingsRequest(SerialSettings * portSettings);
 	void changeSerialSettingsDone();
 };
