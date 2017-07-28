@@ -30,30 +30,38 @@ QAsyncSerialPort::QAsyncSerialPort()
 // Methods
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void QAsyncSerialPort::sendMessage(QString message) {
+bool QAsyncSerialPort::sendMessage(QString message) {
 	mMessageToWrite = message;
 	QByteArray data = mMessageToWrite.toLatin1();
-	sendMessage(data);
+	return sendMessage(data);
 }
 
-void QAsyncSerialPort::sendMessage(QByteArray data) {
+bool QAsyncSerialPort::sendMessage(QByteArray data)
+{
+	bool success = false;
+
 	if (isOpen()) {
 		qint64 bytesWritten = write(data);
 		if (bytesWritten == -1) {
 			emit updated(QObject::tr("Failed to write the data to port %1, error: %2").arg(portName()).arg(errorString()));
 			//QCoreApplication::exit(1);
+			success = false;
 		}
 		else if (bytesWritten != data.size()) {
 			emit updated(QObject::tr("Failed to write all the data to port %1, error: %2").arg(portName()).arg(errorString()));
 			//QCoreApplication::exit(1);
+			success = false;
 		}
 		else {
 			emit messageSent();
 			if (!mTimer.isActive()) {
 				mTimer.start(5000);
 			}
+			success = true;
 		}
 	}
+
+	return success;
 }
 
 void QAsyncSerialPort::handleBytesWritten(qint64 bytes)
@@ -86,7 +94,7 @@ void QAsyncSerialPort::readData() {
 	emit dataRead(data);
 }
 
-bool QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl) 
+bool QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl)
 {
 	bool success = false;
 

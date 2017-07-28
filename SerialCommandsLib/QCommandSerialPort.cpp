@@ -18,14 +18,10 @@ QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSi
 	mResponsesSize{ responsesBufferSize },
 	mCurrentOperationMode{ SerialOperationMode::BlockingMode::Blocking, SerialOperationMode::FluxMode::Pull },
 	mDevelopmentMode{ false },
-	mBlockingCommandSent{ nullptr },
-	m_ResponseMatchesLastCommand{ false },
-	m_LastCommandIsBlocking{ false }
+	mBlockingCommandSent{ nullptr }
 {
 	mCommandTimer.setSingleShot(true);
 
-
-	connect(this, &QAsyncSerialPort::messageSent, this, &QCommandSerialPort::manageMessageSent, Qt::QueuedConnection);
 	connect(this, &QAsyncSerialPort::dataRead, this, &QCommandSerialPort::handleResponse, Qt::QueuedConnection);
 	connect(&mCommandTimer, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::developmentModeSwitched, this, &QCommandSerialPort::handleDevelopmentMode, Qt::QueuedConnection);
@@ -48,10 +44,11 @@ void QCommandSerialPort::sendFromBuffer() {
 		SerialCommand &command = mCommandsToSend[0].first;
 		mCurrentOperationMode = command.operationMode();
 		const QList<QVariant> &params = mCommandsToSend[0].second;
-		sendMessage(command.commandToSend(params));
 
-		m_LastCommandIsBlocking = command.operationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking;
-		m_LastCommandSent = command;
+		if (sendMessage(command.commandToSend(params)))
+		{
+			manageMessageSent();
+		}
 	}
 }
 
@@ -70,14 +67,6 @@ void QCommandSerialPort::writeToBuffer(QPair<SerialCommand const &, QList<QVaria
 
 QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<QVariant> params)
 {
-	if (!m_LastCommandSent.name().isNull() && !m_LastCommandIsBlocking && !mCommandsSent.isEmpty() || !mCommandsToSend.isEmpty())
-	{
-		while (!m_ResponseMatchesLastCommand) {
-			QCoreApplication::processEvents();
-		}
-		m_ResponseMatchesLastCommand = false;
-	}
-
 	mBlockingCommandSent = &command;
 
 	QEventLoop loop;
@@ -159,10 +148,6 @@ void QCommandSerialPort::analyseAllResponses()
 				else
 				{
 					emit responseMatchesCommand(response, command);
-					if (command == m_LastCommandSent)
-					{
-						m_ResponseMatchesLastCommand = true;
-					}
 				}
 				continue;
 			}
@@ -292,6 +277,7 @@ void QCommandSerialPort::handleResponse(QByteArray data) {
 }
 
 void QCommandSerialPort::handlePullCommandTimeout() {
+	emit commandTimeout(portName().right(1).toInt());
 	qDebug() << QObject::tr("Command timed out for port %1, error: %2").arg(portName()).arg(errorString()) << endl;
 	QString lastCommand(mCommandsSent.last().first.name() + " (" + mCommandsSent.last().first.command() + ")");
 	//if (retrySend(lastCommand)) {
@@ -391,3 +377,4 @@ bool QCommandSerialPort::alreadySent(QPair<SerialCommand, QList<QVariant>> comma
 	}
 	return false;
 }
+

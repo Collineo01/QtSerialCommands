@@ -36,9 +36,10 @@ QSerialDevice::QSerialDevice(QCommandSerialPort * sharedSerial, SerialSettings *
 	connect(mSerial, &QCommandSerialPort::responseMatchesCommand, this, &QSerialDevice::handleMatchingResponse);
 	connect(mSerial, &QCommandSerialPort::messageReceived, this, &QSerialDevice::handleMessageReceived);
 	connect(mSerial, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::handleConnectionUpdated);
+	connect(mSerial, &QCommandSerialPort::commandTimeout, this, &QSerialDevice::commandTimeout);
 
 	// Initialiser les paramètres de connexion série
-	initPortSettings();
+	//initPortSettings();
 }
 
 QSerialDevice::~QSerialDevice()

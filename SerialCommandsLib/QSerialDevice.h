@@ -76,4 +76,7 @@ private:
 	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
 	virtual void handleMessageReceived(QString const &message) = 0;
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
+
+signals:
+	void commandTimeout(int port);
 };

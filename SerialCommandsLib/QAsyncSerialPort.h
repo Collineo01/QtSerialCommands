@@ -36,8 +36,8 @@ public:
 		BR115200 = 115200, BR128000 = 128000, BR230400 = 230400, BR256000 = 256000, BRUnknown = -1
 	};
 
-	void sendMessage(QString message);
-	void sendMessage(QByteArray data);
+	bool sendMessage(QString message);
+	bool sendMessage(QByteArray data);
 
 private:
 	QString mMessageToWrite;

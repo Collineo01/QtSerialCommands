@@ -119,6 +119,7 @@ signals:
 	void blockingResponseReceived();
 	void changeSerialSettingsRequest(SerialSettings * portSettings);
 	void changeSerialSettingsDone();
+	void commandTimeout(int port);
 };
 
 

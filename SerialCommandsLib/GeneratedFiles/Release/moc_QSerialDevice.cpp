@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QSerialDevice_t {
-    QByteArrayData data[11];
-    char stringdata0[150];
+    QByteArrayData data[13];
+    char stringdata0[170];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,23 +32,25 @@ struct qt_meta_stringdata_QSerialDevice_t {
 static const qt_meta_stringdata_QSerialDevice_t qt_meta_stringdata_QSerialDevice = {
     {
 QT_MOC_LITERAL(0, 0, 13), // "QSerialDevice"
-QT_MOC_LITERAL(1, 14, 22), // "handleMatchingResponse"
-QT_MOC_LITERAL(2, 37, 0), // ""
-QT_MOC_LITERAL(3, 38, 8), // "response"
-QT_MOC_LITERAL(4, 47, 13), // "SerialCommand"
-QT_MOC_LITERAL(5, 61, 7), // "command"
-QT_MOC_LITERAL(6, 69, 21), // "handleMessageReceived"
-QT_MOC_LITERAL(7, 91, 7), // "message"
-QT_MOC_LITERAL(8, 99, 23), // "handleConnectionUpdated"
-QT_MOC_LITERAL(9, 123, 9), // "connected"
-QT_MOC_LITERAL(10, 133, 16) // "connectionFailed"
+QT_MOC_LITERAL(1, 14, 14), // "commandTimeout"
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 4), // "port"
+QT_MOC_LITERAL(4, 35, 22), // "handleMatchingResponse"
+QT_MOC_LITERAL(5, 58, 8), // "response"
+QT_MOC_LITERAL(6, 67, 13), // "SerialCommand"
+QT_MOC_LITERAL(7, 81, 7), // "command"
+QT_MOC_LITERAL(8, 89, 21), // "handleMessageReceived"
+QT_MOC_LITERAL(9, 111, 7), // "message"
+QT_MOC_LITERAL(10, 119, 23), // "handleConnectionUpdated"
+QT_MOC_LITERAL(11, 143, 9), // "connected"
+QT_MOC_LITERAL(12, 153, 16) // "connectionFailed"
 
     },
-    "QSerialDevice\0handleMatchingResponse\0"
-    "\0response\0SerialCommand\0command\0"
-    "handleMessageReceived\0message\0"
-    "handleConnectionUpdated\0connected\0"
-    "connectionFailed"
+    "QSerialDevice\0commandTimeout\0\0port\0"
+    "handleMatchingResponse\0response\0"
+    "SerialCommand\0command\0handleMessageReceived\0"
+    "message\0handleConnectionUpdated\0"
+    "connected\0connectionFailed"
 };
 #undef QT_MOC_LITERAL
 
@@ -58,24 +60,30 @@ static const uint qt_meta_data_QSerialDevice[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags
+       1,    1,   39,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       1,    2,   34,    2, 0x09 /* Protected */,
-       6,    1,   39,    2, 0x09 /* Protected */,
-       8,    2,   42,    2, 0x09 /* Protected */,
-       8,    1,   47,    2, 0x29 /* Protected | MethodCloned */,
+       4,    2,   42,    2, 0x09 /* Protected */,
+       8,    1,   47,    2, 0x09 /* Protected */,
+      10,    2,   50,    2, 0x09 /* Protected */,
+      10,    1,   55,    2, 0x29 /* Protected | MethodCloned */,
+
+ // signals: parameters
+    QMetaType::Void, QMetaType::Int,    3,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 4,    3,    5,
-    QMetaType::Void, QMetaType::QString,    7,
-    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,    9,   10,
-    QMetaType::Void, QMetaType::Bool,    9,
+    QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 6,    5,    7,
+    QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,   11,   12,
+    QMetaType::Void, QMetaType::Bool,   11,
 
        0        // eod
 };
@@ -86,11 +94,22 @@ void QSerialDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         QSerialDevice *_t = static_cast<QSerialDevice *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->handleMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
-        case 1: _t->handleMessageReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 2: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
-        case 3: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 0: _t->commandTimeout((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->handleMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
+        case 2: _t->handleMessageReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
+        case 4: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        void **func = reinterpret_cast<void **>(_a[1]);
+        {
+            typedef void (QSerialDevice::*_t)(int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QSerialDevice::commandTimeout)) {
+                *result = 0;
+                return;
+            }
         }
     }
 }
@@ -120,15 +139,22 @@ int QSerialDevice::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
+}
+
+// SIGNAL 0
+void QSerialDevice::commandTimeout(int _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE
