@@ -76,7 +76,7 @@ QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<
 	
 	QTimer t(this);
 	t.setSingleShot(true);
-	t.start(5000);
+	t.start(m_Timeout);
 
 	while (mBlockingCommandSent == &command && t.isActive()) {
 		QCoreApplication::processEvents();
@@ -89,29 +89,6 @@ QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<
 	qDebug() << "Response timeout for command : " + command.name();
 	return QByteArray();
 }
-
-/*! Compare une commande avec le tampon de réponses mResponses. S'il contient une réponse correspondante, un signal est émit et elle est retirée du tampon.
-*/
-//bool QCommandSerialPort::emitIfResponseMatchesCommand(QSerialCommand command) 
-//{
-//	QByteArray correspondingResponse = command.getFirstMatch(mResponses);
-//	// if we found a response matching the command
-//	if ( ! correspondingResponse.isNull()) 
-//	{
-//		mResponses.remove(mResponses.indexOf(correspondingResponse), correspondingResponse.length());
-//		if (mWaitingForBlockingResponse)
-//		{
-//			mBlockingResponse = correspondingResponse;
-//			emit blockingResponseReceived();
-//		}
-//		else
-//		{
-//			emit responseMatchesCommand(correspondingResponse, command);
-//		}
-//		return true;
-//	}
-//	return false;
-//}
 
 QByteArray QCommandSerialPort::responseMatchingCommand(SerialCommand command)
 {
@@ -185,50 +162,6 @@ void QCommandSerialPort::analyseAllResponses()
 	}
 }
 
-//void QCommandSerialPort::analyseAllResponses() {
-//	CommandsAndParams::iterator commandAndParams = mCommandsSent.begin();
-//	while (commandAndParams != mCommandsSent.end()) {
-//		QSerialCommand &command = commandAndParams->first;
-//		if (command.name() == "Control")
-//			qDebug() << "Control";
-//		if (emitIfResponseMatchesCommand(command)) {
-//			// Pull mode
-//			if (command.operationMode().fluxMode() == SerialOperationMode::FluxMode::Pull) 
-//			{
-//				if (command.operationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking) 
-//				{
-//					commandAndParams = mCommandsSent.erase(commandAndParams);
-//					mCommandTimer.stop(); // the response is received, so we don't want to trigger a timeout
-//					sendFromBuffer(); // we waited for the response, now we can send the next command
-//				}
-//				else {
-//					commandAndParams = mCommandsSent.erase(commandAndParams);
-//				}
-//				continue;
-//			}
-//			// Push mode
-//			else {
-//				while (emitIfResponseMatchesCommand(command)) { ; }
-//			}
-//		}
-//		++commandAndParams;
-//	}
-//	// if the device is able to send messages on its own (not a command response), and there is something left in the buffer.
-//	if (!mDeviceMessages.isEmpty() && !mResponses.isEmpty()) {
-//		QByteArray messages = mResponses;
-//		QByteArray message = takeFirstResponse();
-//		while (!message.isNull() && mDeviceMessages.contains(message)) {
-//			emit messageReceived(message);
-//			removeFirstResponse(message);
-//			message = takeFirstResponse();
-//		}
-//	}
-//	if (mCommandsSent.isEmpty())
-//	{
-//		emit bufferEmptied();
-//	}
-//}
-
 //bool QCommandSerialPort::retrySend(QString command) {
 //	QMessageBox retry;
 //	retry.setWindowTitle("No response received");
@@ -274,7 +207,7 @@ void QCommandSerialPort::manageMessageSent()
 			sendFromBuffer();
 		}
 		else {
-			mCommandTimer.start(5000);
+			mCommandTimer.start(m_Timeout);
 			mCommandsSent.append(mCommandsToSend.takeFirst());
 		}
 	}

@@ -16,7 +16,8 @@
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-QAsyncSerialPort::QAsyncSerialPort()
+QAsyncSerialPort::QAsyncSerialPort() :
+	m_Timeout{ 5000 }
 {
 	//openSerialPort();
 	mTimer.setSingleShot(true);
@@ -57,7 +58,7 @@ bool QAsyncSerialPort::sendMessage(QByteArray data)
 		else {
 			emit messageSent();
 			if (!mTimer.isActive()) {
-				mTimer.start(5000);
+				mTimer.start(m_Timeout);
 			}
 			success = true;
 		}
