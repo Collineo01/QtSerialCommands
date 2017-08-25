@@ -7,8 +7,8 @@
 #include "QCommandSerialPort.h"
 #include <QVariant>
 #include <QTime>
-#include <QEventLoop>
 #include <QCoreApplication>
+#include <QTimer>
 #include <QDebug>
 
 
@@ -18,11 +18,14 @@ QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSi
 	mResponsesSize{ responsesBufferSize },
 	mCurrentOperationMode{ SerialOperationMode::BlockingMode::Blocking, SerialOperationMode::FluxMode::Pull },
 	mDevelopmentMode{ false },
-	mBlockingCommandSent{ nullptr }
+	mBlockingCommandSent{ nullptr },
+	m_GotDisconnected{ false },
+	m_HasChangedSettings{ false }
 {
 	mCommandTimer.setSingleShot(true);
 
 	connect(this, &QAsyncSerialPort::dataRead, this, &QCommandSerialPort::handleResponse, Qt::QueuedConnection);
+	connect(this, &QAsyncSerialPort::messageSent, this, &QCommandSerialPort::manageMessageSent, Qt::QueuedConnection);
 	connect(&mCommandTimer, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::developmentModeSwitched, this, &QCommandSerialPort::handleDevelopmentMode, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::disconnectRequest, this, &QCommandSerialPort::handleDisconnectRequest, Qt::QueuedConnection);
@@ -39,16 +42,15 @@ QCommandSerialPort::~QCommandSerialPort()
 // Methods
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void QCommandSerialPort::sendFromBuffer() {
-	if (!mCommandsToSend.isEmpty()) {
+void QCommandSerialPort::sendFromBuffer() 
+{
+	if (!mCommandsToSend.isEmpty())
+	{
 		SerialCommand &command = mCommandsToSend[0].first;
 		mCurrentOperationMode = command.operationMode();
 		const QList<QVariant> &params = mCommandsToSend[0].second;
 
-		if (sendMessage(command.commandToSend(params)))
-		{
-			manageMessageSent();
-		}
+		sendMessage(command.commandToSend(params));
 	}
 }
 
@@ -69,17 +71,23 @@ QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<
 {
 	mBlockingCommandSent = &command;
 
-	QEventLoop loop;
-	loop.connect(this, &QCommandSerialPort::blockingResponseReceived, &loop, &QEventLoop::quit, Qt::QueuedConnection);
-
 	QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, params);
 	writeToBuffer(commandAndParams);
+	
+	QTimer t(this);
+	t.setSingleShot(true);
+	t.start(5000);
 
-	loop.exec();
+	while (mBlockingCommandSent == &command && t.isActive()) {
+		QCoreApplication::processEvents();
+	}
 
-	mBlockingCommandSent = nullptr;
+	if (t.isActive()) {
+		return mBlockingResponse;
+	}
 
-	return mBlockingResponse;
+	qDebug() << "Response timeout for command : " + command.name();
+	return QByteArray();
 }
 
 /*! Compare une commande avec le tampon de réponses mResponses. S'il contient une réponse correspondante, un signal est émit et elle est retirée du tampon.
@@ -123,11 +131,13 @@ QByteArray QCommandSerialPort::responseMatchingCommand(SerialCommand command)
 void QCommandSerialPort::analyseAllResponses()
 {
 	CommandsAndParams::iterator commandAndParams = mCommandsSent.begin();
-	while (commandAndParams != mCommandsSent.end() && !mCommandsSent.isEmpty()) {
+	while (commandAndParams != mCommandsSent.end() && !mCommandsSent.isEmpty()) 
+	{
 		SerialCommand command = commandAndParams->first;
 		QByteArray response = responseMatchingCommand(command);
 		if (!response.isNull())
 		{
+			//qDebug() << "response : " << response;
 			// Pull mode
 			if (command.operationMode().fluxMode() == SerialOperationMode::FluxMode::Pull)
 			{
@@ -144,6 +154,7 @@ void QCommandSerialPort::analyseAllResponses()
 				{
 					mBlockingResponse = response;
 					emit blockingResponseReceived();
+					mBlockingCommandSent = nullptr;
 				}
 				else
 				{
@@ -153,7 +164,8 @@ void QCommandSerialPort::analyseAllResponses()
 			}
 			// Push mode
 			else {
-				while (!response.isNull()) {
+				while (!response.isNull()) 
+				{
 					emit responseMatchesCommand(response, command);
 					response = responseMatchingCommand(command);
 				}
@@ -236,10 +248,13 @@ void QCommandSerialPort::analyseAllResponses()
 // Slots
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void QCommandSerialPort::manageMessageSent() {
-	if (!mDevelopmentMode && isOpen()) {
+void QCommandSerialPort::manageMessageSent() 
+{
+	if (!mDevelopmentMode && isOpen()) 
+	{
 		CommandsAndParams::iterator commandAndParams = mCommandsSent.begin();
-		while (commandAndParams != mCommandsSent.end()) {
+		while (commandAndParams != mCommandsSent.end()) 
+		{
 			SerialCommand &command = commandAndParams->first;
 			// Push mode
 			if (command.operationMode().fluxMode() == SerialOperationMode::FluxMode::Push) {
@@ -265,8 +280,10 @@ void QCommandSerialPort::manageMessageSent() {
 	}
 }
 
-void QCommandSerialPort::handleResponse(QByteArray data) {
-	if (!mDevelopmentMode) {
+void QCommandSerialPort::handleResponse(QByteArray data) 
+{
+	if (!mDevelopmentMode) 
+	{
 		//mResponseTmp += "*************" + QTime::currentTime().toString() + "*************"; // Temporary test
 		mResponses.append(data);
 		if (mResponses.size() >= mResponsesSize) {
@@ -276,7 +293,8 @@ void QCommandSerialPort::handleResponse(QByteArray data) {
 	}
 }
 
-void QCommandSerialPort::handlePullCommandTimeout() {
+void QCommandSerialPort::handlePullCommandTimeout() 
+{
 	emit commandTimeout(portName().right(1).toInt());
 	qDebug() << QObject::tr("Command timed out for port %1, error: %2").arg(portName()).arg(errorString()) << endl;
 	QString lastCommand(mCommandsSent.last().first.name() + " (" + mCommandsSent.last().first.command() + ")");
@@ -288,7 +306,8 @@ void QCommandSerialPort::handlePullCommandTimeout() {
 	//}
 }
 
-void QCommandSerialPort::handleDevelopmentMode(bool devMode) {
+void QCommandSerialPort::handleDevelopmentMode(bool devMode) 
+{
 	if (devMode) {
 		mCommandsToSend.clear();
 		mCommandsSent.clear();
@@ -297,38 +316,57 @@ void QCommandSerialPort::handleDevelopmentMode(bool devMode) {
 	}
 }
 
-void QCommandSerialPort::closeSerialPort() {
-	emit disconnectRequest();
+void QCommandSerialPort::closeSerialPort() 
+{
+	if (isOpen())
+	{
+		emit disconnectRequest();
 
-	QEventLoop loop;
-	loop.connect(this, &QCommandSerialPort::disconnectDone, &loop, &QEventLoop::quit, Qt::QueuedConnection);
-	loop.exec();
-}
-
-void QCommandSerialPort::changeSerialSettings(SerialSettings * portSettings) {
-	if (isOpen()) {
-		emit changeSerialSettingsRequest(portSettings);
-
-		QEventLoop loop;
-		loop.connect(this, &QCommandSerialPort::changeSerialSettingsDone, &loop, &QEventLoop::quit, Qt::QueuedConnection);
-		loop.exec();
+		QDebug debug = qDebug();
+		debug << "Closing port " + portName();
+		m_GotDisconnected = false;
+		while (!m_GotDisconnected)
+		{
+			QCoreApplication::processEvents();
+			debug << ".";
+		}
 	}
 }
 
-void QCommandSerialPort::handleDisconnectRequest() {
+void QCommandSerialPort::changeSerialSettings(SerialSettings * portSettings) 
+{
+	if (isOpen()) 
+	{
+		emit changeSerialSettingsRequest(portSettings);
+
+		QDebug debug = qDebug();
+		debug << "Changing settings on " + portName();
+		m_HasChangedSettings = false;
+		while (!m_HasChangedSettings)
+		{
+			QCoreApplication::processEvents();
+			debug << ".";
+		}
+	}
+}
+
+void QCommandSerialPort::handleDisconnectRequest() 
+{
 	mCommandsToSend.clear();
 	mCommandsSent.clear();
 	mResponses.clear();
 	mCommandTimer.stop();
 	QAsyncSerialPort::closeSerialPort();
-	emit disconnectDone();
+
+	m_GotDisconnected = true;
 }
 
 void QCommandSerialPort::handleChangeSerialSettingsRequest(SerialSettings * portSettings)
 {
 	handleDisconnectRequest();
 	QAsyncSerialPort::openSerialPort(portSettings->mPortName, portSettings->mBaudRate, portSettings->mDataBits, portSettings->mParity, portSettings->mStopBits, portSettings->mFlowControl);
-	emit changeSerialSettingsDone();
+
+	m_HasChangedSettings = true;
 }
 
 

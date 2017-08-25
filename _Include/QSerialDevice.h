@@ -51,6 +51,8 @@ public:
 
 	bool portIsOpened();
 
+	int port() { return m_Port; }
+
 	void sendCommand(QString command, QList<QVariant> params = QList<QVariant>());
 	QByteArray sendBlockingCommand(QString command, QList<QVariant> params = QList<QVariant>());
 
@@ -68,6 +70,8 @@ protected:
 	virtual void initDevice() = 0;
 
 private:
+	int m_Port;
+
 	void initPortSettings();
 	bool fileExists(QString fileName);
 

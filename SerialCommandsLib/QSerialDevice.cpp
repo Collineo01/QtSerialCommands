@@ -22,7 +22,8 @@ QSerialDevice::QSerialDevice(QCommandSerialPort * sharedSerial, SerialSettings *
 	:
 	QObject(parent),
 	mPortSettings{ settings }, // TODO : remplacer par une instance au lieu d'un pointeur (doit créer le copy constructor)
-	mSerial{ sharedSerial }
+	mSerial{ sharedSerial },
+	m_Port{ -1 }
 {
 	if (sharedSerial == nullptr)
 	{
@@ -78,15 +79,46 @@ void QSerialDevice::handleConnectionUpdated(bool connected, bool connectionFaile
 
 QByteArray QSerialDevice::sendBlockingCommand(QString command, QList<QVariant> params)
 {
-	SerialCommand cmd = *mSerialCommands[command];
-	return mSerial->sendBlockingCommand(cmd, params);
+	bool connected = true;
+
+	if (m_Port != -1 && !portIsOpened()) {
+		changeComPort(m_Port);
+		connected = connectComPort();
+	}
+
+	if (connected)
+	{
+		SerialCommand cmd = *mSerialCommands[command];
+		QByteArray response = mSerial->sendBlockingCommand(cmd, params);
+		//qDebug() << "BlockingResponse : " << response;
+		return response;
+	}
+	else
+	{
+		qDebug() << "Connection failed on " + mSerial->portName();
+		return QByteArray();
+	}
 }
 
 void QSerialDevice::sendCommand(QString command, QList<QVariant> params)
 {
-	mSerial->setDevelopmentMode(false);
-	QPair<SerialCommand const &, QList<QVariant>> commandAndParams(*mSerialCommands[command], params);
-	mSerial->writeToBuffer(commandAndParams);
+	bool connected = true;
+
+	if (m_Port != -1 && !portIsOpened()) {
+		changeComPort(m_Port);
+		connected = connectComPort();
+	}
+
+	if (connected)
+	{
+		mSerial->setDevelopmentMode(false);
+		QPair<SerialCommand const &, QList<QVariant>> commandAndParams(*mSerialCommands[command], params);
+		mSerial->writeToBuffer(commandAndParams);
+	}
+	else
+	{
+		qDebug() << "Connection failed on " + mSerial->portName();
+	}
 }
 
 void QSerialDevice::init(QString terminator)
@@ -109,7 +141,10 @@ void QSerialDevice::changeComPort(int comPort)
 
 bool QSerialDevice::connectComPort()
 {
-	return mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
+	if (!portIsOpened()) {
+		return mSerial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
+	}
+	return true;
 }
 
 void QSerialDevice::closeComPort()
@@ -119,7 +154,6 @@ void QSerialDevice::closeComPort()
 
 bool QSerialDevice::portIsOpened()
 {
-	qDebug() << "test";
 	return mSerial->isOpen();
 }
 

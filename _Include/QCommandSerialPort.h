@@ -81,6 +81,9 @@ private:
 	bool m_LastCommandIsBlocking;
 	bool m_ResponseMatchesLastCommand;
 
+	bool m_GotDisconnected;
+	bool m_HasChangedSettings;
+
 	void sendFromBuffer();
 	void readData();
 	void analyseAllResponses();

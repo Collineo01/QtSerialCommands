@@ -9,6 +9,7 @@
 //#include <QDebug>
 #include <QCoreApplication>
 #include <QTime>
+#include <QDebug>
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,8 @@ bool QAsyncSerialPort::sendMessage(QByteArray data)
 {
 	bool success = false;
 
-	if (isOpen()) {
+	if (isOpen()) 
+	{
 		qint64 bytesWritten = write(data);
 		if (bytesWritten == -1) {
 			emit updated(QObject::tr("Failed to write the data to port %1, error: %2").arg(portName()).arg(errorString()));
