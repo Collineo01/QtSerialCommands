@@ -67,6 +67,8 @@ public:
 
 	void changeSerialSettings(SerialSettings * portSettings);
 
+	void clearBuffers();
+	void clearBuffersNow();
 
 private:
 	QStringList mDeviceMessages;
@@ -110,6 +112,7 @@ private:
 	void handleDevelopmentMode(bool devMode);
 	void handleDisconnectRequest();
 	void handleChangeSerialSettingsRequest(SerialSettings * portSettings);
+	void handleClearBuffersRequest();
 
 signals:
 	void responseMatchesCommand(QByteArray response, SerialCommand command);
@@ -122,7 +125,8 @@ signals:
 	void blockingResponseReceived();
 	void changeSerialSettingsRequest(SerialSettings * portSettings);
 	void changeSerialSettingsDone();
-	void commandTimeout(int port);
+	void commandTimeout(SerialCommand command, QList<QVariant> params, int port);
+	void clearBuffersRequest();
 };
 
 

@@ -30,6 +30,7 @@ QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSi
 	connect(this, &QCommandSerialPort::developmentModeSwitched, this, &QCommandSerialPort::handleDevelopmentMode, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::disconnectRequest, this, &QCommandSerialPort::handleDisconnectRequest, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::changeSerialSettingsRequest, this, &QCommandSerialPort::handleChangeSerialSettingsRequest, Qt::QueuedConnection);
+	connect(this, &QCommandSerialPort::clearBuffersRequest, this, &QCommandSerialPort::handleClearBuffersRequest, Qt::QueuedConnection);
 }
 
 QCommandSerialPort::~QCommandSerialPort()
@@ -228,9 +229,9 @@ void QCommandSerialPort::handleResponse(QByteArray data)
 
 void QCommandSerialPort::handlePullCommandTimeout() 
 {
-	emit commandTimeout(portName().right(1).toInt());
+	emit commandTimeout(mCommandsSent.last().first, mCommandsSent.last().second, portName().right(1).toInt());
 	qDebug() << QObject::tr("Command timed out for port %1, error: %2").arg(portName()).arg(errorString()) << endl;
-	QString lastCommand(mCommandsSent.last().first.name() + " (" + mCommandsSent.last().first.command() + ")");
+	//QString lastCommand(mCommandsSent.last().first.name() + " (" + mCommandsSent.last().first.command() + ")");
 	//if (retrySend(lastCommand)) {
 	//	writeToBuffer(mCommandsSent.takeLast());
 	//}
@@ -242,10 +243,7 @@ void QCommandSerialPort::handlePullCommandTimeout()
 void QCommandSerialPort::handleDevelopmentMode(bool devMode) 
 {
 	if (devMode) {
-		mCommandsToSend.clear();
-		mCommandsSent.clear();
-		mResponses.clear();
-		mCommandTimer.stop();
+		clearBuffersNow();
 	}
 }
 
@@ -283,12 +281,27 @@ void QCommandSerialPort::changeSerialSettings(SerialSettings * portSettings)
 	}
 }
 
-void QCommandSerialPort::handleDisconnectRequest() 
+void QCommandSerialPort::clearBuffers()
+{
+	emit clearBuffersRequest();
+}
+
+void QCommandSerialPort::handleClearBuffersRequest()
+{
+	clearBuffersNow();
+}
+
+void QCommandSerialPort::clearBuffersNow()
 {
 	mCommandsToSend.clear();
 	mCommandsSent.clear();
 	mResponses.clear();
 	mCommandTimer.stop();
+}
+
+void QCommandSerialPort::handleDisconnectRequest() 
+{
+	clearBuffersNow();
 	QAsyncSerialPort::closeSerialPort();
 
 	m_GotDisconnected = true;

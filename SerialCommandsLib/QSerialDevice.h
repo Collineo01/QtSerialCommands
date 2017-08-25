@@ -53,17 +53,18 @@ public:
 
 	int port() { return m_Port; }
 
-	void sendCommand(QString command, QList<QVariant> params = QList<QVariant>());
-	QByteArray sendBlockingCommand(QString command, QList<QVariant> params = QList<QVariant>());
-
+	void sendCommand(SerialCommand command, QList<QVariant> params = QList<QVariant>());
+	QByteArray sendBlockingCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
 
 protected:
 	SerialSettings * mPortSettings;
-	QCommandSerialPort * mSerial;
+	QCommandSerialPort * m_Serial;
 	QMap<QString, SerialCommand const *> mSerialCommands;
 	QMap<QString, QString> mDeviceMessages;
 
 	bool mIsConnected;
+
+	void sendCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
 
 	virtual void fillDictionary() = 0;
 	virtual void fillDeviceMessages() = 0;
@@ -76,10 +77,13 @@ private:
 	bool fileExists(QString fileName);
 
 
-	protected slots:
+protected slots:
 	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
 	virtual void handleMessageReceived(QString const &message) = 0;
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
+
+private slots:
+	void handleCommandTimeout(SerialCommand command, QList<QVariant> params, int port);
 
 signals:
 	void commandTimeout(int port);
