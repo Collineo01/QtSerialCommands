@@ -88,8 +88,10 @@ void QSerialDevice::sendCommand(SerialCommand command, QList<QVariant> params)
 	if (connected)
 	{
 		m_Serial->setDevelopmentMode(false);
-		QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, params);
-		m_Serial->writeToBuffer(commandAndParams);
+		/*QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, params);
+		m_Serial->writeToBuffer(commandAndParams);*/
+		command.setParameters(params);
+		emit m_Serial->sendCommandRequest(command);
 	}
 	else
 	{
@@ -100,7 +102,7 @@ void QSerialDevice::sendCommand(SerialCommand command, QList<QVariant> params)
 void QSerialDevice::sendCommand(QString commandKey, QList<QVariant> params)
 {
 	SerialCommand command = *mSerialCommands[commandKey];
-	sendCommand(command);
+	sendCommand(command, params);
 }
 
 QByteArray QSerialDevice::sendBlockingCommand(QString commandKey, QList<QVariant> params)

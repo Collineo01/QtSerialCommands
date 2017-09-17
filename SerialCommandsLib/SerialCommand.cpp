@@ -5,7 +5,25 @@
 */
 
 #include "SerialCommand.h"
+
+#include <QCoreApplication>
 #include <QDebug>
+
+
+SerialOperationMode::SerialOperationMode(BlockingMode blockingMode, FluxMode fluxMode)
+	: mBlockingMode{ blockingMode }, mFluxMode{ fluxMode }
+{
+}
+
+
+SerialOperationMode::SerialOperationMode()
+{
+}
+
+
+SerialOperationMode::~SerialOperationMode()
+{
+}
 
 
 SerialCommand::SerialCommand(QString command, QString name, IOType ioType, int nParam, bool isRawParam, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
@@ -91,11 +109,13 @@ SerialCommand::~SerialCommand()
 
 }
 
-QByteArray SerialCommand::commandToSend(const QList<QVariant> & params) const {
+QByteArray SerialCommand::commandToSend() const {
 	QByteArray command = mCommand;
 	int i = 0;
-	for (const QVariant &param : params) {
-		if (param.isValid()) {
+	for (const QVariant &param : m_Parameters) 
+	{
+		if (param.isValid()) 
+		{
 			QString sParam;
 			if (mIsRawParam)
 			{

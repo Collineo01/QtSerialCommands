@@ -7,14 +7,15 @@
 #pragma once
 
 
-
 #include <QObject>
 #include <QMap>
 #include <QString>
 #include <QList>
 #include <QVariant>
 #include "QCommandSerialPort.h"
-#include "SerialSettings.h"
+#include "SerialCommand.h"
+
+
 
 
 class QSerialDevice : public QObject
@@ -88,3 +89,4 @@ private slots:
 signals:
 	void commandTimeout(int port);
 };
+

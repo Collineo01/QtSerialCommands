@@ -38,7 +38,38 @@
 #include <QRegularExpression>
 #include <QList>
 #include <QVariant>
-#include "SerialOperationMode.h"
+
+
+/*! \class SerialOperationMode
+*
+*	\brief Conteneur pour les modes d'opération d'une commande
+*
+*/
+
+class SerialOperationMode
+{
+public:
+	enum class BlockingMode
+	{
+		Blocking = 0,
+		NonBlockingNoResponse = 1,
+		NonBlockingOneToOneResponse = 2,
+		NonBlockingUniqueResponse = 3
+	};
+	enum class FluxMode { Pull = 0, Push = 1 };
+
+	SerialOperationMode(BlockingMode blockingMode, FluxMode fluxMode);
+	SerialOperationMode();
+	~SerialOperationMode();
+
+	FluxMode fluxMode() { return mFluxMode; }
+	BlockingMode blockingMode() { return mBlockingMode; }
+
+
+private:
+	BlockingMode mBlockingMode;
+	FluxMode mFluxMode;
+};
 
 
 class SerialCommand
@@ -98,7 +129,10 @@ public:
 	~SerialCommand();
 
 	inline bool operator==(SerialCommand const & command) const {
-		return mName == command.mName;
+		return mName == command.mName && m_Parameters == command.m_Parameters;
+	}
+	inline bool operator!=(SerialCommand const & command) const {
+		return mName != command.mName && m_Parameters != command.m_Parameters;
 	}
 
 	QString command() const { return mCommand; }
@@ -116,12 +150,15 @@ public:
 	QList<SerialCommand const *> pushModeStopCommands() const { return mPushModeStopCommands; }
 	QList <QByteArray> expectedResponses() const { return mExpectedResponses; }
 	int nbBytesExpected() const { return mNbBytesExpected; }
+	QList<QVariant> parameters() const { return m_Parameters; }
 
-	QByteArray commandToSend(const QList<QVariant> & params) const;
+	QByteArray commandToSend() const;
 	void addPushModeStopCommand(SerialCommand const * command);
 	bool stopsPushMode(SerialCommand const &command) const;
 
 	QByteArray getFirstMatch(QByteArray const &buffer);
+
+	void setParameters(QList<QVariant> parameters) { m_Parameters = parameters; }
 
 
 private:
@@ -144,6 +181,8 @@ private:
 	int mNbBytesExpected;
 
 	QList<SerialCommand const *> mPushModeStopCommands;
+
+	QList<QVariant> m_Parameters;
 
 };
 

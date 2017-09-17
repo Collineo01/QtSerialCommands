@@ -39,8 +39,7 @@
 #include <QPair>
 #include "QAsyncSerialPort.h"
 #include "SerialCommand.h"
-#include "SerialOperationMode.h"
-#include "SerialSettings.h"
+
 
 
 class QVariant;
@@ -52,12 +51,11 @@ class QCommandSerialPort : public QAsyncSerialPort
 	Q_OBJECT
 
 public:
-	typedef QList<QPair<SerialCommand, QList<QVariant>>> CommandsAndParams;
 	QCommandSerialPort(int sendBufferSize = 150, int responsesBufferSize = 15000); //change name
 	~QCommandSerialPort();
 
-	CommandsAndParams mCommandsToSend;// private (return const ref)
-	CommandsAndParams mCommandsSent;
+	QList<SerialCommand> mCommandsToSend;// private (return const ref)
+	QList<SerialCommand> mCommandsSent;
 	QByteArray mResponses;
 	SerialOperationMode mCurrentOperationMode;
 
@@ -67,8 +65,8 @@ public:
 
 	void changeSerialSettings(SerialSettings * portSettings);
 
+	void removeLastCommandSent();
 	void clearBuffers();
-	void clearBuffersNow();
 
 private:
 	QStringList mDeviceMessages;
@@ -86,6 +84,8 @@ private:
 	bool m_GotDisconnected;
 	bool m_HasChangedSettings;
 
+	QByteArray mBlockingResponse;
+
 	void sendFromBuffer();
 	void readData();
 	void analyseAllResponses();
@@ -95,24 +95,26 @@ private:
 	QByteArray takeFirstResponse();
 	void removeFirstResponse(QByteArray data);
 	//bool retrySend(QString command);
-	bool alreadySent(QPair<SerialCommand, QList<QVariant>> commandAndParams) const;
+	bool alreadySent(SerialCommand command) const;
+	
+	void clearBuffersNow();
 
-	QByteArray mBlockingResponse;
-
-
-	public slots:
-	void writeToBuffer(QPair<SerialCommand const &, QList<QVariant>> command);
+public slots:
+	void writeToBuffer(SerialCommand const & command);
 	QByteArray sendBlockingCommand(SerialCommand command, QList<QVariant> params);
 	void manageMessageSent();
 	virtual void closeSerialPort() override;
 
-	private slots:
+private slots:
 	void handleResponse(QByteArray data);
 	void handlePullCommandTimeout();
 	void handleDevelopmentMode(bool devMode);
 	void handleDisconnectRequest();
 	void handleChangeSerialSettingsRequest(SerialSettings * portSettings);
 	void handleClearBuffersRequest();
+	void handleRemoveLastCommandSent();
+	void handleRemoveFirstCommandToSend();
+	void handleSendCommandRequest(SerialCommand command);
 
 signals:
 	void responseMatchesCommand(QByteArray response, SerialCommand command);
@@ -125,9 +127,13 @@ signals:
 	void blockingResponseReceived();
 	void changeSerialSettingsRequest(SerialSettings * portSettings);
 	void changeSerialSettingsDone();
-	void commandTimeout(SerialCommand command, QList<QVariant> params, int port);
+	void commandTimeout(SerialCommand command, int port);
 	void clearBuffersRequest();
+	void removeLastCommandSentRequest();
+	void removeFirstCommandToSendRequest();
+	void sendCommandRequest(SerialCommand command);
 };
 
 
 #endif // QCOMMANDSERIALPORT_H
+

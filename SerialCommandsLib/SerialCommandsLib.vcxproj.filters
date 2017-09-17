@@ -48,12 +48,6 @@
     <ClCompile Include="QSerialDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SerialSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialOperationMode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_QCommandSerialPort.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -80,9 +74,6 @@
     <ClInclude Include="SerialCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SerialOperationMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="QAsyncSerialPort.h">
@@ -92,9 +83,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="QSerialDevice.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="SerialSettings.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
