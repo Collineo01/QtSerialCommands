@@ -26,81 +26,81 @@ SerialOperationMode::~SerialOperationMode()
 }
 
 
-SerialCommand::SerialCommand(QString command, QString name, IOType ioType, int nParam, bool isRawParam, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
-	QRegularExpression returnExp, QString desc, QString tooltip)
-	: mIsString{ true },
-	mNbBytesExpected{ -1 },
-	mCommand{ command.toLatin1() },
-	mName{ name },
-	mNParam{ nParam },
-	mIsRawParam{ isRawParam },
-	mReturnExp{ returnExp },
-	mSeparator{ separator },
-	mTerminator{ terminator },
-	mFamily{ family },
-	mShortDesc{ shortDesc },
-	mDesc{ desc },
-	mToolTip{ tooltip },
-	mOperationMode{ blockingMode, fluxMode },
-	mIOType{ ioType }
+SerialCommand::SerialCommand(QString command, QString name, IOType ioType, int nbOfArgs, bool argsAreRaw, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
+	QRegularExpression responseRegex, QString desc, QString tooltip)
+	: m_IsString{ true },
+	m_NbBytesExpected{ -1 },
+	m_Command{ command.toLatin1() },
+	m_Name{ name },
+	m_NumberOfArgs{ nbOfArgs },
+	m_ArgsAreRaw{ argsAreRaw },
+	m_ResponseRegex{ responseRegex },
+	m_Separator{ separator },
+	m_Terminator{ terminator },
+	m_Family{ family },
+	m_ShortDesc{ shortDesc },
+	m_Desc{ desc },
+	m_ToolTip{ tooltip },
+	m_OperationMode{ blockingMode, fluxMode },
+	m_IOType{ ioType }
 {
-	mCommand = command.toLatin1();
+	m_Command = command.toLatin1();
 	if (tooltip == "") {
-		mToolTip = shortDesc;
+		m_ToolTip = shortDesc;
 	}
 	else {
-		mToolTip = tooltip;
+		m_ToolTip = tooltip;
 	}
 }
 
-SerialCommand::SerialCommand(QByteArray command, QString name, IOType ioType, int nParam, bool isRawParam, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
+SerialCommand::SerialCommand(QByteArray command, QString name, IOType ioType, int nbOfArgs, bool argsAreRaw, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
 	QList<QByteArray> expectedResponses, QString desc, QString tooltip)
-	: mIsString{ false },
-	mNbBytesExpected{ -1 },
-	mCommand{ command },
-	mName{ name },
-	mNParam{ nParam },
-	mIsRawParam{ isRawParam },
-	mSeparator{ separator },
-	mTerminator{ terminator },
-	mFamily{ family },
-	mShortDesc{ shortDesc },
-	mDesc{ desc },
-	mToolTip{ tooltip },
-	mOperationMode{ blockingMode, fluxMode },
-	mIOType{ ioType },
-	mExpectedResponses{ expectedResponses }
+	: m_IsString{ false },
+	m_NbBytesExpected{ -1 },
+	m_Command{ command },
+	m_Name{ name },
+	m_NumberOfArgs{ nbOfArgs },
+	m_ArgsAreRaw{ argsAreRaw },
+	m_Separator{ separator },
+	m_Terminator{ terminator },
+	m_Family{ family },
+	m_ShortDesc{ shortDesc },
+	m_Desc{ desc },
+	m_ToolTip{ tooltip },
+	m_OperationMode{ blockingMode, fluxMode },
+	m_IOType{ ioType },
+	m_ExpectedResponses{ expectedResponses }
 {
 	if (tooltip == "") {
-		mToolTip = shortDesc;
+		m_ToolTip = shortDesc;
 	}
 	else {
-		mToolTip = tooltip;
+		m_ToolTip = tooltip;
 	}
 }
 
-SerialCommand::SerialCommand(QByteArray command, QString name, IOType ioType, int nParam, bool isRawParam, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
+SerialCommand::SerialCommand(QByteArray command, QString name, IOType ioType, int nbOfArgs, bool argsAreRaw, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
 	int nbBytesExpected, QString desc, QString tooltip)
-	: mIsString{ false },
-	mCommand{ command },
-	mName{ name },
-	mNParam{ nParam },
-	mIsRawParam{ isRawParam },
-	mSeparator{ separator },
-	mTerminator{ terminator },
-	mFamily{ family },
-	mShortDesc{ shortDesc },
-	mDesc{ desc },
-	mToolTip{ tooltip },
-	mOperationMode{ blockingMode, fluxMode },
-	mIOType{ ioType },
-	mNbBytesExpected{ nbBytesExpected }
+	: m_IsString{ false },
+	m_Command{ command },
+	m_Name{ name },
+	m_NumberOfArgs{ nbOfArgs },
+	m_ArgsAreRaw{ argsAreRaw },
+	m_Separator{ separator },
+	m_Terminator{ terminator },
+	m_Family{ family },
+	m_ShortDesc{ shortDesc },
+	m_Desc{ desc },
+	m_ToolTip{ tooltip },
+	m_OperationMode{ blockingMode, fluxMode },
+	m_IOType{ ioType },
+	m_NbBytesExpected{ nbBytesExpected }
 {
 	if (tooltip == "") {
-		mToolTip = shortDesc;
+		m_ToolTip = shortDesc;
 	}
 	else {
-		mToolTip = tooltip;
+		m_ToolTip = tooltip;
 	}
 }
 
@@ -110,47 +110,47 @@ SerialCommand::~SerialCommand()
 }
 
 QByteArray SerialCommand::commandToSend() const {
-	QByteArray command = mCommand;
+	QByteArray command = m_Command;
 	int i = 0;
-	for (const QVariant &param : m_Parameters) 
+	for (const QVariant &arg : m_Args) 
 	{
-		if (param.isValid()) 
+		if (arg.isValid()) 
 		{
-			QString sParam;
-			if (mIsRawParam)
+			QString sArg;
+			if (m_ArgsAreRaw)
 			{
-				command += param.toByteArray();
+				command += arg.toByteArray();
 			}
-			else if (param.canConvert<int>() || param.canConvert<double>()) {
-				sParam = QString::number(param.toDouble(), 'g', 10);
+			else if (arg.canConvert<int>() || arg.canConvert<double>()) {
+				sArg = QString::number(arg.toDouble(), 'g', 10);
 			}
 			else {
-				sParam = param.toString();
+				sArg = arg.toString();
 			}
 			if (i > 0) {
-				command += mSeparator.toLatin1();
+				command += m_Separator.toLatin1();
 			}
-			if (mIsString) {
-				command += sParam.toLatin1();
+			if (m_IsString) {
+				command += sArg.toLatin1();
 			}
 			else {
-				command += sParam.toDouble();
+				command += sArg.toDouble();
 			}
 		}
 		i++;
 	}
-	if (mTerminator.length() > 0) {
-		command += mTerminator.toLatin1();
+	if (m_Terminator.length() > 0) {
+		command += m_Terminator.toLatin1();
 	}
 	return command;
 }
 
 void SerialCommand::addPushModeStopCommand(SerialCommand const * command) {
-	mPushModeStopCommands.append(command);
+	m_PushModeStopCommands.append(command);
 }
 
 bool SerialCommand::stopsPushMode(SerialCommand const &command) const {
-	for (auto stopCommand : mPushModeStopCommands) {
+	for (auto stopCommand : m_PushModeStopCommands) {
 		qDebug() << command.name();
 		qDebug() << stopCommand->name();
 		if (command == *stopCommand) {
@@ -162,9 +162,9 @@ bool SerialCommand::stopsPushMode(SerialCommand const &command) const {
 
 QByteArray SerialCommand::getFirstMatch(QByteArray const &buffer)
 {
-	if (mIsString)
+	if (m_IsString)
 	{
-		QRegularExpressionMatch match = returnExp().match(buffer);
+		QRegularExpressionMatch match = responseRegex().match(buffer);
 		if (match.hasMatch())
 		{
 			QString firstMatch = match.captured(0);
@@ -172,11 +172,11 @@ QByteArray SerialCommand::getFirstMatch(QByteArray const &buffer)
 		}
 		return QByteArray();
 	}
-	else if (mNbBytesExpected != -1)
+	else if (m_NbBytesExpected != -1)
 	{
 		QByteArray response;
-		if (mNbBytesExpected > 0) {
-			response = buffer.left(mNbBytesExpected);
+		if (m_NbBytesExpected > 0) {
+			response = buffer.left(m_NbBytesExpected);
 		}
 		return response;
 	}
@@ -184,7 +184,7 @@ QByteArray SerialCommand::getFirstMatch(QByteArray const &buffer)
 	{
 		QByteArray response;
 		int index = std::numeric_limits<int>::max();
-		for (auto ba : mExpectedResponses)
+		for (auto ba : m_ExpectedResponses)
 		{
 			if (buffer.indexOf(ba) != -1 && buffer.indexOf(ba) < index)
 			{
@@ -201,12 +201,12 @@ QByteArray SerialCommand::getFirstMatch(QByteArray const &buffer)
 // GET
 /////////////////////////////////////////////////////////////////////////////////////////
 
-QRegularExpression SerialCommand::returnExp() const {
+QRegularExpression SerialCommand::responseRegex() const {
 	// Si on utilise le protocole simplifie
-	if (mReturnExp.match("").hasMatch()) {
-		return QRegularExpression(mCommand + ".*" + mTerminator);
+	if (m_ResponseRegex.match("").hasMatch()) {
+		return QRegularExpression(m_Command + ".*" + m_Terminator);
 	}
 	else {
-		return mReturnExp;
+		return m_ResponseRegex;
 	}
 }

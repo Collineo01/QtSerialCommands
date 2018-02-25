@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QCommandSerialPort_t {
-    QByteArrayData data[40];
-    char stringdata0[743];
+    QByteArrayData data[41];
+    char stringdata0[752];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,48 +33,49 @@ struct qt_meta_stringdata_QCommandSerialPort_t {
 static const qt_meta_stringdata_QCommandSerialPort_t qt_meta_stringdata_QCommandSerialPort = {
     {
 QT_MOC_LITERAL(0, 0, 18), // "QCommandSerialPort"
-QT_MOC_LITERAL(1, 19, 22), // "responseMatchesCommand"
-QT_MOC_LITERAL(2, 42, 0), // ""
-QT_MOC_LITERAL(3, 43, 8), // "response"
-QT_MOC_LITERAL(4, 52, 13), // "SerialCommand"
-QT_MOC_LITERAL(5, 66, 7), // "command"
-QT_MOC_LITERAL(6, 74, 15), // "messageReceived"
-QT_MOC_LITERAL(7, 90, 7), // "message"
-QT_MOC_LITERAL(8, 98, 23), // "developmentModeSwitched"
-QT_MOC_LITERAL(9, 122, 7), // "devMode"
-QT_MOC_LITERAL(10, 130, 18), // "sendBufferTooLarge"
-QT_MOC_LITERAL(11, 149, 23), // "responsesBufferTooLarge"
-QT_MOC_LITERAL(12, 173, 17), // "disconnectRequest"
-QT_MOC_LITERAL(13, 191, 14), // "disconnectDone"
-QT_MOC_LITERAL(14, 206, 24), // "blockingResponseReceived"
-QT_MOC_LITERAL(15, 231, 27), // "changeSerialSettingsRequest"
-QT_MOC_LITERAL(16, 259, 15), // "SerialSettings*"
-QT_MOC_LITERAL(17, 275, 12), // "portSettings"
-QT_MOC_LITERAL(18, 288, 24), // "changeSerialSettingsDone"
-QT_MOC_LITERAL(19, 313, 14), // "commandTimeout"
-QT_MOC_LITERAL(20, 328, 4), // "port"
-QT_MOC_LITERAL(21, 333, 19), // "clearBuffersRequest"
-QT_MOC_LITERAL(22, 353, 28), // "removeLastCommandSentRequest"
-QT_MOC_LITERAL(23, 382, 31), // "removeFirstCommandToSendRequest"
-QT_MOC_LITERAL(24, 414, 18), // "sendCommandRequest"
-QT_MOC_LITERAL(25, 433, 13), // "writeToBuffer"
-QT_MOC_LITERAL(26, 447, 19), // "sendBlockingCommand"
-QT_MOC_LITERAL(27, 467, 6), // "params"
-QT_MOC_LITERAL(28, 474, 17), // "manageMessageSent"
-QT_MOC_LITERAL(29, 492, 15), // "closeSerialPort"
-QT_MOC_LITERAL(30, 508, 14), // "handleResponse"
-QT_MOC_LITERAL(31, 523, 4), // "data"
-QT_MOC_LITERAL(32, 528, 24), // "handlePullCommandTimeout"
-QT_MOC_LITERAL(33, 553, 21), // "handleDevelopmentMode"
-QT_MOC_LITERAL(34, 575, 23), // "handleDisconnectRequest"
-QT_MOC_LITERAL(35, 599, 33), // "handleChangeSerialSettingsReq..."
-QT_MOC_LITERAL(36, 633, 25), // "handleClearBuffersRequest"
-QT_MOC_LITERAL(37, 659, 27), // "handleRemoveLastCommandSent"
-QT_MOC_LITERAL(38, 687, 30), // "handleRemoveFirstCommandToSend"
-QT_MOC_LITERAL(39, 718, 24) // "handleSendCommandRequest"
+QT_MOC_LITERAL(1, 19, 31), // "responseMatchingCommandReceived"
+QT_MOC_LITERAL(2, 51, 0), // ""
+QT_MOC_LITERAL(3, 52, 8), // "response"
+QT_MOC_LITERAL(4, 61, 13), // "SerialCommand"
+QT_MOC_LITERAL(5, 75, 7), // "command"
+QT_MOC_LITERAL(6, 83, 15), // "messageReceived"
+QT_MOC_LITERAL(7, 99, 7), // "message"
+QT_MOC_LITERAL(8, 107, 23), // "developmentModeSwitched"
+QT_MOC_LITERAL(9, 131, 7), // "devMode"
+QT_MOC_LITERAL(10, 139, 18), // "sendBufferTooLarge"
+QT_MOC_LITERAL(11, 158, 23), // "responsesBufferTooLarge"
+QT_MOC_LITERAL(12, 182, 17), // "disconnectRequest"
+QT_MOC_LITERAL(13, 200, 14), // "disconnectDone"
+QT_MOC_LITERAL(14, 215, 24), // "blockingResponseReceived"
+QT_MOC_LITERAL(15, 240, 27), // "changeSerialSettingsRequest"
+QT_MOC_LITERAL(16, 268, 15), // "SerialSettings*"
+QT_MOC_LITERAL(17, 284, 12), // "portSettings"
+QT_MOC_LITERAL(18, 297, 24), // "changeSerialSettingsDone"
+QT_MOC_LITERAL(19, 322, 15), // "commandTimedOut"
+QT_MOC_LITERAL(20, 338, 4), // "args"
+QT_MOC_LITERAL(21, 343, 4), // "port"
+QT_MOC_LITERAL(22, 348, 19), // "clearBuffersRequest"
+QT_MOC_LITERAL(23, 368, 28), // "removeLastCommandSentRequest"
+QT_MOC_LITERAL(24, 397, 31), // "removeFirstCommandToSendRequest"
+QT_MOC_LITERAL(25, 429, 18), // "sendCommandRequest"
+QT_MOC_LITERAL(26, 448, 13), // "writeToBuffer"
+QT_MOC_LITERAL(27, 462, 19), // "sendBlockingCommand"
+QT_MOC_LITERAL(28, 482, 6), // "params"
+QT_MOC_LITERAL(29, 489, 17), // "manageMessageSent"
+QT_MOC_LITERAL(30, 507, 9), // "closePort"
+QT_MOC_LITERAL(31, 517, 14), // "handleResponse"
+QT_MOC_LITERAL(32, 532, 4), // "data"
+QT_MOC_LITERAL(33, 537, 24), // "handlePullCommandTimeout"
+QT_MOC_LITERAL(34, 562, 21), // "handleDevelopmentMode"
+QT_MOC_LITERAL(35, 584, 23), // "handleDisconnectRequest"
+QT_MOC_LITERAL(36, 608, 33), // "handleChangeSerialSettingsReq..."
+QT_MOC_LITERAL(37, 642, 25), // "handleClearBuffersRequest"
+QT_MOC_LITERAL(38, 668, 27), // "handleRemoveLastCommandSent"
+QT_MOC_LITERAL(39, 696, 30), // "handleRemoveFirstCommandToSend"
+QT_MOC_LITERAL(40, 727, 24) // "handleSendCommandRequest"
 
     },
-    "QCommandSerialPort\0responseMatchesCommand\0"
+    "QCommandSerialPort\0responseMatchingCommandReceived\0"
     "\0response\0SerialCommand\0command\0"
     "messageReceived\0message\0developmentModeSwitched\0"
     "devMode\0sendBufferTooLarge\0"
@@ -82,12 +83,12 @@ QT_MOC_LITERAL(39, 718, 24) // "handleSendCommandRequest"
     "disconnectDone\0blockingResponseReceived\0"
     "changeSerialSettingsRequest\0SerialSettings*\0"
     "portSettings\0changeSerialSettingsDone\0"
-    "commandTimeout\0port\0clearBuffersRequest\0"
+    "commandTimedOut\0args\0port\0clearBuffersRequest\0"
     "removeLastCommandSentRequest\0"
     "removeFirstCommandToSendRequest\0"
     "sendCommandRequest\0writeToBuffer\0"
     "sendBlockingCommand\0params\0manageMessageSent\0"
-    "closeSerialPort\0handleResponse\0data\0"
+    "closePort\0handleResponse\0data\0"
     "handlePullCommandTimeout\0handleDevelopmentMode\0"
     "handleDisconnectRequest\0"
     "handleChangeSerialSettingsRequest\0"
@@ -122,26 +123,26 @@ static const uint qt_meta_data_QCommandSerialPort[] = {
       14,    0,  169,    2, 0x06 /* Public */,
       15,    1,  170,    2, 0x06 /* Public */,
       18,    0,  173,    2, 0x06 /* Public */,
-      19,    2,  174,    2, 0x06 /* Public */,
-      21,    0,  179,    2, 0x06 /* Public */,
-      22,    0,  180,    2, 0x06 /* Public */,
-      23,    0,  181,    2, 0x06 /* Public */,
-      24,    1,  182,    2, 0x06 /* Public */,
+      19,    3,  174,    2, 0x06 /* Public */,
+      22,    0,  181,    2, 0x06 /* Public */,
+      23,    0,  182,    2, 0x06 /* Public */,
+      24,    0,  183,    2, 0x06 /* Public */,
+      25,    1,  184,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      25,    1,  185,    2, 0x0a /* Public */,
-      26,    2,  188,    2, 0x0a /* Public */,
-      28,    0,  193,    2, 0x0a /* Public */,
-      29,    0,  194,    2, 0x0a /* Public */,
-      30,    1,  195,    2, 0x08 /* Private */,
-      32,    0,  198,    2, 0x08 /* Private */,
-      33,    1,  199,    2, 0x08 /* Private */,
-      34,    0,  202,    2, 0x08 /* Private */,
-      35,    1,  203,    2, 0x08 /* Private */,
-      36,    0,  206,    2, 0x08 /* Private */,
-      37,    0,  207,    2, 0x08 /* Private */,
-      38,    0,  208,    2, 0x08 /* Private */,
-      39,    1,  209,    2, 0x08 /* Private */,
+      26,    1,  187,    2, 0x0a /* Public */,
+      27,    2,  190,    2, 0x0a /* Public */,
+      29,    0,  195,    2, 0x0a /* Public */,
+      30,    0,  196,    2, 0x0a /* Public */,
+      31,    1,  197,    2, 0x08 /* Private */,
+      33,    0,  200,    2, 0x08 /* Private */,
+      34,    1,  201,    2, 0x08 /* Private */,
+      35,    0,  204,    2, 0x08 /* Private */,
+      36,    1,  205,    2, 0x08 /* Private */,
+      37,    0,  208,    2, 0x08 /* Private */,
+      38,    0,  209,    2, 0x08 /* Private */,
+      39,    0,  210,    2, 0x08 /* Private */,
+      40,    1,  211,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 4,    3,    5,
@@ -154,7 +155,7 @@ static const uint qt_meta_data_QCommandSerialPort[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 16,   17,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 4, QMetaType::Int,    5,   20,
+    QMetaType::Void, QMetaType::QString, QMetaType::QVariantList, QMetaType::Int,    5,   20,   21,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -162,10 +163,10 @@ static const uint qt_meta_data_QCommandSerialPort[] = {
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 4,    5,
-    QMetaType::QByteArray, 0x80000000 | 4, QMetaType::QVariantList,    5,   27,
+    QMetaType::QByteArray, 0x80000000 | 4, QMetaType::QVariantList,    5,   28,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QByteArray,   31,
+    QMetaType::Void, QMetaType::QByteArray,   32,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,    9,
     QMetaType::Void,
@@ -184,8 +185,8 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         QCommandSerialPort *_t = static_cast<QCommandSerialPort *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->responseMatchesCommand((*reinterpret_cast< QByteArray(*)>(_a[1])),(*reinterpret_cast< SerialCommand(*)>(_a[2]))); break;
-        case 1: _t->messageReceived((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 0: _t->responseMatchingCommandReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
+        case 1: _t->messageReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 2: _t->developmentModeSwitched((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: _t->sendBufferTooLarge(); break;
         case 4: _t->responsesBufferTooLarge(); break;
@@ -194,7 +195,7 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         case 7: _t->blockingResponseReceived(); break;
         case 8: _t->changeSerialSettingsRequest((*reinterpret_cast< SerialSettings*(*)>(_a[1]))); break;
         case 9: _t->changeSerialSettingsDone(); break;
-        case 10: _t->commandTimeout((*reinterpret_cast< SerialCommand(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 10: _t->commandTimedOut((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QList<QVariant>(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 11: _t->clearBuffersRequest(); break;
         case 12: _t->removeLastCommandSentRequest(); break;
         case 13: _t->removeFirstCommandToSendRequest(); break;
@@ -203,7 +204,7 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         case 16: { QByteArray _r = _t->sendBlockingCommand((*reinterpret_cast< SerialCommand(*)>(_a[1])),(*reinterpret_cast< QList<QVariant>(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QByteArray*>(_a[0]) = std::move(_r); }  break;
         case 17: _t->manageMessageSent(); break;
-        case 18: _t->closeSerialPort(); break;
+        case 18: _t->closePort(); break;
         case 19: _t->handleResponse((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
         case 20: _t->handlePullCommandTimeout(); break;
         case 21: _t->handleDevelopmentMode((*reinterpret_cast< bool(*)>(_a[1]))); break;
@@ -219,14 +220,14 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (QCommandSerialPort::*_t)(QByteArray , SerialCommand );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::responseMatchesCommand)) {
+            typedef void (QCommandSerialPort::*_t)(QByteArray const & , SerialCommand const & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::responseMatchingCommandReceived)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (QCommandSerialPort::*_t)(QString );
+            typedef void (QCommandSerialPort::*_t)(QString const & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::messageReceived)) {
                 *result = 1;
                 return;
@@ -289,8 +290,8 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
             }
         }
         {
-            typedef void (QCommandSerialPort::*_t)(SerialCommand , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::commandTimeout)) {
+            typedef void (QCommandSerialPort::*_t)(QString , QList<QVariant> , int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::commandTimedOut)) {
                 *result = 10;
                 return;
             }
@@ -363,14 +364,14 @@ int QCommandSerialPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void QCommandSerialPort::responseMatchesCommand(QByteArray _t1, SerialCommand _t2)
+void QCommandSerialPort::responseMatchingCommandReceived(QByteArray const & _t1, SerialCommand const & _t2)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void QCommandSerialPort::messageReceived(QString _t1)
+void QCommandSerialPort::messageReceived(QString const & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
@@ -427,9 +428,9 @@ void QCommandSerialPort::changeSerialSettingsDone()
 }
 
 // SIGNAL 10
-void QCommandSerialPort::commandTimeout(SerialCommand _t1, int _t2)
+void QCommandSerialPort::commandTimedOut(QString _t1, QList<QVariant> _t2, int _t3)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
     QMetaObject::activate(this, &staticMetaObject, 10, _a);
 }
 

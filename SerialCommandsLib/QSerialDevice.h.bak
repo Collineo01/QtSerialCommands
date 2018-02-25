@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "serialcommandslib_global.h"
 
 #include <QObject>
 #include <QMap>
@@ -14,7 +13,9 @@
 #include <QList>
 #include <QVariant>
 #include "QCommandSerialPort.h"
-#include "SerialSettings.h"
+#include "SerialCommand.h"
+
+#include "serialcommandslib_global.h"
 
 
 class SERIALCOMMANDSLIB_EXPORT QSerialDevice : public QObject
@@ -41,8 +42,9 @@ public:
 	//	mSerial.writeToBuffer(commandAndParams);
 	//}
 
-	virtual void init();
-	void connectComPort();
+	virtual void init(QString terminator);
+	bool connectComPort();
+	void closeComPort();
 
 	bool isConnected() { return mIsConnected; }
 
@@ -50,29 +52,41 @@ public:
 
 	bool portIsOpened();
 
-	void sendCommand(QString command, QList<QVariant> params = QList<QVariant>());
-	QByteArray sendBlockingCommand(QString command, QList<QVariant> params = QList<QVariant>());
+	int port() { return m_Port; }
 
+	void sendCommand(SerialCommand command, QList<QVariant> params = QList<QVariant>());
+	QByteArray sendBlockingCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
 
 protected:
 	SerialSettings * mPortSettings;
-	QCommandSerialPort * mSerial;
+	QCommandSerialPort * m_Serial;
 	QMap<QString, SerialCommand const *> mSerialCommands;
 	QMap<QString, QString> mDeviceMessages;
 
 	bool mIsConnected;
+
+	void sendCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
 
 	virtual void fillDictionary() = 0;
 	virtual void fillDeviceMessages() = 0;
 	virtual void initDevice() = 0;
 
 private:
+	int m_Port;
+
 	void initPortSettings();
 	bool fileExists(QString fileName);
 
 
-	protected slots:
+protected slots:
 	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
 	virtual void handleMessageReceived(QString const &message) = 0;
-	virtual void handleConnectionUpdated(bool connected);
+	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
+
+private slots:
+	void handleCommandTimeout(SerialCommand command, QList<QVariant> params, int port);
+
+signals:
+	void commandTimeout(int port);
 };
+

@@ -8,10 +8,8 @@
 
 
 #include <QObject>
-#include <QMap>
 #include <QString>
 #include <QList>
-#include <QVariant>
 #include "QCommandSerialPort.h"
 #include "SerialCommand.h"
 
@@ -24,6 +22,8 @@ class SERIALCOMMANDSLIB_EXPORT QSerialDevice : public QObject
 
 public:
 	QSerialDevice(QCommandSerialPort * sharedSerial = nullptr, SerialSettings * settings = nullptr, QObject *parent = nullptr);
+	QSerialDevice(QMap<QString, SerialCommand const *> serialCommands, QMap<QString, QString> deviceMessages, 
+					QCommandSerialPort * sharedSerial = nullptr, SerialSettings * settings = nullptr, QObject *parent = nullptr);
 	~QSerialDevice();
 
 	static QString const DEFAULT_INI;
@@ -31,41 +31,30 @@ public:
 	static QString const TEMP_INI;
 	static int const DEFAULT_COM_PORT;
 
-	// enum class Command { }; // Coquille vide. Ce enum doit être défini dans la classe enfant
-
-	// virtual void sendCommand(Command command, QList<QVariant> params = QList<QVariant>()) = 0; // doit être redéfini telle que ci dessous pour utiliser le enum Command de la classe enfant
-
-	//void QSerialDevice::sendCommand(Command command, QList<QVariant> params) 
-	//{
-	//	mSerial.setDevelopmentMode(false);
-	//	QPair<QSerialCommand const &, QList<QVariant>> commandAndParams(*mSerialCommands[command], params);
-	//	mSerial.writeToBuffer(commandAndParams);
-	//}
-
 	virtual void init(QString terminator);
-	bool connectComPort();
-	void closeComPort();
+	bool connectPort();
+	bool connectPort(int port);
+	void closePort();
 
-	bool isConnected() { return mIsConnected; }
+	bool isConnected();
 
-	void changeComPort(int comPort);
+	void changePort(int port);
 
-	bool portIsOpened();
+	void clearCommandAndResponseBuffers();
 
 	int port() { return m_Port; }
 
-	void sendCommand(SerialCommand command, QList<QVariant> params = QList<QVariant>());
-	QByteArray sendBlockingCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
+	void setTimeout(int timeout);
 
 protected:
-	SerialSettings * mPortSettings;
+	SerialSettings * m_PortSettings;
 	QCommandSerialPort * m_Serial;
-	QMap<QString, SerialCommand const *> mSerialCommands;
-	QMap<QString, QString> mDeviceMessages;
+	QMap<QString, SerialCommand const *> m_SerialCommands;
+	QMap<QString, QString> m_DeviceMessages;
 
-	bool mIsConnected;
-
-	void sendCommand(QString commandKey, QList<QVariant> params = QList<QVariant>());
+	virtual void sendCommand(QString commandKey, QList<QVariant> args = QList<QVariant>());
+	virtual void sendCommand(SerialCommand command, QList<QVariant> args = QList<QVariant>());
+	virtual QByteArray sendBlockingCommand(QString commandKey, QList<QVariant> args = QList<QVariant>());
 
 	virtual void fillDictionary() = 0;
 	virtual void fillDeviceMessages() = 0;
@@ -84,9 +73,12 @@ protected slots:
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
 
 private slots:
-	void handleCommandTimeout(SerialCommand command, QList<QVariant> params, int port);
+	void handleCommandTimedOut(QString command, QList<QVariant> args, int port);
 
 signals:
-	void commandTimeout(int port);
+	void responseMatchingCommandReceived(QByteArray const &response, SerialCommand const &command);
+	void messageReceived(QString const &message);
+	void connectionUpdated(bool connected, bool connectionFailed = false);
+	void commandTimedOut(QString command, QList<QVariant> args, int port);
+	void portTimedOut(int port);
 };
-

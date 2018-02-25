@@ -14,21 +14,21 @@
 
 QCommandSerialPort::QCommandSerialPort(int sendBufferSize, int responsesBufferSize)
 	: QAsyncSerialPort(),
-	mSendBufferSize{ sendBufferSize },
-	mResponsesSize{ responsesBufferSize },
-	mCurrentOperationMode{ SerialOperationMode::BlockingMode::Blocking, SerialOperationMode::FluxMode::Pull },
-	mDevelopmentMode{ false },
-	mBlockingCommandSent{ nullptr },
+	m_SendBufferSize{ sendBufferSize },
+	m_ResponsesSize{ responsesBufferSize },
+	m_CurrentOperationMode{ SerialOperationMode::BlockingMode::Blocking, SerialOperationMode::FluxMode::Pull },
+	m_DevelopmentMode{ false },
+	m_BlockingCommandSent{ nullptr },
 	m_GotDisconnected{ false },
 	m_HasChangedSettings{ false }
 {
-	mCommandTimer.setSingleShot(true);
+	m_CommandTimer.setSingleShot(true);
 
 	qRegisterMetaType<SerialCommand>("SerialCommand");
 
 	connect(this, &QAsyncSerialPort::dataRead, this, &QCommandSerialPort::handleResponse, Qt::QueuedConnection);
 	connect(this, &QAsyncSerialPort::messageSent, this, &QCommandSerialPort::manageMessageSent, Qt::QueuedConnection);
-	connect(&mCommandTimer, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
+	connect(&m_CommandTimer, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::developmentModeSwitched, this, &QCommandSerialPort::handleDevelopmentMode, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::disconnectRequest, this, &QCommandSerialPort::handleDisconnectRequest, Qt::QueuedConnection);
 	connect(this, &QCommandSerialPort::changeSerialSettingsRequest, this, &QCommandSerialPort::handleChangeSerialSettingsRequest, Qt::QueuedConnection);
@@ -55,13 +55,13 @@ void QCommandSerialPort::handleSendCommandRequest(SerialCommand command)
 
 void QCommandSerialPort::sendFromBuffer() 
 {
-	if (!mCommandsToSend.isEmpty())
+	if (!m_CommandsToSend.isEmpty())
 	{
-		SerialCommand &command = mCommandsToSend[0];
-		mCurrentOperationMode = command.operationMode();
+		SerialCommand &command = m_CommandsToSend[0];
+		m_CurrentOperationMode = command.operationMode();
 
 		if (sendMessage(command.commandToSend())) {
-			m_LastCommandSent = mCommandsToSend[0];
+			m_LastCommandSent = m_CommandsToSend[0];
 		}
 	}
 }
@@ -72,14 +72,16 @@ void QCommandSerialPort::writeToBuffer(SerialCommand const & command)
 {
 	QMutex mutex;
 	mutex.lock();
-	if (!(command.operationMode().blockingMode() == SerialOperationMode::BlockingMode::NonBlockingUniqueResponse && (mCommandsToSend.contains(command) || mCommandsSent.contains(command)))) 
+	bool commandIsInBuffers = m_CommandsToSend.contains(command) || m_CommandsSent.contains(command);
+	bool waitResponseBeforeResend = command.operationMode().blockingMode() == SerialOperationMode::BlockingMode::NonBlockingWaitResponse;
+	if (!(commandIsInBuffers && waitResponseBeforeResend))
 	{
-		mCommandsToSend.append(command);
+		m_CommandsToSend.append(command);
 
-		if (mCommandsToSend.size() == 1 && (mCommandsSent.isEmpty() || mCommandsSent.last().operationMode().blockingMode() != SerialOperationMode::BlockingMode::Blocking)) {
+		if (m_CommandsToSend.size() == 1 && (m_CommandsSent.isEmpty() || m_CommandsSent.last().operationMode().blockingMode() != SerialOperationMode::BlockingMode::Blocking)) {
 			sendFromBuffer();
 		}
-		if (mCommandsToSend.size() >= mSendBufferSize) {
+		if (m_CommandsToSend.size() >= m_SendBufferSize) {
 			emit sendBufferTooLarge();  // intercept signal
 		}
 	}
@@ -88,9 +90,9 @@ void QCommandSerialPort::writeToBuffer(SerialCommand const & command)
 
 QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<QVariant> params)
 {
-	command.setParameters(params);
+	command.setArguments(params);
 
-	mBlockingCommandSent = &command;
+	m_BlockingCommandSent = &command;
 
 	emit sendCommandRequest(command);
 	//writeToBuffer(command);
@@ -101,13 +103,13 @@ QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<
 
 	//connect(&t, &QTimer::timeout, this, &QCommandSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 
-	while (mBlockingCommandSent == &command && t.isActive()) {
+	while (m_BlockingCommandSent == &command && t.isActive()) {
 		QCoreApplication::processEvents();
 	}
 
 	if (t.isActive()) {
 		t.stop();
-		return mBlockingResponse;
+		return m_BlockingResponse;
 	}
 
 	qDebug() << "Response timeout for command : " + command.name() + " on port " + portName();
@@ -117,26 +119,26 @@ QByteArray QCommandSerialPort::sendBlockingCommand(SerialCommand command, QList<
 
 QByteArray QCommandSerialPort::responseMatchingCommand(SerialCommand command)
 {
-	QByteArray correspondingResponse = command.getFirstMatch(mResponses);
+	QByteArray correspondingResponse = command.getFirstMatch(m_Responses);
 	// if we found a response matching the command
 	if (!correspondingResponse.isNull())
 	{
 		QMutex mutex;
 		mutex.lock();
-		mResponses.remove(mResponses.indexOf(correspondingResponse), correspondingResponse.length());
+		m_Responses.remove(m_Responses.indexOf(correspondingResponse), correspondingResponse.length());
 		mutex.unlock();
 	}
 	return correspondingResponse;
 }
 
-/*! À chaque réponse reçue, le tampon mResponses est analysé pour trouver toutes les réponses qui correspondent à l'une des commandes dans mCommandsSent.
+/*! À chaque réponse reçue, le tampon m_Responses est analysé pour trouver toutes les réponses qui correspondent à l'une des commandes dans m_CommandsSent.
 *	Les tampons sont gérés en fonction du mode d'opération de chaque commande.
 *
 */
 void QCommandSerialPort::analyseAllResponses()
 {
-	QList<SerialCommand>::iterator commands = mCommandsSent.begin();
-	while (commands != mCommandsSent.end() && !mCommandsSent.isEmpty())
+	QList<SerialCommand>::iterator commands = m_CommandsSent.begin();
+	while (commands != m_CommandsSent.end() && !m_CommandsSent.isEmpty())
 	{
 		SerialCommand command = *commands;
 		QByteArray response = responseMatchingCommand(command);
@@ -150,26 +152,26 @@ void QCommandSerialPort::analyseAllResponses()
 				{
 					QMutex mutex;
 					mutex.lock();
-					commands = mCommandsSent.erase(commands);
+					commands = m_CommandsSent.erase(commands);
 					mutex.unlock();
-					mCommandTimer.stop(); // the response is received, so we don't want to trigger a timeout
+					m_CommandTimer.stop(); // the response is received, so we don't want to trigger a timeout
 					sendFromBuffer(); // we waited for the response, now we can send the next command
 				}
 				else {
 					QMutex mutex;
 					mutex.lock();
-					commands = mCommandsSent.erase(commands);
+					commands = m_CommandsSent.erase(commands);
 					mutex.unlock();
 				}
-				if (mBlockingCommandSent != nullptr && *mBlockingCommandSent == command)
+				if (m_BlockingCommandSent != nullptr && *m_BlockingCommandSent == command)
 				{
-					mBlockingResponse = response;
+					m_BlockingResponse = response;
 					emit blockingResponseReceived();
-					mBlockingCommandSent = nullptr;
+					m_BlockingCommandSent = nullptr;
 				}
 				else
 				{
-					emit responseMatchesCommand(response, command);
+					emit responseMatchingCommandReceived(response, command);
 				}
 				continue;
 			}
@@ -177,7 +179,7 @@ void QCommandSerialPort::analyseAllResponses()
 			else {
 				while (!response.isNull()) 
 				{
-					emit responseMatchesCommand(response, command);
+					emit responseMatchingCommandReceived(response, command);
 					response = responseMatchingCommand(command);
 				}
 			}
@@ -185,10 +187,10 @@ void QCommandSerialPort::analyseAllResponses()
 		++commands;
 	}
 	// if the device is able to send messages on its own (not a command response), and there is something left in the buffer.
-	if (!mDeviceMessages.isEmpty() && !mResponses.isEmpty()) {
-		QByteArray messages = mResponses;
+	if (!m_DeviceMessages.isEmpty() && !m_Responses.isEmpty()) {
+		QByteArray messages = m_Responses;
 		QByteArray message = takeFirstResponse();
-		while (!message.isNull() && mDeviceMessages.contains(message)) {
+		while (!message.isNull() && m_DeviceMessages.contains(message)) {
 			emit messageReceived(message);
 			removeFirstResponse(message);
 			message = takeFirstResponse();
@@ -217,44 +219,44 @@ void QCommandSerialPort::analyseAllResponses()
 
 void QCommandSerialPort::manageMessageSent() 
 {
-	if (!mDevelopmentMode && isOpen()) 
+	if (!m_DevelopmentMode && isOpen()) 
 	{
-		QList<SerialCommand>::iterator commands = mCommandsSent.begin();
-		while (commands != mCommandsSent.end())
+		QList<SerialCommand>::iterator commands = m_CommandsSent.begin();
+		while (commands != m_CommandsSent.end())
 		{
 			SerialCommand &command = *commands;
 			// Push mode
 			if (command.operationMode().fluxMode() == SerialOperationMode::FluxMode::Push) {
-				if (command.stopsPushMode(mCommandsToSend[0])) {
+				if (command.stopsPushMode(m_CommandsToSend[0])) {
 					QMutex mutex;
 					mutex.lock();
-					commands = mCommandsSent.erase(commands);
+					commands = m_CommandsSent.erase(commands);
 					mutex.unlock();
 					break;
 				}
 			}
 			++commands;
 		}
-		if (mCurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingNoResponse) {
+		if (m_CurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingNoResponse) {
 			QMutex mutex;
 			mutex.lock();
-			mCommandsToSend.removeFirst();
+			m_CommandsToSend.removeFirst();
 			mutex.unlock();
 			sendFromBuffer();
 		}
-		else if (mCurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingOneToOneResponse || mCurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingUniqueResponse) 
+		else if (m_CurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingXCommandsXResponses || m_CurrentOperationMode.blockingMode() == SerialOperationMode::BlockingMode::NonBlockingWaitResponse) 
 		{
 			QMutex mutex;
 			mutex.lock();
-			mCommandsSent.append(mCommandsToSend.takeFirst());
+			m_CommandsSent.append(m_CommandsToSend.takeFirst());
 			mutex.unlock();
 			sendFromBuffer();
 		}
 		else {
-			mCommandTimer.start(m_Timeout);
+			m_CommandTimer.start(m_Timeout);
 			QMutex mutex;
 			mutex.lock();
-			mCommandsSent.append(mCommandsToSend.takeFirst());
+			m_CommandsSent.append(m_CommandsToSend.takeFirst());
 			mutex.unlock();
 		}
 	}
@@ -262,13 +264,13 @@ void QCommandSerialPort::manageMessageSent()
 
 void QCommandSerialPort::handleResponse(QByteArray data) 
 {
-	if (!mDevelopmentMode) 
+	if (!m_DevelopmentMode) 
 	{
 		QMutex mutex;
 		mutex.lock();
-		mResponses.append(data);
+		m_Responses.append(data);
 		mutex.unlock();
-		if (mResponses.size() >= mResponsesSize) {
+		if (m_Responses.size() >= m_ResponsesSize) {
 			emit responsesBufferTooLarge(); // intercept signal
 		}
 		analyseAllResponses();
@@ -278,11 +280,11 @@ void QCommandSerialPort::handleResponse(QByteArray data)
 void QCommandSerialPort::handlePullCommandTimeout() 
 {
 	removeLastCommandSent();
-	emit commandTimeout(m_LastCommandSent, portName().right(1).toInt());
+	emit commandTimedOut(m_LastCommandSent.command(), m_LastCommandSent.args(), portName().right(1).toInt());
 	qDebug() << "Command timed out (" + m_LastCommandSent.name() + ") for port " + portName() + ", error: " + errorString() << endl;
-	//QString lastCommand(mCommandsSent.last().first.name() + " (" + mCommandsSent.last().first.command() + ")");
+	//QString lastCommand(m_CommandsSent.last().first.name() + " (" + m_CommandsSent.last().first.command() + ")");
 	//if (retrySend(lastCommand)) {
-	//	writeToBuffer(mCommandsSent.takeLast());
+	//	writeToBuffer(m_CommandsSent.takeLast());
 	//}
 	//else {
 	//}
@@ -295,7 +297,7 @@ void QCommandSerialPort::handleDevelopmentMode(bool devMode)
 	}
 }
 
-void QCommandSerialPort::closeSerialPort() 
+void QCommandSerialPort::closePort() 
 {
 	if (isOpen())
 	{
@@ -336,20 +338,20 @@ void QCommandSerialPort::removeLastCommandSent()
 
 void QCommandSerialPort::handleRemoveLastCommandSent()
 {
-	if (!mCommandsSent.isEmpty()) {
+	if (!m_CommandsSent.isEmpty()) {
 		QMutex mutex;
 		mutex.lock();
-		mCommandsSent.removeLast();
+		m_CommandsSent.removeLast();
 		mutex.unlock();
 	}
 }
 
 void QCommandSerialPort::handleRemoveFirstCommandToSend()
 {
-	if (!mCommandsToSend.isEmpty()) {
+	if (!m_CommandsToSend.isEmpty()) {
 		QMutex mutex;
 		mutex.lock();
-		mCommandsToSend.removeFirst();
+		m_CommandsToSend.removeFirst();
 		mutex.unlock();
 	}
 }
@@ -368,17 +370,17 @@ void QCommandSerialPort::clearBuffersNow()
 {
 	QMutex mutex;
 	mutex.lock();
-	mCommandsToSend.clear();
-	mCommandsSent.clear();
-	mResponses.clear();
-	mCommandTimer.stop();
+	m_CommandsToSend.clear();
+	m_CommandsSent.clear();
+	m_Responses.clear();
+	m_CommandTimer.stop();
 	mutex.unlock();
 }
 
 void QCommandSerialPort::handleDisconnectRequest() 
 {
 	clearBuffersNow();
-	QAsyncSerialPort::closeSerialPort();
+	QAsyncSerialPort::closePort();
 
 	m_GotDisconnected = true;
 }
@@ -386,7 +388,7 @@ void QCommandSerialPort::handleDisconnectRequest()
 void QCommandSerialPort::handleChangeSerialSettingsRequest(SerialSettings * portSettings)
 {
 	handleDisconnectRequest();
-	QAsyncSerialPort::openSerialPort(portSettings->mPortName, portSettings->mBaudRate, portSettings->mDataBits, portSettings->mParity, portSettings->mStopBits, portSettings->mFlowControl);
+	QAsyncSerialPort::openPort(portSettings->m_Port, portSettings->m_BaudRate, portSettings->m_DataBits, portSettings->m_Parity, portSettings->m_StopBits, portSettings->m_FlowControl);
 
 	m_HasChangedSettings = true;
 }
@@ -397,13 +399,13 @@ void QCommandSerialPort::handleChangeSerialSettingsRequest(SerialSettings * port
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void QCommandSerialPort::setDevelopmentMode(bool devMode) {
-	mDevelopmentMode = devMode;
+	m_DevelopmentMode = devMode;
 	emit developmentModeSwitched(devMode);
 }
 
 void QCommandSerialPort::setDeviceMessages(QStringList messages, QString terminator) { // The terminator will be essential to separate every messages we receive
-	mDeviceMessages = messages;
-	mTerminator = terminator;
+	m_DeviceMessages = messages;
+	m_Terminator = terminator;
 }
 
 
@@ -412,9 +414,9 @@ void QCommandSerialPort::setDeviceMessages(QStringList messages, QString termina
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 QByteArray QCommandSerialPort::takeFirstResponse() {
-	QRegularExpressionMatch match = QRegularExpression(".*" + mTerminator).match(mResponses);
+	QRegularExpressionMatch match = QRegularExpression(".*" + m_Terminator).match(m_Responses);
 	if (match.hasMatch()) {
-		QString firstMatch = match.captured(0).remove(mTerminator);
+		QString firstMatch = match.captured(0).remove(m_Terminator);
 		return firstMatch.toLatin1();
 	}
 	return QByteArray();
@@ -423,18 +425,18 @@ QByteArray QCommandSerialPort::takeFirstResponse() {
 void QCommandSerialPort::removeFirstResponse(QByteArray data) {
 	QMutex mutex;
 	mutex.lock();
-	mResponses.remove(mResponses.indexOf(data), data.length());
+	m_Responses.remove(m_Responses.indexOf(data), data.length());
 	mutex.unlock();
 }
 
 bool QCommandSerialPort::alreadySent(SerialCommand command) const 
 {
-	for (SerialCommand c : mCommandsToSend) {
+	for (SerialCommand c : m_CommandsToSend) {
 		if (c == command) {
 			return true;
 		}
 	}
-	for (SerialCommand c : mCommandsSent) {
+	for (SerialCommand c : m_CommandsSent) {
 		if (c == command) {
 			return true;
 		}

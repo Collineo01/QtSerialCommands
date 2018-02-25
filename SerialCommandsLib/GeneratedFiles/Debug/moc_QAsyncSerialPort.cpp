@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QAsyncSerialPort_t {
     QByteArrayData data[30];
-    char stringdata0[384];
+    char stringdata0[368];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,37 +41,37 @@ QT_MOC_LITERAL(6, 60, 16), // "connectionFailed"
 QT_MOC_LITERAL(7, 77, 11), // "messageSent"
 QT_MOC_LITERAL(8, 89, 7), // "updated"
 QT_MOC_LITERAL(9, 97, 7), // "message"
-QT_MOC_LITERAL(10, 105, 14), // "openSerialPort"
-QT_MOC_LITERAL(11, 120, 8), // "portName"
-QT_MOC_LITERAL(12, 129, 8), // "BaudRate"
-QT_MOC_LITERAL(13, 138, 8), // "baudRate"
-QT_MOC_LITERAL(14, 147, 21), // "QSerialPort::DataBits"
-QT_MOC_LITERAL(15, 169, 8), // "dataBits"
-QT_MOC_LITERAL(16, 178, 19), // "QSerialPort::Parity"
-QT_MOC_LITERAL(17, 198, 6), // "parity"
-QT_MOC_LITERAL(18, 205, 21), // "QSerialPort::StopBits"
-QT_MOC_LITERAL(19, 227, 8), // "stopBits"
-QT_MOC_LITERAL(20, 236, 24), // "QSerialPort::FlowControl"
-QT_MOC_LITERAL(21, 261, 11), // "flowControl"
-QT_MOC_LITERAL(22, 273, 15), // "closeSerialPort"
-QT_MOC_LITERAL(23, 289, 8), // "readData"
-QT_MOC_LITERAL(24, 298, 13), // "handleTimeout"
-QT_MOC_LITERAL(25, 312, 18), // "handleBytesWritten"
-QT_MOC_LITERAL(26, 331, 5), // "bytes"
-QT_MOC_LITERAL(27, 337, 11), // "handleError"
-QT_MOC_LITERAL(28, 349, 28), // "QSerialPort::SerialPortError"
-QT_MOC_LITERAL(29, 378, 5) // "error"
+QT_MOC_LITERAL(10, 105, 8), // "openPort"
+QT_MOC_LITERAL(11, 114, 4), // "port"
+QT_MOC_LITERAL(12, 119, 8), // "BaudRate"
+QT_MOC_LITERAL(13, 128, 8), // "baudRate"
+QT_MOC_LITERAL(14, 137, 21), // "QSerialPort::DataBits"
+QT_MOC_LITERAL(15, 159, 8), // "dataBits"
+QT_MOC_LITERAL(16, 168, 19), // "QSerialPort::Parity"
+QT_MOC_LITERAL(17, 188, 6), // "parity"
+QT_MOC_LITERAL(18, 195, 21), // "QSerialPort::StopBits"
+QT_MOC_LITERAL(19, 217, 8), // "stopBits"
+QT_MOC_LITERAL(20, 226, 24), // "QSerialPort::FlowControl"
+QT_MOC_LITERAL(21, 251, 11), // "flowControl"
+QT_MOC_LITERAL(22, 263, 9), // "closePort"
+QT_MOC_LITERAL(23, 273, 8), // "readData"
+QT_MOC_LITERAL(24, 282, 13), // "handleTimeout"
+QT_MOC_LITERAL(25, 296, 18), // "handleBytesWritten"
+QT_MOC_LITERAL(26, 315, 5), // "bytes"
+QT_MOC_LITERAL(27, 321, 11), // "handleError"
+QT_MOC_LITERAL(28, 333, 28), // "QSerialPort::SerialPortError"
+QT_MOC_LITERAL(29, 362, 5) // "error"
 
     },
     "QAsyncSerialPort\0dataRead\0\0data\0"
     "connectionUpdated\0connected\0"
     "connectionFailed\0messageSent\0updated\0"
-    "message\0openSerialPort\0portName\0"
-    "BaudRate\0baudRate\0QSerialPort::DataBits\0"
-    "dataBits\0QSerialPort::Parity\0parity\0"
+    "message\0openPort\0port\0BaudRate\0baudRate\0"
+    "QSerialPort::DataBits\0dataBits\0"
+    "QSerialPort::Parity\0parity\0"
     "QSerialPort::StopBits\0stopBits\0"
     "QSerialPort::FlowControl\0flowControl\0"
-    "closeSerialPort\0readData\0handleTimeout\0"
+    "closePort\0readData\0handleTimeout\0"
     "handleBytesWritten\0bytes\0handleError\0"
     "QSerialPort::SerialPortError\0error"
 };
@@ -113,7 +113,7 @@ static const uint qt_meta_data_QAsyncSerialPort[] = {
     QMetaType::Void, QMetaType::QString,    9,
 
  // slots: parameters
-    QMetaType::Bool, QMetaType::QString, 0x80000000 | 12, 0x80000000 | 14, 0x80000000 | 16, 0x80000000 | 18, 0x80000000 | 20,   11,   13,   15,   17,   19,   21,
+    QMetaType::Bool, QMetaType::Int, 0x80000000 | 12, 0x80000000 | 14, 0x80000000 | 16, 0x80000000 | 18, 0x80000000 | 20,   11,   13,   15,   17,   19,   21,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -134,9 +134,9 @@ void QAsyncSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 2: _t->connectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: _t->messageSent(); break;
         case 4: _t->updated((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 5: { bool _r = _t->openSerialPort((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< BaudRate(*)>(_a[2])),(*reinterpret_cast< QSerialPort::DataBits(*)>(_a[3])),(*reinterpret_cast< QSerialPort::Parity(*)>(_a[4])),(*reinterpret_cast< QSerialPort::StopBits(*)>(_a[5])),(*reinterpret_cast< QSerialPort::FlowControl(*)>(_a[6])));
+        case 5: { bool _r = _t->openPort((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< BaudRate(*)>(_a[2])),(*reinterpret_cast< QSerialPort::DataBits(*)>(_a[3])),(*reinterpret_cast< QSerialPort::Parity(*)>(_a[4])),(*reinterpret_cast< QSerialPort::StopBits(*)>(_a[5])),(*reinterpret_cast< QSerialPort::FlowControl(*)>(_a[6])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
-        case 6: _t->closeSerialPort(); break;
+        case 6: _t->closePort(); break;
         case 7: _t->readData(); break;
         case 8: _t->handleTimeout(); break;
         case 9: _t->handleBytesWritten((*reinterpret_cast< qint64(*)>(_a[1]))); break;

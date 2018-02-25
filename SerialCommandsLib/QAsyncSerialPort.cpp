@@ -20,12 +20,12 @@
 QAsyncSerialPort::QAsyncSerialPort() :
 	m_Timeout{ 5000 }
 {
-	//openSerialPort();
-	mTimer.setSingleShot(true);
+	//openPort();
+	m_Timer.setSingleShot(true);
 
 	connect(this, static_cast<void (QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error), this, &QAsyncSerialPort::handleError);
 	connect(this, &QSerialPort::readyRead, this, &QAsyncSerialPort::readData);
-	connect(&mTimer, &QTimer::timeout, this, &QAsyncSerialPort::handleTimeout);
+	connect(&m_Timer, &QTimer::timeout, this, &QAsyncSerialPort::handleTimeout);
 }
 
 
@@ -34,8 +34,8 @@ QAsyncSerialPort::QAsyncSerialPort() :
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 bool QAsyncSerialPort::sendMessage(QString message) {
-	mMessageToWrite = message;
-	QByteArray data = mMessageToWrite.toLatin1();
+	m_MessageToSend = message;
+	QByteArray data = m_MessageToSend.toLatin1();
 	return sendMessage(data);
 }
 
@@ -58,8 +58,8 @@ bool QAsyncSerialPort::sendMessage(QByteArray data)
 		}
 		else {
 			emit messageSent();
-			if (!mTimer.isActive()) {
-				mTimer.start(m_Timeout);
+			if (!m_Timer.isActive()) {
+				m_Timer.start(m_Timeout);
 			}
 			success = true;
 		}
@@ -70,12 +70,12 @@ bool QAsyncSerialPort::sendMessage(QByteArray data)
 
 void QAsyncSerialPort::handleBytesWritten(qint64 bytes)
 {
-	mBytesWritten += bytes;
-	if (mBytesWritten == mMessageToWrite.size()) {
-		mBytesWritten = 0;
+	m_NbOfBytesSent += bytes;
+	if (m_NbOfBytesSent == m_MessageToSend.size()) {
+		m_NbOfBytesSent = 0;
 		emit updated(QObject::tr("Data successfully sent to port %1").arg(portName()));
 	}
-	mTimer.stop();
+	m_Timer.stop();
 }
 
 void QAsyncSerialPort::handleTimeout()
@@ -87,22 +87,29 @@ void QAsyncSerialPort::handleError(QSerialPort::SerialPortError serialPortError)
 {
 	if (serialPortError == QSerialPort::WriteError) {
 		emit updated(QObject::tr("An I/O error occurred while writing the data to port %1, error: %2").arg(portName()).arg(errorString()));
-		mTimer.stop();
+		m_Timer.stop();
 	}
 }
 
 void QAsyncSerialPort::readData() {
-	mTimer.stop();
+	m_Timer.stop();
 	QByteArray data = readAll();
 	QString response(data);
 	emit dataRead(data);
 }
 
-bool QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl)
+QString QAsyncSerialPort::portNameFromNumber(int port)
+{
+	return "COM" + QString::number(port);
+}
+
+bool QAsyncSerialPort::openPort(int port, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl)
 {
 	bool success = false;
 
+	QString portName = portNameFromNumber(port);
 	setPortName(portName);
+
 	if (!setBaudRate(static_cast<int>(baudRate))) {
 		emit updated("Failed to set BaudRate");
 		//qDebug() << errorString();
@@ -137,7 +144,7 @@ bool QAsyncSerialPort::openSerialPort(QString portName, BaudRate baudRate, QSeri
 	return success;
 }
 
-void QAsyncSerialPort::closeSerialPort()
+void QAsyncSerialPort::closePort()
 {
 	if (isOpen()) {
 		close();
@@ -159,29 +166,29 @@ QAsyncSerialPort::~QAsyncSerialPort()
 
 
 
-QString const SerialSettings::PORTNAME{ "portName" };
-QString const SerialSettings::BAUDRATE{ "baudRate" };
-QString const SerialSettings::STOPBITS{ "stopBits" };
-QString const SerialSettings::DATABITS{ "dataBits" };
-QString const SerialSettings::PARITY{ "parity" };
-QString const SerialSettings::FLOWCONTROL{ "flowControl" };
+QString const SerialSettings::KEY_PORT { "port" };
+QString const SerialSettings::KEY_BAUDRATE { "baudRate" };
+QString const SerialSettings::KEY_STOPBITS { "stopBits" };
+QString const SerialSettings::KEY_DATABITS { "dataBits" };
+QString const SerialSettings::KEY_PARITY { "parity" };
+QString const SerialSettings::KEY_FLOWCONTROL { "flowControl" };
 
 
 SerialSettings::SerialSettings(QAsyncSerialPort::BaudRate baudRate)
 	:
-	mBaudRate{ baudRate }
+	m_BaudRate{ baudRate }
 {
 	loadGeneric();
 }
 
-SerialSettings::SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate)
+SerialSettings::SerialSettings(int port, QAsyncSerialPort::BaudRate baudRate)
 	:
-	mPortName{ "COM" + QString::number(comPort) },
-	mBaudRate{ baudRate },
-	mStopBits{ QSerialPort::StopBits::OneStop },
-	mDataBits{ QSerialPort::DataBits::Data8 },
-	mParity{ QSerialPort::Parity::NoParity },
-	mFlowControl{ QSerialPort::FlowControl::NoFlowControl }
+	m_Port{ port },
+	m_BaudRate{ baudRate },
+	m_StopBits{ QSerialPort::StopBits::OneStop },
+	m_DataBits{ QSerialPort::DataBits::Data8 },
+	m_Parity{ QSerialPort::Parity::NoParity },
+	m_FlowControl{ QSerialPort::FlowControl::NoFlowControl }
 {
 
 }
@@ -190,53 +197,52 @@ SerialSettings::~SerialSettings() {
 
 }
 
-
 void SerialSettings::save(QString fileName) {
 	QSettings settings(fileName + ".ini", QSettings::Format::IniFormat);
-	settings.setValue(PORTNAME, mPortName);
-	settings.setValue(BAUDRATE, static_cast<int>(mBaudRate));
-	settings.setValue(STOPBITS, mStopBits);
-	settings.setValue(DATABITS, mDataBits);
-	settings.setValue(PARITY, mParity);
-	settings.setValue(FLOWCONTROL, mFlowControl);
+	settings.setValue(KEY_PORT, static_cast<int>(m_Port));
+	settings.setValue(KEY_BAUDRATE, static_cast<int>(m_BaudRate));
+	settings.setValue(KEY_STOPBITS, m_StopBits);
+	settings.setValue(KEY_DATABITS, m_DataBits);
+	settings.setValue(KEY_PARITY, m_Parity);
+	settings.setValue(KEY_FLOWCONTROL, m_FlowControl);
 }
 
 void SerialSettings::load(QString fileName) {
 	QSettings settings(fileName + ".ini", QSettings::Format::IniFormat);
-	mPortName = settings.value(PORTNAME).toString();
-	mBaudRate = static_cast<QAsyncSerialPort::BaudRate>(settings.value(BAUDRATE).toInt());
-	mStopBits = static_cast<QSerialPort::StopBits>(settings.value(STOPBITS).toInt());
-	mDataBits = static_cast<QSerialPort::DataBits>(settings.value(DATABITS).toInt());
-	mParity = static_cast<QSerialPort::Parity>(settings.value(PARITY).toInt());
-	mFlowControl = static_cast<QSerialPort::FlowControl>(settings.value(FLOWCONTROL).toInt());
+	m_Port = settings.value(KEY_PORT).toInt();
+	m_BaudRate = static_cast<QAsyncSerialPort::BaudRate>(settings.value(KEY_BAUDRATE).toInt());
+	m_StopBits = static_cast<QSerialPort::StopBits>(settings.value(KEY_STOPBITS).toInt());
+	m_DataBits = static_cast<QSerialPort::DataBits>(settings.value(KEY_DATABITS).toInt());
+	m_Parity = static_cast<QSerialPort::Parity>(settings.value(KEY_PARITY).toInt());
+	m_FlowControl = static_cast<QSerialPort::FlowControl>(settings.value(KEY_FLOWCONTROL).toInt());
 }
 
 void SerialSettings::loadGeneric()
 {
-	mStopBits = QSerialPort::StopBits::OneStop;
-	mDataBits = QSerialPort::DataBits::Data8;
-	mParity = QSerialPort::Parity::NoParity;
-	mFlowControl = QSerialPort::FlowControl::NoFlowControl;
+	m_StopBits = QSerialPort::StopBits::OneStop;
+	m_DataBits = QSerialPort::DataBits::Data8;
+	m_Parity = QSerialPort::Parity::NoParity;
+	m_FlowControl = QSerialPort::FlowControl::NoFlowControl;
 }
 
 bool SerialSettings::isValid() {
 	// Serial Port
-	if (mPortName.isNull()) {
+	if (m_Port <= 0) {
 		return false;
 	}
-	if (mBaudRate == QAsyncSerialPort::BaudRate::BRUnknown) {
+	if (m_BaudRate == QAsyncSerialPort::BaudRate::BRUnknown) {
 		return false;
 	}
-	if (mStopBits == QSerialPort::StopBits::UnknownStopBits) {
+	if (m_StopBits == QSerialPort::StopBits::UnknownStopBits) {
 		return false;
 	}
-	if (mDataBits == QSerialPort::DataBits::UnknownDataBits) {
+	if (m_DataBits == QSerialPort::DataBits::UnknownDataBits) {
 		return false;
 	}
-	if (mParity == QSerialPort::Parity::UnknownParity) {
+	if (m_Parity == QSerialPort::Parity::UnknownParity) {
 		return false;
 	}
-	if (mFlowControl == QSerialPort::FlowControl::UnknownFlowControl) {
+	if (m_FlowControl == QSerialPort::FlowControl::UnknownFlowControl) {
 		return false;
 	}
 

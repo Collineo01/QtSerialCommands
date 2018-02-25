@@ -18,7 +18,7 @@
 *
 *	\brief Envoie et reçoit des données au port série.
 *
-*	Gère la connexion de l'appareil avec le port série (openSerialPort() et closeSerialPort()).
+*	Gère la connexion de l'appareil avec le port série (openPort() et closePort()).
 *	Envoie des signaux par rapport aux erreurs de communication série.
 */
 
@@ -41,13 +41,21 @@ public:
 	bool sendMessage(QByteArray data);
 
 private:
-	QString mMessageToWrite;
-	QTimer mTimer;
-	qint64 mBytesWritten;
+	QString m_MessageToSend;
+	QTimer m_Timer;
+	qint64 m_NbOfBytesSent;
 
-	public slots:
-	bool openSerialPort(QString portName, BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits, QSerialPort::FlowControl flowControl); // public??
-	virtual void closeSerialPort();
+	QString portNameFromNumber(int port);
+
+public slots:
+	bool openPort(
+		int port, 
+		BaudRate baudRate, 
+		QSerialPort::DataBits dataBits, 
+		QSerialPort::Parity parity, 
+		QSerialPort::StopBits stopBits, 
+		QSerialPort::FlowControl flowControl);
+	virtual void closePort();
 
 	private slots:
 	void readData();
@@ -74,31 +82,30 @@ signals:
 */
 
 
-class SERIALCOMMANDSLIB_EXPORT SerialSettings
+class SerialSettings
 {
 
 public:
 	SerialSettings(QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
-	SerialSettings(int comPort, QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
+	SerialSettings(int port, QAsyncSerialPort::BaudRate baudRate = QAsyncSerialPort::BaudRate::BR9600);
 	~SerialSettings();
 
 
 	// Cles pour fichier INI
-	static QString const PORTNAME;
-	static QString const BAUDRATE;
-	static QString const STOPBITS;
-	static QString const DATABITS;
-	static QString const PARITY;
-	static QString const FLOWCONTROL;
+	static QString const KEY_PORT;
+	static QString const KEY_BAUDRATE;
+	static QString const KEY_STOPBITS;
+	static QString const KEY_DATABITS;
+	static QString const KEY_PARITY;
+	static QString const KEY_FLOWCONTROL;
 
 	// Serial Port
-	QString mPortName;
-	QAsyncSerialPort::BaudRate mBaudRate;
-	QSerialPort::StopBits mStopBits;
-	QSerialPort::DataBits mDataBits;
-	QSerialPort::Parity mParity;
-	QSerialPort::FlowControl mFlowControl;
-
+	int m_Port;
+	QAsyncSerialPort::BaudRate m_BaudRate;
+	QSerialPort::StopBits m_StopBits;
+	QSerialPort::DataBits m_DataBits;
+	QSerialPort::Parity m_Parity;
+	QSerialPort::FlowControl m_FlowControl;
 
 	void save(QString fileName);
 	void load(QString fileName);

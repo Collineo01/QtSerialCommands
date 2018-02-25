@@ -15,13 +15,13 @@ QString const QSerialDevice::DEFAULT_INI{ "defaultPortSettings" };
 QString const QSerialDevice::CURRENT_INI{ "currentPortSettings" };
 QString const QSerialDevice::TEMP_INI{ "tempSettings" };
 
-int const QSerialDevice::DEFAULT_COM_PORT{ 3 };
+int const QSerialDevice::DEFAULT_COM_PORT{ -1 };
 
 
 QSerialDevice::QSerialDevice(QCommandSerialPort * sharedSerial, SerialSettings * settings, QObject *parent)
 	:
 	QObject(parent),
-	mPortSettings{ settings }, // TODO : remplacer par une instance au lieu d'un pointeur (doit créer le copy constructor)
+	m_PortSettings{ settings }, // TODO : remplacer par une instance au lieu d'un pointeur (doit créer le copy constructor)
 	m_Serial{ sharedSerial },
 	m_Port{ -1 }
 {
@@ -31,12 +31,47 @@ QSerialDevice::QSerialDevice(QCommandSerialPort * sharedSerial, SerialSettings *
 	}
 	if (settings == nullptr)
 	{
-		mPortSettings = new SerialSettings(DEFAULT_COM_PORT);
+		m_PortSettings = new SerialSettings(DEFAULT_COM_PORT);
 	}
 
-	connect(m_Serial, &QCommandSerialPort::responseMatchesCommand, this, &QSerialDevice::handleMatchingResponse);
+	connect(m_Serial, &QCommandSerialPort::responseMatchingCommandReceived, this, &QSerialDevice::handleMatchingResponse);
+	connect(m_Serial, &QCommandSerialPort::responseMatchingCommandReceived, this, &QSerialDevice::responseMatchingCommandReceived);
 	connect(m_Serial, &QCommandSerialPort::messageReceived, this, &QSerialDevice::handleMessageReceived);
+	connect(m_Serial, &QCommandSerialPort::messageReceived, this, &QSerialDevice::messageReceived);
 	connect(m_Serial, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::handleConnectionUpdated);
+	connect(m_Serial, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::connectionUpdated);
+	connect(m_Serial, &QCommandSerialPort::commandTimedOut, this, &QSerialDevice::commandTimedOut);
+	connect(m_Serial, &QCommandSerialPort::commandTimedOut, this, &QSerialDevice::handleCommandTimedOut);
+
+	// Initialiser les paramètres de connexion série
+	//initPortSettings();
+}
+
+QSerialDevice::QSerialDevice(QMap<QString, SerialCommand const *> serialCommands, QMap<QString, QString> deviceMessages, 
+							QCommandSerialPort * sharedSerial, SerialSettings * settings, QObject *parent)
+	:
+	QSerialDevice(sharedSerial, settings, parent)
+
+{
+	m_SerialCommands = serialCommands;
+	m_DeviceMessages = deviceMessages;
+
+	if (sharedSerial == nullptr)
+	{
+		m_Serial = new QCommandSerialPort;
+	}
+	if (settings == nullptr)
+	{
+		m_PortSettings = new SerialSettings(DEFAULT_COM_PORT);
+	}
+
+	connect(m_Serial, &QCommandSerialPort::responseMatchingCommandReceived, this, &QSerialDevice::handleMatchingResponse);
+	connect(m_Serial, &QCommandSerialPort::responseMatchingCommandReceived, this, &QSerialDevice::responseMatchingCommandReceived);
+	connect(m_Serial, &QCommandSerialPort::messageReceived, this, &QSerialDevice::handleMessageReceived);
+	connect(m_Serial, &QCommandSerialPort::messageReceived, this, &QSerialDevice::messageReceived);
+	connect(m_Serial, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::handleConnectionUpdated);
+	connect(m_Serial, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::connectionUpdated);
+	connect(m_Serial, &QCommandSerialPort::commandTimedOut, this, &QSerialDevice::handleCommandTimedOut);
 
 	// Initialiser les paramètres de connexion série
 	//initPortSettings();
@@ -54,8 +89,6 @@ QSerialDevice::~QSerialDevice()
 
 void QSerialDevice::handleConnectionUpdated(bool connected, bool connectionFailed)
 {
-	mIsConnected = connected;
-
 	if (connected)
 	{
 		initDevice();
@@ -76,21 +109,27 @@ void QSerialDevice::handleConnectionUpdated(bool connected, bool connectionFaile
 // Methods
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void QSerialDevice::sendCommand(SerialCommand command, QList<QVariant> params)
+void QSerialDevice::setTimeout(int timeout)
+{
+	m_Serial->m_Timeout = timeout;
+}
+
+void QSerialDevice::sendCommand(SerialCommand command, QList<QVariant> args)
 {
 	bool connected = true;
 
-	if (m_Port != -1 && !portIsOpened()) {
-		changeComPort(m_Port);
-		connected = connectComPort();
+	if (!isConnected()) 
+	{
+		changePort(m_Port);
+		connected = connectPort();
 	}
 
 	if (connected)
 	{
 		m_Serial->setDevelopmentMode(false);
-		/*QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, params);
+		/*QPair<SerialCommand const &, QList<QVariant>> commandAndParams(command, args);
 		m_Serial->writeToBuffer(commandAndParams);*/
-		command.setParameters(params);
+		command.setArguments(args);
 		emit m_Serial->sendCommandRequest(command);
 	}
 	else
@@ -101,7 +140,7 @@ void QSerialDevice::sendCommand(SerialCommand command, QList<QVariant> params)
 
 void QSerialDevice::sendCommand(QString commandKey, QList<QVariant> params)
 {
-	SerialCommand command = *mSerialCommands[commandKey];
+	SerialCommand command = *m_SerialCommands[commandKey];
 	sendCommand(command, params);
 }
 
@@ -109,23 +148,22 @@ QByteArray QSerialDevice::sendBlockingCommand(QString commandKey, QList<QVariant
 {
 	bool connected = true;
 
-	if (m_Port != -1 && !portIsOpened()) {
-		changeComPort(m_Port);
-		connected = connectComPort();
+	if (!isConnected())
+	{
+		changePort(m_Port);
+		connected = connectPort();
 	}
 
 	if (connected)
 	{
-		SerialCommand cmd = *mSerialCommands[commandKey];
+		SerialCommand cmd = *m_SerialCommands[commandKey];
 		QByteArray response = m_Serial->sendBlockingCommand(cmd, params);
 		//qDebug() << "BlockingResponse : " << response;
 		return response;
 	}
-	else
-	{
-		qDebug() << "Connection failed on " + m_Serial->portName();
-		return QByteArray();
-	}
+
+	qDebug() << "Connection failed on " + m_Serial->portName();
+	return QByteArray();
 }
 
 void QSerialDevice::init(QString terminator)
@@ -137,29 +175,56 @@ void QSerialDevice::init(QString terminator)
 	fillDeviceMessages();
 
 	// Messages que peut envoyer l'appareil (clés du dictionnaire de messages)
-	m_Serial->setDeviceMessages(mDeviceMessages.keys(), terminator);
+	m_Serial->setDeviceMessages(m_DeviceMessages.keys(), terminator);
 }
 
-void QSerialDevice::changeComPort(int comPort)
+void QSerialDevice::changePort(int port)
 {
-	mPortSettings->mPortName = "COM" + QString::number(comPort);
-	m_Serial->changeSerialSettings(mPortSettings);
+	if (port <= 0) 
+	{
+		throw std::invalid_argument("Serial port number invalid : must be greater than 0.");
+	}
+
+	m_PortSettings->m_Port = port;
+	m_Serial->changeSerialSettings(m_PortSettings);
 }
 
-bool QSerialDevice::connectComPort()
+void QSerialDevice::clearCommandAndResponseBuffers()
 {
-	if (!portIsOpened()) {
-		return m_Serial->openSerialPort(mPortSettings->mPortName, mPortSettings->mBaudRate, mPortSettings->mDataBits, mPortSettings->mParity, mPortSettings->mStopBits, mPortSettings->mFlowControl);
+	m_Serial->clearBuffers();
+}
+
+bool QSerialDevice::connectPort()
+{
+	if (!isConnected()) 
+	{
+		return m_Serial->openPort
+		(
+			m_PortSettings->m_Port, 
+			m_PortSettings->m_BaudRate, 
+			m_PortSettings->m_DataBits, 
+			m_PortSettings->m_Parity, 
+			m_PortSettings->m_StopBits, 
+			m_PortSettings->m_FlowControl
+		);
 	}
 	return true;
 }
 
-void QSerialDevice::closeComPort()
+bool QSerialDevice::connectPort(int port)
 {
-	m_Serial->closeSerialPort();
+	changePort(port);
+	bool connected = connectPort();
+
+	return connected;
 }
 
-bool QSerialDevice::portIsOpened()
+void QSerialDevice::closePort()
+{
+	m_Serial->closePort();
+}
+
+bool QSerialDevice::isConnected()
 {
 	return m_Serial->isOpen();
 }
@@ -171,29 +236,29 @@ void QSerialDevice::initPortSettings()
 	// Fichier avec parametres modifies existant (ATTENTION : Si le fichier existe déjà, il utilisera le QSerialSettings contenu avant celui passé dans le constructeur)
 	if (fileExists(CURRENT_INI))
 	{
-		mPortSettings->load(CURRENT_INI);
+		m_PortSettings->load(CURRENT_INI);
 	}
 	// Si un QSerialSetings est passé au constructeur
-	else if (mPortSettings != nullptr)
+	else if (m_PortSettings != nullptr)
 	{
-		mPortSettings->save(CURRENT_INI);
+		m_PortSettings->save(CURRENT_INI);
 	}
 	else
 	{
 		// Default Settings
-		mPortSettings = new SerialSettings(DEFAULT_COM_PORT);
+		m_PortSettings = new SerialSettings(DEFAULT_COM_PORT);
 
 		// Sauvegarde du default si non existant
 		if (!fileExists(DEFAULT_INI))
 		{
-			mPortSettings->save(DEFAULT_INI);
+			m_PortSettings->save(DEFAULT_INI);
 		}
 	}
 }
 
-void QSerialDevice::handleCommandTimeout(SerialCommand command, QList<QVariant> params, int port)
+void QSerialDevice::handleCommandTimedOut(QString command, QList<QVariant> args, int port)
 {
-	emit commandTimeout(port);
+	emit portTimedOut(port);
 }
 
 
