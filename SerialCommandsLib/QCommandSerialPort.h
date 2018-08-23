@@ -39,6 +39,7 @@
 #include <QPair>
 #include "QAsyncSerialPort.h"
 #include "SerialCommand.h"
+#include "SerialSettings.h"
 
 #include "serialcommandslib_global.h"
 

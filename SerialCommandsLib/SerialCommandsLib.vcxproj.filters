@@ -66,12 +66,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QSerialDevice.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="SerialOperationMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="serialcommandslib_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SerialCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialOperationMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

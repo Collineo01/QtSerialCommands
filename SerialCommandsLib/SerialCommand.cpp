@@ -10,22 +10,6 @@
 #include <QDebug>
 
 
-SerialOperationMode::SerialOperationMode(BlockingMode blockingMode, FluxMode fluxMode)
-	: mBlockingMode{ blockingMode }, mFluxMode{ fluxMode }
-{
-}
-
-
-SerialOperationMode::SerialOperationMode()
-{
-}
-
-
-SerialOperationMode::~SerialOperationMode()
-{
-}
-
-
 SerialCommand::SerialCommand(QString command, QString name, IOType ioType, int nbOfArgs, bool argsAreRaw, SerialOperationMode::BlockingMode blockingMode, SerialOperationMode::FluxMode fluxMode, QString terminator, QString separator, QString family, QString shortDesc,
 	QRegularExpression responseRegex, QString desc, QString tooltip)
 	: m_IsString{ true },

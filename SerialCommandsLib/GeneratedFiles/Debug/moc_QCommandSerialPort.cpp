@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'QCommandSerialPort.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.6)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -13,7 +13,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'QCommandSerialPort.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.9.1. It"
+#error "This file was generated using the moc from 5.9.6. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -218,108 +218,107 @@ void QCommandSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
             typedef void (QCommandSerialPort::*_t)(QByteArray const & , SerialCommand const & );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::responseMatchingCommandReceived)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::responseMatchingCommandReceived)) {
                 *result = 0;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)(QString const & );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::messageReceived)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::messageReceived)) {
                 *result = 1;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)(bool );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::developmentModeSwitched)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::developmentModeSwitched)) {
                 *result = 2;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::sendBufferTooLarge)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::sendBufferTooLarge)) {
                 *result = 3;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::responsesBufferTooLarge)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::responsesBufferTooLarge)) {
                 *result = 4;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::disconnectRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::disconnectRequest)) {
                 *result = 5;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::disconnectDone)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::disconnectDone)) {
                 *result = 6;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::blockingResponseReceived)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::blockingResponseReceived)) {
                 *result = 7;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)(SerialSettings * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::changeSerialSettingsRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::changeSerialSettingsRequest)) {
                 *result = 8;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::changeSerialSettingsDone)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::changeSerialSettingsDone)) {
                 *result = 9;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)(QString , QList<QVariant> , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::commandTimedOut)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::commandTimedOut)) {
                 *result = 10;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::clearBuffersRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::clearBuffersRequest)) {
                 *result = 11;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::removeLastCommandSentRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::removeLastCommandSentRequest)) {
                 *result = 12;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::removeFirstCommandToSendRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::removeFirstCommandToSendRequest)) {
                 *result = 13;
                 return;
             }
         }
         {
             typedef void (QCommandSerialPort::*_t)(SerialCommand );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QCommandSerialPort::sendCommandRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QCommandSerialPort::sendCommandRequest)) {
                 *result = 14;
                 return;
             }
@@ -342,7 +341,7 @@ void *QCommandSerialPort::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_QCommandSerialPort.stringdata0))
-        return static_cast<void*>(const_cast< QCommandSerialPort*>(this));
+        return static_cast<void*>(this);
     return QAsyncSerialPort::qt_metacast(_clname);
 }
 

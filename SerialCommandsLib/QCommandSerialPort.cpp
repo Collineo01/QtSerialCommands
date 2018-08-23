@@ -5,6 +5,8 @@
 */
 
 #include "QCommandSerialPort.h"
+#include "SerialSettings.h"
+
 #include <QVariant>
 #include <QTime>
 #include <QCoreApplication>

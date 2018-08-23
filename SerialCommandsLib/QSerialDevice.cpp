@@ -5,6 +5,8 @@
 */
 
 #include "QSerialDevice.h"
+#include "SerialSettings.h"
+
 #include <QDebug>
 #include <QFileInfo>
 #include <QDir>
