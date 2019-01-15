@@ -4,11 +4,11 @@
 * Written by Nicola Demers <nicola.demers93@gmail.com>, July 2017
 */
 
-/*!	\class QSerialCommand
+/*!	\class SerialCommand
 *
 *	\brief Représente une commande série.
 *
-*	Fonctionne de concert avec la classe QCommandSerialPort.
+*	Fonctionne de concert avec la classe QSmartSerialPort.
 *	Voir sa documentation pour des détails sur la gestion des commandes selon leur mode d'opération (m_OperationMode).
 *
 *	Construit la chaine de caractères à envoyer à l'aide de la méthode commandToSend().
@@ -28,132 +28,143 @@
 
 
 
-#ifndef QSERIALCOMMAND_H
-#define QSERIALCOMMAND_H
+#pragma once
 
 
 
+#include "SerialCommandArg.h"
 #include "SerialOperationMode.h"
 
 #include <QString>
+#include <QPair>
 #include <QByteArray>
 #include <QRegularExpression>
 #include <QList>
 #include <QVariant>
 
+#include "ArgType.h"
+
 
 class SerialCommand
 {
 public:
-	enum class IOType { Undefined = 0, In = 1, Out = 2, Io = 3 };
+	enum class IOType { Undefined = 0, In = 1, Out = 2, InAndOut = 3 };
 
 	SerialCommand() {}
+
 	SerialCommand(
-		QString command,  												// cmd
+		QString command,  												// What is actually sent to the device
 		QString name, 													// name
-		IOType ioType, 													// IOType
-		int nbOfArgs, 													// # args
-		bool argsAreRaw,
+		QRegularExpression responseRegex,								// The response format we epxect
+		QList<QByteArray> expectedResponses,							// The exact responses we can expect from the device
+		int nbBytesExpected,											// The exact number of bytes we expect from the device response
 		SerialOperationMode::BlockingMode blockingMode, 				// BlockingMode
-		SerialOperationMode::FluxMode fluxMode, 						// FluxMode	
-		QString terminator, 											// Terminator
-		QString separator, 												// separator
+		SerialOperationMode::FluxMode fluxMode, 						// FluxMode
+		QString terminator = "", 										// Terminator
+		int nbOfArgs = 0, 												// The number of arguments to send
+		QString argsSeparator = "", 									// separator
+		IOType ioType = IOType::Undefined, 								// IOType
 		QString family = "", 											// family
-		QString shortDesc = "",											// short desc
-		QRegularExpression responseRegex = QRegularExpression(),		// response
-		QString desc = "",												// description
-		QString tooltip = "");											// tooltip
+		QString shortDescription = "",									// short desc
+		QString description = "",										// description
+		QString tooltip = ""											// tooltip
+	);
 
 	SerialCommand(
-		QByteArray command,
+		QString command,
 		QString name,
-		IOType ioType,
-		int nbOfArgs,
-		bool argsAreRaw,
+		QRegularExpression responseRegex,
 		SerialOperationMode::BlockingMode blockingMode,
 		SerialOperationMode::FluxMode fluxMode,
-		QString terminator,
-		QString separator,
+		QString terminator = "",
+		int nbOfArgs = 0,
+		QString argsSeparator = "",
+		IOType ioType = IOType::Undefined,
 		QString family = "",
-		QString shortDesc = "",
-		QList<QByteArray> expectedResponses = QList<QByteArray>(),
-		QString desc = "",
-		QString tooltip = "");
+		QString shortDescription = "",
+		QString description = "",
+		QString tooltip = ""
+	);
 
 	SerialCommand(
-		QByteArray command,
+		QString command,
 		QString name,
-		IOType ioType,
-		int nbOfArgs,
-		bool argsAreRaw,
+		QList<QByteArray> expectedResponses,
 		SerialOperationMode::BlockingMode blockingMode,
 		SerialOperationMode::FluxMode fluxMode,
-		QString terminator,
-		QString separator,
+		QString terminator = "",
+		int nbOfArgs = 0,
+		QString argsSeparator = "",
+		IOType ioType = IOType::Undefined,
 		QString family = "",
-		QString shortDesc = "",
-		int nbBytesExpected = 0,
-		QString desc = "",
-		QString tooltip = "");
+		QString shortDescription = "",
+		QString description = "",
+		QString tooltip = ""
+	);
+
+	SerialCommand(
+		QString command,
+		QString name,
+		int nbBytesExpected,
+		SerialOperationMode::BlockingMode blockingMode,
+		SerialOperationMode::FluxMode fluxMode,
+		QString terminator = "",
+		int nbOfArgs = 0,
+		QString argsSeparator = "",
+		IOType ioType = IOType::Undefined,
+		QString family = "",
+		QString shortDescription = "",
+		QString description = "",
+		QString tooltip = ""
+	);
 
 	~SerialCommand();
 
-	inline bool operator==(SerialCommand const & command) const {
-		return m_Name == command.m_Name && m_Args == command.m_Args;
-	}
-	inline bool operator!=(SerialCommand const & command) const {
-		return m_Name != command.m_Name && m_Args != command.m_Args;
-	}
+	inline bool operator==(SerialCommand const & command) const;
+	inline bool operator!=(SerialCommand const & command) const;
 
 	QString command() const { return m_Command; }
 	int numberOfArgs() const { return m_NumberOfArgs; };
-	QRegularExpression responseRegex() const;
+	QRegularExpression responseRegex() const { return m_ResponseRegex; }
 
 	QString family() const { return m_Family; }
 	IOType ioType() const { return m_IOType; }
 	QString name() const { return m_Name; }
 	QString terminator() const { return m_Terminator; }
-	QString shortDesc() const { return m_ShortDesc; }
-	QString desc() const { return m_Desc; }
+	QString shortDesc() const { return m_ShortDescription; }
+	QString desc() const { return m_Description; }
 	QString toolTip() const { return m_ToolTip; }
 	SerialOperationMode operationMode() const { return m_OperationMode; }
-	QList<SerialCommand const *> pushModeStopCommands() const { return m_PushModeStopCommands; }
-	QList <QByteArray> expectedResponses() const { return m_ExpectedResponses; }
-	int nbBytesExpected() const { return m_NbBytesExpected; }
-	QList<QVariant> args() const { return m_Args; }
+	QList<const SerialCommand *> pushModeStopCommands() const { return m_PushModeStopCommands; }
+	QList<QByteArray> expectedResponses() const { return m_ExpectedResponses; }
+	int nbBytesExpected() const { return m_NbExpectedBytes; }
+	QList<SerialCommandArg> args() const { return m_Args; }
 
 	QByteArray commandToSend() const;
-	void addPushModeStopCommand(SerialCommand const * command);
-	bool stopsPushMode(SerialCommand const &command) const;
+	void addPushModeStopCommand(const SerialCommand * command);
+	bool stopsPushMode(const SerialCommand & command) const;
 
-	QByteArray getFirstMatch(QByteArray const &buffer);
-
-	void setArguments(QList<QVariant> args) { m_Args = args; }
+	void setArguments(QList<SerialCommandArg> args) { m_Args = args; }
 
 
 private:
-	bool m_IsString;
 	QByteArray m_Command;
 	int m_NumberOfArgs;
-	bool m_ArgsAreRaw;
 	QRegularExpression m_ResponseRegex;
-	QString m_Separator;
+	QString m_ArgsSeparator;
 	QString m_Terminator;
 
 	QString m_Family;
 	IOType m_IOType;
 	QString m_Name;
-	QString m_ShortDesc;
-	QString m_Desc;
+	QString m_ShortDescription;
+	QString m_Description;
 	QString m_ToolTip;
 	SerialOperationMode m_OperationMode;
-	QList <QByteArray> m_ExpectedResponses;
-	int m_NbBytesExpected;
+	QList<QByteArray> m_ExpectedResponses;
+	int m_NbExpectedBytes;
 
-	QList<SerialCommand const *> m_PushModeStopCommands;
+	QList<const SerialCommand *> m_PushModeStopCommands;
 
-	QList<QVariant> m_Args;
-
+	QList<SerialCommandArg> m_Args;
 };
-
-#endif // QSERIALCOMMAND_H

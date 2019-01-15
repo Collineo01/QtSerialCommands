@@ -1,7 +1,0 @@
-﻿  Moc'ing QCommandSerialPort.h...
-  moc_QCommandSerialPort.cpp
-  moc_QSerialDevice.cpp
-  QCommandSerialPort.cpp
-  QSerialDevice.cpp
-  Generating Code...
-  SerialCommandsLib.vcxproj -> D:\Collineo\SerialCommandsLib\x64\Debug\SerialCommandsLib.lib

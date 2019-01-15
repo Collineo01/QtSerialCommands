@@ -24,7 +24,7 @@ public:
 		NonBlockingXCommandsXResponses = 2,
 
 		// Will not send more of the same command before receiving the response (prevents spamming).
-		NonBlockingWaitResponse = 3
+		NonBlockingXCommandsOneResponse = 3
 	};
 
 	enum class FluxMode { Pull = 0, Push = 1 };
@@ -33,12 +33,12 @@ public:
 	SerialOperationMode();
 	~SerialOperationMode();
 
-	FluxMode fluxMode() { return mFluxMode; }
-	BlockingMode blockingMode() { return mBlockingMode; }
+	FluxMode fluxMode() const { return m_fluxMode; }
+	BlockingMode blockingMode() const { return m_blockingMode; }
 
 
 private:
-	BlockingMode mBlockingMode;
-	FluxMode mFluxMode;
+	BlockingMode m_blockingMode;
+	FluxMode m_fluxMode;
 };
 

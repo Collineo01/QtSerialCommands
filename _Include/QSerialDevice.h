@@ -10,10 +10,11 @@
 #include <QObject>
 #include <QString>
 #include <QList>
-#include "QCommandSerialPort.h"
+
+#include "QSmartSerialPort.h"
 #include "SerialCommand.h"
-
-
+#include "SerialCommandFactory.h"
+#include "SerialMessageFactory.h"
 
 
 class QSerialDevice : public QObject
@@ -21,15 +22,25 @@ class QSerialDevice : public QObject
 	Q_OBJECT
 
 public:
-	QSerialDevice(QCommandSerialPort * sharedSerial = nullptr, SerialSettings * settings = nullptr, QObject *parent = nullptr);
-	QSerialDevice(QMap<QString, SerialCommand const *> serialCommands, QMap<QString, QString> deviceMessages, 
-					QCommandSerialPort * sharedSerial = nullptr, SerialSettings * settings = nullptr, QObject *parent = nullptr);
+	QSerialDevice(
+		const SerialCommandFactory & commandFactory,
+		const SerialMessageFactory & messageFactory,
+		SerialPortSettings * settings = nullptr,
+		QSmartSerialPort * sharedSerial = nullptr,
+		QObject *parent = nullptr
+	);
+	QSerialDevice(
+		const SerialCommandFactory & commandFactory,
+		SerialPortSettings * settings = nullptr,
+		QSmartSerialPort * sharedSerial = nullptr,
+		QObject *parent = nullptr
+	);
 	~QSerialDevice();
 
 	static QString const DEFAULT_INI;
 	static QString const CURRENT_INI;
 	static QString const TEMP_INI;
-	static int const DEFAULT_COM_PORT;
+	static int const DEFAULT_PORT;
 
 	virtual void init(QString terminator);
 	bool connectPort();
@@ -40,32 +51,24 @@ public:
 
 	void changePort(int port);
 
-	void clearCommandAndResponseBuffers();
-
-	int port() { return m_Port; }
+	int getPort() { return m_portSettings->getPort(); }
 
 	void setTimeout(int timeout);
 
 protected:
-	SerialSettings * m_PortSettings;
-	QCommandSerialPort * m_Serial;
-	QMap<QString, SerialCommand const *> m_SerialCommands;
-	QMap<QString, QString> m_DeviceMessages;
+	SerialPortSettings * m_portSettings;
+	QSmartSerialPort * m_serialPort;
+	QMap<QString, const SerialCommand *> m_serialCommands;
+	SerialMessages m_deviceMessages;
 
-	virtual void sendCommand(QString commandKey, QList<QVariant> args = QList<QVariant>());
-	virtual void sendCommand(SerialCommand command, QList<QVariant> args = QList<QVariant>());
-	virtual QByteArray sendBlockingCommand(QString commandKey, QList<QVariant> args = QList<QVariant>());
+	void sendCommand(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
+	QByteArray sendBlockingCommand(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 
-	virtual void fillDictionary() = 0;
-	virtual void fillDeviceMessages() = 0;
 	virtual void initDevice() = 0;
 
 private:
-	int m_Port;
-
 	void initPortSettings();
 	bool fileExists(QString fileName);
-
 
 protected slots:
 	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
@@ -73,12 +76,12 @@ protected slots:
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
 
 private slots:
-	void handleCommandTimedOut(QString command, QList<QVariant> args, int port);
+	void handleCommandTimedOut(QString commandKey, QList<SerialCommandArg> args, int port);
 
 signals:
 	void responseMatchingCommandReceived(QByteArray const &response, SerialCommand const &command);
 	void messageReceived(QString const &message);
 	void connectionUpdated(bool connected, bool connectionFailed = false);
-	void commandTimedOut(QString command, QList<QVariant> args, int port);
+	void commandTimedOut(QString command, QList<SerialCommandArg> args, int port);
 	void portTimedOut(int port);
 };
