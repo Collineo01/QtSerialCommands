@@ -1,6 +1,6 @@
 #pragma once
 
-#include "serialcommandslib_global.h"
+#include "qtserialcommands_global.h"
 
 
 /*! \class SerialOperationMode
@@ -9,12 +9,12 @@
 *
 */
 
-class SERIALCOMMANDSLIB_EXPORT SerialOperationMode
+class QTSERIALCOMMANDS_EXPORT SerialOperationMode
 {
 public:
 	enum class BlockingMode
 	{
-		// Wait for the response before sending any other command.
+		// Wait for the response before sending any other getCommand.
 		Blocking = 0,
 
 		// Not expecting any response.
@@ -23,8 +23,8 @@ public:
 		// Expecting as many responses as the number of commands sent.
 		NonBlockingXCommandsXResponses = 2,
 
-		// Will not send more of the same command before receiving the response (prevents spamming).
-		NonBlockingWaitResponse = 3
+		// Will not send more of the same getCommand before receiving the response (prevents spamming).
+		NonBlockingXCommandsOneResponse = 3
 	};
 
 	enum class FluxMode { Pull = 0, Push = 1 };
@@ -33,12 +33,12 @@ public:
 	SerialOperationMode();
 	~SerialOperationMode();
 
-	FluxMode fluxMode() { return mFluxMode; }
-	BlockingMode blockingMode() { return mBlockingMode; }
+	FluxMode fluxMode() const { return m_fluxMode; }
+	BlockingMode blockingMode() const { return m_blockingMode; }
 
 
 private:
-	BlockingMode mBlockingMode;
-	FluxMode mFluxMode;
+	BlockingMode m_blockingMode;
+	FluxMode m_fluxMode;
 };
 

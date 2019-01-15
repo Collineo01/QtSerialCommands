@@ -11,18 +11,20 @@
 #include <QTimer>
 #include <QSerialPort>
 
-#include "serialcommandslib_global.h"
+#include "qtserialcommands_global.h"
 
 
 /*! \class QAsyncSerialPort
 *
-*	\brief Envoie et reçoit des données au port série.
+*	\brief Envoie et reçoit des données au getPort série.
 *
-*	Gère la connexion de l'appareil avec le port série (openPort() et closePort()).
+*	Gère la connexion de l'appareil avec le getPort série (openPort() et closePort()).
 *	Envoie des signaux par rapport aux erreurs de communication série.
 */
 
-class SERIALCOMMANDSLIB_EXPORT QAsyncSerialPort : public QSerialPort
+class SerialPortSettings;
+
+class QTSERIALCOMMANDS_EXPORT QAsyncSerialPort : public QSerialPort
 {
 	Q_OBJECT
 
@@ -35,29 +37,16 @@ public:
 		BR115200 = 115200, BR128000 = 128000, BR230400 = 230400, BR256000 = 256000, BRUnknown = -1
 	};
 
-	int m_Timeout;
+	int m_timeout;
 
 	bool sendMessage(QString message);
 	bool sendMessage(QByteArray data);
 
-private:
-	QString m_MessageToSend;
-	QTimer m_Timer;
-	qint64 m_NbOfBytesSent;
-
-	QString portNameFromNumber(int port);
-
 public slots:
-	bool openPort(
-		int port, 
-		BaudRate baudRate, 
-		QSerialPort::DataBits dataBits, 
-		QSerialPort::Parity parity, 
-		QSerialPort::StopBits stopBits, 
-		QSerialPort::FlowControl flowControl);
+	bool openPort(SerialPortSettings * settings);
 	virtual void closePort();
 
-	private slots:
+private slots:
 	void readData();
 	void handleTimeout();
 	void handleBytesWritten(qint64 bytes);
@@ -70,4 +59,10 @@ signals:
 	void messageSent();
 	void updated(QString message);
 
+private:
+	QString m_messageToSend;
+	QTimer m_timer;
+	qint64 m_NbOfBytesSent;
+
+	QString createPortName(int port);
 };

@@ -10,7 +10,7 @@
 *
 *	\brief Représente une commande série.
 *
-*	Fonctionne de concert avec la classe QSmartSerialPort.
+*	Fonctionne de concert avec la classe QMatchSerialPort.
 *	Voir sa documentation pour des détails sur la gestion des commandes selon leur mode d'opération (m_operationMode).
 *
 *	Construit la chaine de caractères à envoyer à l'aide de la méthode commandToSend().

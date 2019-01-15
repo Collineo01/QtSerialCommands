@@ -2,7 +2,7 @@
 
 
 SerialOperationMode::SerialOperationMode(BlockingMode blockingMode, FluxMode fluxMode)
-	: mBlockingMode{ blockingMode }, mFluxMode{ fluxMode }
+	: m_blockingMode{ blockingMode }, m_fluxMode{ fluxMode }
 {
 }
 
