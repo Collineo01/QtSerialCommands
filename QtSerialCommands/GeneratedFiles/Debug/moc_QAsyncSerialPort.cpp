@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QAsyncSerialPort_t {
-    QByteArrayData data[21];
-    char stringdata0[248];
+    QByteArrayData data[19];
+    char stringdata0[206];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -42,25 +42,22 @@ QT_MOC_LITERAL(7, 77, 11), // "messageSent"
 QT_MOC_LITERAL(8, 89, 7), // "updated"
 QT_MOC_LITERAL(9, 97, 7), // "message"
 QT_MOC_LITERAL(10, 105, 8), // "openPort"
-QT_MOC_LITERAL(11, 114, 19), // "SerialPortSettings*"
-QT_MOC_LITERAL(12, 134, 8), // "settings"
-QT_MOC_LITERAL(13, 143, 9), // "closePort"
-QT_MOC_LITERAL(14, 153, 8), // "readData"
-QT_MOC_LITERAL(15, 162, 13), // "handleTimeout"
-QT_MOC_LITERAL(16, 176, 18), // "handleBytesWritten"
-QT_MOC_LITERAL(17, 195, 5), // "bytes"
-QT_MOC_LITERAL(18, 201, 11), // "handleError"
-QT_MOC_LITERAL(19, 213, 28), // "QSerialPort::SerialPortError"
-QT_MOC_LITERAL(20, 242, 5) // "error"
+QT_MOC_LITERAL(11, 114, 9), // "closePort"
+QT_MOC_LITERAL(12, 124, 8), // "readData"
+QT_MOC_LITERAL(13, 133, 13), // "handleTimeout"
+QT_MOC_LITERAL(14, 147, 18), // "handleBytesWritten"
+QT_MOC_LITERAL(15, 166, 5), // "bytes"
+QT_MOC_LITERAL(16, 172, 11), // "handleError"
+QT_MOC_LITERAL(17, 184, 15), // "SerialPortError"
+QT_MOC_LITERAL(18, 200, 5) // "error"
 
     },
     "QAsyncSerialPort\0dataRead\0\0data\0"
     "connectionUpdated\0connected\0"
     "connectionFailed\0messageSent\0updated\0"
-    "message\0openPort\0SerialPortSettings*\0"
-    "settings\0closePort\0readData\0handleTimeout\0"
-    "handleBytesWritten\0bytes\0handleError\0"
-    "QSerialPort::SerialPortError\0error"
+    "message\0openPort\0closePort\0readData\0"
+    "handleTimeout\0handleBytesWritten\0bytes\0"
+    "handleError\0SerialPortError\0error"
 };
 #undef QT_MOC_LITERAL
 
@@ -85,12 +82,12 @@ static const uint qt_meta_data_QAsyncSerialPort[] = {
        8,    1,   81,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      10,    1,   84,    2, 0x0a /* Public */,
-      13,    0,   87,    2, 0x0a /* Public */,
-      14,    0,   88,    2, 0x08 /* Private */,
-      15,    0,   89,    2, 0x08 /* Private */,
-      16,    1,   90,    2, 0x08 /* Private */,
-      18,    1,   93,    2, 0x08 /* Private */,
+      10,    0,   84,    2, 0x0a /* Public */,
+      11,    0,   85,    2, 0x0a /* Public */,
+      12,    0,   86,    2, 0x08 /* Private */,
+      13,    0,   87,    2, 0x08 /* Private */,
+      14,    1,   88,    2, 0x08 /* Private */,
+      16,    1,   91,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray,    3,
@@ -100,12 +97,12 @@ static const uint qt_meta_data_QAsyncSerialPort[] = {
     QMetaType::Void, QMetaType::QString,    9,
 
  // slots: parameters
-    QMetaType::Bool, 0x80000000 | 11,   12,
+    QMetaType::Bool,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::LongLong,   17,
-    QMetaType::Void, 0x80000000 | 19,   20,
+    QMetaType::Void, QMetaType::LongLong,   15,
+    QMetaType::Void, 0x80000000 | 17,   18,
 
        0        // eod
 };
@@ -121,13 +118,13 @@ void QAsyncSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 2: _t->connectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: _t->messageSent(); break;
         case 4: _t->updated((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 5: { bool _r = _t->openPort((*reinterpret_cast< SerialPortSettings*(*)>(_a[1])));
+        case 5: { bool _r = _t->openPort();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 6: _t->closePort(); break;
         case 7: _t->readData(); break;
         case 8: _t->handleTimeout(); break;
         case 9: _t->handleBytesWritten((*reinterpret_cast< qint64(*)>(_a[1]))); break;
-        case 10: _t->handleError((*reinterpret_cast< QSerialPort::SerialPortError(*)>(_a[1]))); break;
+        case 10: _t->handleError((*reinterpret_cast< SerialPortError(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

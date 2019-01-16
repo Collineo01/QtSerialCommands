@@ -52,27 +52,32 @@ class QTSERIALCOMMANDS_EXPORT QMatchSerialPort : public QAsyncSerialPort
 	Q_OBJECT
 
 public:
+	QMatchSerialPort(
+		const SerialPortSettings & settings, 
+		const SerialMessageFactory & serialMessagesFactory, 
+		bool isAutoReconnecting = false
+	);
+	QMatchSerialPort(const SerialPortSettings & settings, bool isAutoReconnecting = false);
 	QMatchSerialPort(const SerialMessageFactory & serialMessagesFactory, bool isAutoReconnecting = false);
-	QMatchSerialPort();
+	QMatchSerialPort(bool isAutoReconnecting = false);
 	~QMatchSerialPort();
 
-	void sendCommand(SerialCommand & command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
-	QByteArray sendBlockingCommandSync(SerialCommand & command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
-	void changeSerialPortSettings(SerialPortSettings * portSettings, bool blocking = true);
-	void closePort();
+	void sendCommand(SerialCommand command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
+	QByteArray sendBlockingCommandSync(SerialCommand command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 	bool isBypassingSmartMatching() const { return m_isBypassingSmartMatchingMode; }
 	void setBypassingSmartMatchingMode(bool isBypassing);
+	void closePort() override;
 
 private:
 	QSerialBuffer m_serialBuffer;
 	const SerialMessages & m_serialMessages;
+	bool m_isAutoReconnecting;
 	bool m_gotDisconnected;
 	bool m_hasChangedSettings;
 	QTimer m_commandTimer;
 	bool m_isBypassingSmartMatchingMode;
 	SerialCommand * m_syncBlockingCommandSent;
 	QByteArray m_syncBlockingResponse;
-	bool m_isAutoReconnecting;
 
 private slots:
 	void handleCommandReadyToSend(const SerialCommand & command);
@@ -87,9 +92,7 @@ signals:
 	void matchingResponseReceived(const QByteArray & response, const SerialCommand & command);
 	void messageReceived(const QByteArray & message, const QString & translation);
 	void smartMatchingModeChanged(bool devMode);
-	void changeSerialPortSettingsRequest(SerialPortSettings * portSettings);
 	void commandTimedOut(QString command, QList<SerialCommandArg> args, int port);
-	void changeSerialPortSettingsDone();
 	void removeLastCommandSentRequest();
 	void removeFirstCommandToSendRequest();
 };

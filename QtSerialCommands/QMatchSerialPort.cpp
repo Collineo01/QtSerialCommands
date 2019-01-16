@@ -15,12 +15,18 @@
 #include <QThread>
 #include <QDebug>
 
-QMatchSerialPort::QMatchSerialPort(const SerialMessageFactory & serialMessagesFactory, bool isAutoReconnecting) : // TODO : SerialSettings should belong to QAsyncSerialPort (pass to ctor).
-	QAsyncSerialPort(),
+QMatchSerialPort::QMatchSerialPort(
+	const SerialPortSettings& settings,
+	const SerialMessageFactory& serialMessagesFactory, 
+	bool isAutoReconnecting
+):
+	QAsyncSerialPort(settings),
 	m_serialMessages{ serialMessagesFactory.createSerialMessages() },
+	m_isAutoReconnecting{ isAutoReconnecting },
 	m_gotDisconnected{ false },
 	m_hasChangedSettings{ false },
-	m_isAutoReconnecting{ isAutoReconnecting }
+	m_isBypassingSmartMatchingMode{ false },
+	m_syncBlockingCommandSent{ nullptr }
 {
 	m_commandTimer.setSingleShot(true);
 
@@ -34,8 +40,18 @@ QMatchSerialPort::QMatchSerialPort(const SerialMessageFactory & serialMessagesFa
 	connect(this, &QMatchSerialPort::sendCommandRequested, this, &QMatchSerialPort::handleSendCommandRequest, Qt::QueuedConnection);
 }
 
-QMatchSerialPort::QMatchSerialPort() :
-	QMatchSerialPort(DummySerialMessageFactory())
+QMatchSerialPort::QMatchSerialPort(const SerialPortSettings& settings, bool isAutoReconnecting):
+	QMatchSerialPort(settings, DummySerialMessageFactory(), isAutoReconnecting)
+{
+}
+
+QMatchSerialPort::QMatchSerialPort(const SerialMessageFactory& serialMessagesFactory, bool isAutoReconnecting):
+	QMatchSerialPort(SerialPortSettings(), serialMessagesFactory, isAutoReconnecting)
+{
+}
+
+QMatchSerialPort::QMatchSerialPort(bool isAutoReconnecting):
+	QMatchSerialPort(SerialPortSettings(), DummySerialMessageFactory(), isAutoReconnecting)
 {
 }
 
@@ -44,14 +60,14 @@ QMatchSerialPort::~QMatchSerialPort()
 
 }
 
-void QMatchSerialPort::sendCommand(SerialCommand & command, QList<SerialCommandArg> args)
+void QMatchSerialPort::sendCommand(SerialCommand command, QList<SerialCommandArg> args)
 {
 	// TODO : throw exception if not connected instead of connecting.
 	command.setArgs(args);
 	m_serialBuffer.writeCommand(command);
 }
 
-QByteArray QMatchSerialPort::sendBlockingCommandSync(SerialCommand & command, QList<SerialCommandArg> args)
+QByteArray QMatchSerialPort::sendBlockingCommandSync(SerialCommand command, QList<SerialCommandArg> args)
 {
 	command.setArgs(args);
 
@@ -184,15 +200,6 @@ void QMatchSerialPort::handleFoundMatchingResponse(const QByteArray & response, 
 	else
 	{
 		emit matchingResponseReceived(response, command);
-	}
-}
-
-void QMatchSerialPort::changeSerialPortSettings(SerialPortSettings * portSettings, bool blocking)
-{
-	if (isOpen())
-	{
-		closePort();
-		openPort(portSettings);
 	}
 }
 

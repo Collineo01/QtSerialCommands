@@ -2,7 +2,8 @@
 
 
 
-#include "QAsyncSerialPort.h"
+#include <QSerialPort>
+#include "BaudRate.h"
 
 /*! \class SerialPortSettings
 *
@@ -19,12 +20,13 @@ class SerialPortSettings
 public:
 	SerialPortSettings(
 		int port,
-		QAsyncSerialPort::BaudRate baudRate = DEFAULT_BAUD_RATE,
-		QAsyncSerialPort::StopBits stopBits = DEFAULT_STOP_BITS,
-		QAsyncSerialPort::DataBits dataBits = DEFAULT_DATA_BITS,
-		QAsyncSerialPort::Parity parity = DEFAULT_PARITY,
-		QAsyncSerialPort::FlowControl flowControl = DEFAULT_FLOW_CONTROL
+		BaudRate baudRate = DEFAULT_BAUD_RATE,
+		QSerialPort::StopBits stopBits = DEFAULT_STOP_BITS,
+		QSerialPort::DataBits dataBits = DEFAULT_DATA_BITS,
+		QSerialPort::Parity parity = DEFAULT_PARITY,
+		QSerialPort::FlowControl flowControl = DEFAULT_FLOW_CONTROL
 	);
+	SerialPortSettings();
 	~SerialPortSettings();
 
 	static const QString KEY_PORT;
@@ -34,30 +36,32 @@ public:
 	static const QString KEY_PARITY;
 	static const QString KEY_FLOWCONTROL;
 
-	static const QAsyncSerialPort::BaudRate		DEFAULT_BAUD_RATE;
-	static const QAsyncSerialPort::StopBits		DEFAULT_STOP_BITS;
-	static const QAsyncSerialPort::DataBits		DEFAULT_DATA_BITS;
-	static const QAsyncSerialPort::Parity		DEFAULT_PARITY;
-	static const QAsyncSerialPort::FlowControl	DEFAULT_FLOW_CONTROL;
+	static const int						INVALID_PORT;
+
+	static const BaudRate					DEFAULT_BAUD_RATE;
+	static const QSerialPort::StopBits		DEFAULT_STOP_BITS;
+	static const QSerialPort::DataBits		DEFAULT_DATA_BITS;
+	static const QSerialPort::Parity		DEFAULT_PARITY;
+	static const QSerialPort::FlowControl	DEFAULT_FLOW_CONTROL;
 
 	void save(QString fileName);
 	void load(QString fileName);
 	bool isValid();
 
-	int getPort() const { return m_Port; };
-	QAsyncSerialPort::BaudRate getBaudRate() const { return m_BaudRate; }
-	QAsyncSerialPort::StopBits  getStopBits() const { return m_StopBits; }
-	QAsyncSerialPort::DataBits getDataBits() const { return m_DataBits; }
-	QAsyncSerialPort::Parity getParity() const { return m_Parity; }
-	QAsyncSerialPort::FlowControl getFlowControl() const { return m_FlowControl; }
+	int getPort() const { return m_port; }
+	BaudRate getBaudRate() const { return m_baudRate; }
+	QSerialPort::StopBits  getStopBits() const { return m_stopBits; }
+	QSerialPort::DataBits getDataBits() const { return m_dataBits; }
+	QSerialPort::Parity getParity() const { return m_parity; }
+	QSerialPort::FlowControl getFlowControl() const { return m_flowControl; }
 
-	void setPort(int port) { m_Port = port; }
+	void setPort(int port) { m_port = port; }
 
 private:
-	int m_Port;
-	QAsyncSerialPort::BaudRate m_BaudRate;
-	QAsyncSerialPort::StopBits m_StopBits;
-	QAsyncSerialPort::DataBits m_DataBits;
-	QAsyncSerialPort::Parity m_Parity;
-	QAsyncSerialPort::FlowControl m_FlowControl;
+	int m_port;
+	BaudRate m_baudRate;
+	QSerialPort::StopBits m_stopBits;
+	QSerialPort::DataBits m_dataBits;
+	QSerialPort::Parity m_parity;
+	QSerialPort::FlowControl m_flowControl;
 };

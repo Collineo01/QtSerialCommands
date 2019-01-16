@@ -14,7 +14,6 @@ public:
 
 	void insertMessage(QByteArray message, QString translation = "");
 	void insertMessage(QString message, QString translation = "");
-	QByteArrayList getSortedMatchList(const QByteArray & responsesBuffer) const;
 	QString getTranslation(QByteArray message) const;
 	QString getTranslation(QString message) const;
 	QByteArrayList getMessageList() const;

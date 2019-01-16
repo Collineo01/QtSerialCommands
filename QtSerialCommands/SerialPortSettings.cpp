@@ -9,67 +9,78 @@ const QString SerialPortSettings::KEY_DATABITS{ "dataBits" };
 const QString SerialPortSettings::KEY_PARITY{ "parity" };
 const QString SerialPortSettings::KEY_FLOWCONTROL{ "flowControl" };
 
-const QAsyncSerialPort::BaudRate SerialPortSettings::DEFAULT_BAUD_RATE{ QAsyncSerialPort::BaudRate::BR9600 };
-const QAsyncSerialPort::DataBits SerialPortSettings::DEFAULT_DATA_BITS{ QAsyncSerialPort::DataBits::Data8 };
-const QAsyncSerialPort::StopBits SerialPortSettings::DEFAULT_STOP_BITS{ QAsyncSerialPort::StopBits::OneStop };
-const QAsyncSerialPort::Parity SerialPortSettings::DEFAULT_PARITY{ QAsyncSerialPort::Parity::NoParity };
-const QAsyncSerialPort::FlowControl SerialPortSettings::DEFAULT_FLOW_CONTROL{ QAsyncSerialPort::FlowControl::NoFlowControl };
+const int SerialPortSettings::INVALID_PORT{ -1 };
+
+const BaudRate SerialPortSettings::DEFAULT_BAUD_RATE{ BaudRate::BR9600 };
+const QSerialPort::DataBits SerialPortSettings::DEFAULT_DATA_BITS{ QSerialPort::DataBits::Data8 };
+const QSerialPort::StopBits SerialPortSettings::DEFAULT_STOP_BITS{ QSerialPort::StopBits::OneStop };
+const QSerialPort::Parity SerialPortSettings::DEFAULT_PARITY{ QSerialPort::Parity::NoParity };
+const QSerialPort::FlowControl SerialPortSettings::DEFAULT_FLOW_CONTROL{ QSerialPort::FlowControl::NoFlowControl };
 
 
 SerialPortSettings::SerialPortSettings(
 	int port,
-	QAsyncSerialPort::BaudRate baudRate,
-	QAsyncSerialPort::StopBits stopBits,
-	QAsyncSerialPort::DataBits dataBits,
-	QAsyncSerialPort::Parity parity,
-	QAsyncSerialPort::FlowControl flowControl
+	BaudRate baudRate,
+	QSerialPort::StopBits stopBits,
+	QSerialPort::DataBits dataBits,
+	QSerialPort::Parity parity,
+	QSerialPort::FlowControl flowControl
 ) :
-	m_Port{ port },
-	m_BaudRate{ baudRate },
-	m_StopBits{ stopBits },
-	m_DataBits{ dataBits },
-	m_Parity{ parity },
-	m_FlowControl{ flowControl }
+	m_port{ port },
+	m_baudRate{ baudRate },
+	m_stopBits{ stopBits },
+	m_dataBits{ dataBits },
+	m_parity{ parity },
+	m_flowControl{ flowControl }
+{
+}
+
+SerialPortSettings::SerialPortSettings():
+	SerialPortSettings(-1)
+{
+}
+
+SerialPortSettings::~SerialPortSettings()
 {
 }
 
 void SerialPortSettings::save(QString fileName) {
 	QSettings settings(fileName + ".ini", QSettings::Format::IniFormat);
-	settings.setValue(KEY_PORT, static_cast<int>(m_Port));
-	settings.setValue(KEY_BAUDRATE, static_cast<int>(m_BaudRate));
-	settings.setValue(KEY_STOPBITS, m_StopBits);
-	settings.setValue(KEY_DATABITS, m_DataBits);
-	settings.setValue(KEY_PARITY, m_Parity);
-	settings.setValue(KEY_FLOWCONTROL, m_FlowControl);
+	settings.setValue(KEY_PORT, static_cast<int>(m_port));
+	settings.setValue(KEY_BAUDRATE, static_cast<int>(m_baudRate));
+	settings.setValue(KEY_STOPBITS, m_stopBits);
+	settings.setValue(KEY_DATABITS, m_dataBits);
+	settings.setValue(KEY_PARITY, m_parity);
+	settings.setValue(KEY_FLOWCONTROL, m_flowControl);
 }
 
 void SerialPortSettings::load(QString fileName) {
 	QSettings settings(fileName + ".ini", QSettings::Format::IniFormat);
-	m_Port = settings.value(KEY_PORT).toInt();
-	m_BaudRate = static_cast<QAsyncSerialPort::BaudRate>(settings.value(KEY_BAUDRATE).toInt());
-	m_StopBits = static_cast<QAsyncSerialPort::StopBits>(settings.value(KEY_STOPBITS).toInt());
-	m_DataBits = static_cast<QAsyncSerialPort::DataBits>(settings.value(KEY_DATABITS).toInt());
-	m_Parity = static_cast<QAsyncSerialPort::Parity>(settings.value(KEY_PARITY).toInt());
-	m_FlowControl = static_cast<QAsyncSerialPort::FlowControl>(settings.value(KEY_FLOWCONTROL).toInt());
+	m_port = settings.value(KEY_PORT).toInt();
+	m_baudRate = static_cast<BaudRate>(settings.value(KEY_BAUDRATE).toInt());
+	m_stopBits = static_cast<QSerialPort::StopBits>(settings.value(KEY_STOPBITS).toInt());
+	m_dataBits = static_cast<QSerialPort::DataBits>(settings.value(KEY_DATABITS).toInt());
+	m_parity = static_cast<QSerialPort::Parity>(settings.value(KEY_PARITY).toInt());
+	m_flowControl = static_cast<QSerialPort::FlowControl>(settings.value(KEY_FLOWCONTROL).toInt());
 }
 
 bool SerialPortSettings::isValid() {
-	if (m_Port <= 0) {
+	if (m_port <= 0) {
 		return false;
 	}
-	if (m_BaudRate == QAsyncSerialPort::BaudRate::BRUnknown) {
+	if (m_baudRate == BaudRate::BRUnknown) {
 		return false;
 	}
-	if (m_StopBits == QAsyncSerialPort::StopBits::UnknownStopBits) {
+	if (m_stopBits == QSerialPort::StopBits::UnknownStopBits) {
 		return false;
 	}
-	if (m_DataBits == QAsyncSerialPort::DataBits::UnknownDataBits) {
+	if (m_dataBits == QSerialPort::DataBits::UnknownDataBits) {
 		return false;
 	}
-	if (m_Parity == QAsyncSerialPort::Parity::UnknownParity) {
+	if (m_parity == QSerialPort::Parity::UnknownParity) {
 		return false;
 	}
-	if (m_FlowControl == QAsyncSerialPort::FlowControl::UnknownFlowControl) {
+	if (m_flowControl == QSerialPort::FlowControl::UnknownFlowControl) {
 		return false;
 	}
 

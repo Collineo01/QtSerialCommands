@@ -14,7 +14,7 @@ class SerialOperationMode
 public:
 	enum class BlockingMode
 	{
-		// Wait for the response before sending any other command.
+		// Wait for the response before sending any other getCommand.
 		Blocking = 0,
 
 		// Not expecting any response.
@@ -23,7 +23,7 @@ public:
 		// Expecting as many responses as the number of commands sent.
 		NonBlockingXCommandsXResponses = 2,
 
-		// Will not send more of the same command before receiving the response (prevents spamming).
+		// Will not send more of the same getCommand before receiving the response (prevents spamming).
 		NonBlockingXCommandsOneResponse = 3
 	};
 

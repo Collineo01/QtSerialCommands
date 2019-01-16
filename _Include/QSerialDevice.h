@@ -11,7 +11,7 @@
 #include <QString>
 #include <QList>
 
-#include "QSmartSerialPort.h"
+#include "QMatchSerialPort.h"
 #include "SerialCommand.h"
 #include "SerialCommandFactory.h"
 #include "SerialMessageFactory.h"
@@ -23,64 +23,48 @@ class QSerialDevice : public QObject
 
 public:
 	QSerialDevice(
+		QMatchSerialPort & serialPort,
 		const SerialCommandFactory & commandFactory,
 		const SerialMessageFactory & messageFactory,
-		SerialPortSettings * settings = nullptr,
-		QSmartSerialPort * sharedSerial = nullptr,
 		QObject *parent = nullptr
 	);
 	QSerialDevice(
+		QMatchSerialPort & serialPort,
 		const SerialCommandFactory & commandFactory,
-		SerialPortSettings * settings = nullptr,
-		QSmartSerialPort * sharedSerial = nullptr,
 		QObject *parent = nullptr
 	);
 	~QSerialDevice();
 
-	static QString const DEFAULT_INI;
-	static QString const CURRENT_INI;
-	static QString const TEMP_INI;
-	static int const DEFAULT_PORT;
-
-	virtual void init(QString terminator);
 	bool connectPort();
 	bool connectPort(int port);
 	void closePort();
 
 	bool isConnected();
 
-	void changePort(int port);
-
-	int getPort() { return m_portSettings->getPort(); }
-
-	void setTimeout(int timeout);
+	void setPort(unsigned int port) { m_serialPort.setPort(port); }
+	int getPort() const { return m_serialPort.getPort(); }
 
 protected:
-	SerialPortSettings * m_portSettings;
-	QSmartSerialPort * m_serialPort;
+	QMatchSerialPort & m_serialPort;
 	QMap<QString, const SerialCommand *> m_serialCommands;
 	SerialMessages m_deviceMessages;
 
 	void sendCommand(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
-	QByteArray sendBlockingCommand(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
+	QByteArray sendBlockingCommandSync(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 
 	virtual void initDevice() = 0;
 
-private:
-	void initPortSettings();
-	bool fileExists(QString fileName);
-
 protected slots:
-	virtual void handleMatchingResponse(QByteArray const &response, SerialCommand const &command) = 0;
-	virtual void handleMessageReceived(QString const &message) = 0;
+	virtual void handleMatchingResponse(const QByteArray & response, SerialCommand command) = 0;
+	virtual void handleMessageReceived(const QByteArray & message, const QString & translation) = 0;
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
 
 private slots:
 	void handleCommandTimedOut(QString commandKey, QList<SerialCommandArg> args, int port);
 
 signals:
-	void responseMatchingCommandReceived(QByteArray const &response, SerialCommand const &command);
-	void messageReceived(QString const &message);
+	void responseMatchingCommandReceived(const QByteArray & response, const SerialCommand & command);
+	void messageReceived(const QByteArray & message, const QString & translation);
 	void connectionUpdated(bool connected, bool connectionFailed = false);
 	void commandTimedOut(QString command, QList<SerialCommandArg> args, int port);
 	void portTimedOut(int port);

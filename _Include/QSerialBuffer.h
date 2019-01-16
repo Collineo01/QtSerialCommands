@@ -52,5 +52,5 @@ private:
 	bool m_LastCommandIsBlocking;
 	bool m_ResponseMatchesLastCommand;
 
-	//bool retrySend(QString command);
+	//bool retrySend(QString getCommand);
 };

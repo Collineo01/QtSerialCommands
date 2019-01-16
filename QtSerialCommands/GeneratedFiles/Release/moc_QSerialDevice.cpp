@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QSerialDevice_t {
-    QByteArrayData data[21];
-    char stringdata0[312];
+    QByteArrayData data[22];
+    char stringdata0[324];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,25 +40,27 @@ QT_MOC_LITERAL(4, 56, 13), // "SerialCommand"
 QT_MOC_LITERAL(5, 70, 7), // "command"
 QT_MOC_LITERAL(6, 78, 15), // "messageReceived"
 QT_MOC_LITERAL(7, 94, 7), // "message"
-QT_MOC_LITERAL(8, 102, 17), // "connectionUpdated"
-QT_MOC_LITERAL(9, 120, 9), // "connected"
-QT_MOC_LITERAL(10, 130, 16), // "connectionFailed"
-QT_MOC_LITERAL(11, 147, 15), // "commandTimedOut"
-QT_MOC_LITERAL(12, 163, 23), // "QList<SerialCommandArg>"
-QT_MOC_LITERAL(13, 187, 4), // "args"
-QT_MOC_LITERAL(14, 192, 4), // "port"
-QT_MOC_LITERAL(15, 197, 12), // "portTimedOut"
-QT_MOC_LITERAL(16, 210, 22), // "handleMatchingResponse"
-QT_MOC_LITERAL(17, 233, 21), // "handleMessageReceived"
-QT_MOC_LITERAL(18, 255, 23), // "handleConnectionUpdated"
-QT_MOC_LITERAL(19, 279, 21), // "handleCommandTimedOut"
-QT_MOC_LITERAL(20, 301, 10) // "commandKey"
+QT_MOC_LITERAL(8, 102, 11), // "translation"
+QT_MOC_LITERAL(9, 114, 17), // "connectionUpdated"
+QT_MOC_LITERAL(10, 132, 9), // "connected"
+QT_MOC_LITERAL(11, 142, 16), // "connectionFailed"
+QT_MOC_LITERAL(12, 159, 15), // "commandTimedOut"
+QT_MOC_LITERAL(13, 175, 23), // "QList<SerialCommandArg>"
+QT_MOC_LITERAL(14, 199, 4), // "args"
+QT_MOC_LITERAL(15, 204, 4), // "port"
+QT_MOC_LITERAL(16, 209, 12), // "portTimedOut"
+QT_MOC_LITERAL(17, 222, 22), // "handleMatchingResponse"
+QT_MOC_LITERAL(18, 245, 21), // "handleMessageReceived"
+QT_MOC_LITERAL(19, 267, 23), // "handleConnectionUpdated"
+QT_MOC_LITERAL(20, 291, 21), // "handleCommandTimedOut"
+QT_MOC_LITERAL(21, 313, 10) // "commandKey"
 
     },
     "QSerialDevice\0responseMatchingCommandReceived\0"
     "\0response\0SerialCommand\0command\0"
-    "messageReceived\0message\0connectionUpdated\0"
-    "connected\0connectionFailed\0commandTimedOut\0"
+    "messageReceived\0message\0translation\0"
+    "connectionUpdated\0connected\0"
+    "connectionFailed\0commandTimedOut\0"
     "QList<SerialCommandArg>\0args\0port\0"
     "portTimedOut\0handleMatchingResponse\0"
     "handleMessageReceived\0handleConnectionUpdated\0"
@@ -81,33 +83,33 @@ static const uint qt_meta_data_QSerialDevice[] = {
 
  // signals: name, argc, parameters, tag, flags
        1,    2,   69,    2, 0x06 /* Public */,
-       6,    1,   74,    2, 0x06 /* Public */,
-       8,    2,   77,    2, 0x06 /* Public */,
-       8,    1,   82,    2, 0x26 /* Public | MethodCloned */,
-      11,    3,   85,    2, 0x06 /* Public */,
-      15,    1,   92,    2, 0x06 /* Public */,
+       6,    2,   74,    2, 0x06 /* Public */,
+       9,    2,   79,    2, 0x06 /* Public */,
+       9,    1,   84,    2, 0x26 /* Public | MethodCloned */,
+      12,    3,   87,    2, 0x06 /* Public */,
+      16,    1,   94,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      16,    2,   95,    2, 0x09 /* Protected */,
-      17,    1,  100,    2, 0x09 /* Protected */,
-      18,    2,  103,    2, 0x09 /* Protected */,
-      18,    1,  108,    2, 0x29 /* Protected | MethodCloned */,
-      19,    3,  111,    2, 0x08 /* Private */,
+      17,    2,   97,    2, 0x09 /* Protected */,
+      18,    2,  102,    2, 0x09 /* Protected */,
+      19,    2,  107,    2, 0x09 /* Protected */,
+      19,    1,  112,    2, 0x29 /* Protected | MethodCloned */,
+      20,    3,  115,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 4,    3,    5,
-    QMetaType::Void, QMetaType::QString,    7,
-    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,    9,   10,
-    QMetaType::Void, QMetaType::Bool,    9,
-    QMetaType::Void, QMetaType::QString, 0x80000000 | 12, QMetaType::Int,    5,   13,   14,
-    QMetaType::Void, QMetaType::Int,   14,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::QString,    7,    8,
+    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,   10,   11,
+    QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void, QMetaType::QString, 0x80000000 | 13, QMetaType::Int,    5,   14,   15,
+    QMetaType::Void, QMetaType::Int,   15,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 4,    3,    5,
-    QMetaType::Void, QMetaType::QString,    7,
-    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,    9,   10,
-    QMetaType::Void, QMetaType::Bool,    9,
-    QMetaType::Void, QMetaType::QString, 0x80000000 | 12, QMetaType::Int,   20,   13,   14,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::QString,    7,    8,
+    QMetaType::Void, QMetaType::Bool, QMetaType::Bool,   10,   11,
+    QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void, QMetaType::QString, 0x80000000 | 13, QMetaType::Int,   21,   14,   15,
 
        0        // eod
 };
@@ -119,13 +121,13 @@ void QSerialDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->responseMatchingCommandReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
-        case 1: _t->messageReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->messageReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         case 2: _t->connectionUpdated((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 3: _t->connectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 4: _t->commandTimedOut((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QList<SerialCommandArg>(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 5: _t->portTimedOut((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 6: _t->handleMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
-        case 7: _t->handleMessageReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: _t->handleMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< SerialCommand(*)>(_a[2]))); break;
+        case 7: _t->handleMessageReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         case 8: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 9: _t->handleConnectionUpdated((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 10: _t->handleCommandTimedOut((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QList<SerialCommandArg>(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
@@ -135,14 +137,14 @@ void QSerialDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (QSerialDevice::*_t)(QByteArray const & , SerialCommand const & );
+            typedef void (QSerialDevice::*_t)(const QByteArray & , const SerialCommand & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QSerialDevice::responseMatchingCommandReceived)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (QSerialDevice::*_t)(QString const & );
+            typedef void (QSerialDevice::*_t)(const QByteArray & , const QString & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&QSerialDevice::messageReceived)) {
                 *result = 1;
                 return;
@@ -209,16 +211,16 @@ int QSerialDevice::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void QSerialDevice::responseMatchingCommandReceived(QByteArray const & _t1, SerialCommand const & _t2)
+void QSerialDevice::responseMatchingCommandReceived(const QByteArray & _t1, const SerialCommand & _t2)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void QSerialDevice::messageReceived(QString const & _t1)
+void QSerialDevice::messageReceived(const QByteArray & _t1, const QString & _t2)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 

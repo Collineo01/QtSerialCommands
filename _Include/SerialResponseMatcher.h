@@ -17,14 +17,14 @@ public:
 	SerialResponseMatcher(const SerialMessages & serialMessages);
 	~SerialResponseMatcher();
 
-	QByteArray getFirstMatch(const SerialCommand & command, const QByteArray & responseBuffer) const;
-	QByteArray takeMatchingResponse(const SerialCommand & command, QByteArray & responseBuffer) const;
+	QByteArray getFirstCommandMatch(const QByteArray & responseBuffer, const SerialCommand & command) const;
+	QByteArrayList getMessageMatchList(const QByteArray & responsesBuffer) const;
 
 private:
 	SerialMessages m_serialMessages;
 
-	QByteArray getRegexMatch(const SerialCommand & command, QByteArray const & responsesBuffer) const;
-	QByteArray getExpectedResponsesMatch(const SerialCommand & command, QByteArray const & responsesBuffer) const;
-	QByteArray getNbExpectedBytesMatch(const SerialCommand & command, QByteArray const & responsesBuffer) const;
+	QByteArray getRegexMatch(const QByteArray & responsesBuffer, const SerialCommand & command) const;
+	QByteArray getExpectedResponsesMatch(const QByteArray & responsesBuffer, const SerialCommand & command) const;
+	QByteArray getNbExpectedBytesMatch(const QByteArray & responsesBuffer, const SerialCommand & command) const;
 };
 

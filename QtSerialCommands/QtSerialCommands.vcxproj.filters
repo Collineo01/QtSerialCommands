@@ -94,6 +94,9 @@
     <ClInclude Include="IOType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaudRate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qtserialcommands_global.h">
