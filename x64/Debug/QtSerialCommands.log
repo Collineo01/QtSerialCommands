@@ -1,8 +1,0 @@
-﻿  Moc'ing QAsyncSerialPort.h...
-  moc_QAsyncSerialPort.cpp
-  moc_QMatchSerialPort.cpp
-  moc_QSerialDevice.cpp
-  QAsyncSerialPort.cpp
-  QMatchSerialPort.cpp
-  QSerialDevice.cpp
-  QtSerialCommands.vcxproj -> C:\Users\Nicola\Documents\Repos\EnvironmentSensor\QtSerialCommands\x64\Debug\QtSerialCommands.lib
