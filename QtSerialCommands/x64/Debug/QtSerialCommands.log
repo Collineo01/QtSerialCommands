@@ -1,0 +1,21 @@
+﻿  QAsyncSerialPort.cpp
+  QSerialBuffer.cpp
+  QSerialCommandManager.cpp
+  QSerialDevice.cpp
+  QSerialResponseAnalyzer.cpp
+  QMatchSerialPort.cpp
+  SerialCommand.cpp
+  SerialCommandArg.cpp
+c:\collineo\logiciels2015\libraries\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSerialDevice.cpp)
+  SerialMessages.cpp
+  SerialOperationMode.cpp
+  SerialPortSettings.cpp
+  SerialResponseMatcher.cpp
+  moc_QAsyncSerialPort.cpp
+  moc_QSerialBuffer.cpp
+  moc_QSerialCommandManager.cpp
+  moc_QSerialDevice.cpp
+  moc_QSerialResponseAnalyzer.cpp
+c:\collineo\logiciels2015\libraries\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSerialDevice.cpp)
+  moc_QMatchSerialPort.cpp
+  QtSerialCommands.vcxproj -> C:\Collineo\Logiciels2015\Libraries\QtSerialCommands\x64\Debug\QtSerialCommands.lib
