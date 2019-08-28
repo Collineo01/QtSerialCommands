@@ -41,7 +41,9 @@ signals:
 	void responseBufferFilled();
 
 private:
-	QMutex m_mutex;
+	QMutex m_commandsToSendMutex;
+	QMutex m_sentCommandsMutex;
+	QMutex m_responsesMutex;
 	SerialResponseMatcher m_serialMatcher;
 	QList<SerialCommand> m_commandToSendList;
 	QList<SerialCommand> m_sentCommandList;
