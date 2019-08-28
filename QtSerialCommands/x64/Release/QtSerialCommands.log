@@ -1,6 +1,0 @@
-﻿  Moc'ing QSerialDevice.h...
-  moc_QSerialDevice.cpp
-  QSerialDevice.cpp
-c:\collineo\logiciels2015\libraries\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSerialDevice.cpp)
-c:\collineo\logiciels2015\libraries\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Release\moc_QSerialDevice.cpp)
-  QtSerialCommands.vcxproj -> C:\Collineo\Logiciels2015\Libraries\QtSerialCommands\x64\Release\QtSerialCommands.lib
