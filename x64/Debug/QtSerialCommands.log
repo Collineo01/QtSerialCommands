@@ -3,20 +3,15 @@
   Moc'ing QSerialCommandManager.h...
   Moc'ing QSerialDevice.h...
   Moc'ing QSerialResponseAnalyzer.h...
-  Moc'ing QSmartSerialPort.h...
+  Moc'ing QMatchSerialPort.h...
   QAsyncSerialPort.cpp
   QSerialBuffer.cpp
   QSerialCommandManager.cpp
   QSerialDevice.cpp
   QSerialResponseAnalyzer.cpp
-  QSmartSerialPort.cpp
+  QMatchSerialPort.cpp
   SerialCommand.cpp
   SerialCommandArg.cpp
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSmartSerialPort.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file QSmartSerialPort.cpp)
   SerialMessages.cpp
   SerialOperationMode.cpp
   SerialPortSettings.cpp
@@ -25,11 +20,22 @@ c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\ser
   moc_QSerialBuffer.cpp
   moc_QSerialCommandManager.cpp
   moc_QSerialDevice.cpp
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qasyncserialport.h(4): fatal error C1083: Cannot open include file: 'QVector': No such file or directory (compiling source file QAsyncSerialPort.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qasyncserialport.h(4): fatal error C1083: Cannot open include file: 'QVector': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QAsyncSerialPort.cpp)
   moc_QSerialResponseAnalyzer.cpp
-  moc_QSmartSerialPort.cpp
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialcommandfactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSerialDevice.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSmartSerialPort.cpp)
-c:\collineo\logiciels2015\qtserialcommands\qtserialcommands\qtserialcommands\serialmessagefactory.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file .\GeneratedFiles\Debug\moc_QSmartSerialPort.cpp)
-  QtSerialCommands.vcxproj -> C:\Collineo\Logiciels2015\QtSerialCommands\QtSerialCommands\x64\Debug\QtSerialCommands.lib
+  moc_QMatchSerialPort.cpp
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialmessages.h(5): fatal error C1083: Cannot open include file: 'QMap': No such file or directory (compiling source file SerialMessages.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialcommandmanager.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file QSerialCommandManager.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialresponsematcher.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file SerialResponseMatcher.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialcommandarg.h(6): fatal error C1083: Cannot open include file: 'QVariant': No such file or directory (compiling source file SerialCommandArg.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialdevice.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file QSerialDevice.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialcommandarg.h(6): fatal error C1083: Cannot open include file: 'QVariant': No such file or directory (compiling source file QSerialBuffer.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qmatchserialport.h(30): fatal error C1083: Cannot open include file: 'QList': No such file or directory (compiling source file QMatchSerialPort.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialdevice.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QSerialDevice.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialcommandmanager.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QSerialCommandManager.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialcommandarg.h(6): fatal error C1083: Cannot open include file: 'QVariant': No such file or directory (compiling source file SerialCommand.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialportsettings.h(5): fatal error C1083: Cannot open include file: 'QSerialPort': No such file or directory (compiling source file SerialPortSettings.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialresponseanalyzer.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file QSerialResponseAnalyzer.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\serialcommandarg.h(6): fatal error C1083: Cannot open include file: 'QVariant': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QSerialBuffer.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qmatchserialport.h(30): fatal error C1083: Cannot open include file: 'QList': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QMatchSerialPort.cpp)
+c:\users\nicola\documents\repos\qtserialcommands\qtserialcommands\qserialresponseanalyzer.h(5): fatal error C1083: Cannot open include file: 'QObject': No such file or directory (compiling source file GeneratedFiles\Debug\moc_QSerialResponseAnalyzer.cpp)
