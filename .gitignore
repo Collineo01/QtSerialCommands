@@ -12,6 +12,8 @@
 *.obj
 *.log
 *.tlog
+*.lib
+*.pdb
 
 # Qt-es
 object_script.*.Release
