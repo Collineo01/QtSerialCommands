@@ -53,13 +53,13 @@
     <ClCompile Include="SerialResponseMatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QMatchSerialPort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DefaultSerialPortSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QSerialResponseProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QCommandSerialPort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,9 +113,6 @@
     <QtMoc Include="QSerialDevice.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="QMatchSerialPort.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="QAsyncSerialPort.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -123,6 +120,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QSerialResponseProcessor.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QCommandSerialPort.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

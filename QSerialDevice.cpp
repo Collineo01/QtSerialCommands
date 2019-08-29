@@ -7,7 +7,7 @@
 
 
 QSerialDevice::QSerialDevice(
-	QMatchSerialPort & serialPort,
+	QCommandSerialPort & serialPort,
 	const SerialCommandFactory & commandFactory,
 	const SerialMessageFactory & messageFactory,
 	QObject * parent
@@ -17,16 +17,16 @@ QSerialDevice::QSerialDevice(
 	m_serialCommands{ commandFactory.createSerialCommands() },
 	m_expectedMessages{ messageFactory.createSerialMessages() }
 {
-	connect(&m_serialPort, &QMatchSerialPort::matchingResponseReceived, this, &QSerialDevice::handleMatchingResponse);
-	connect(&m_serialPort, &QMatchSerialPort::messageReceived, this, &QSerialDevice::handleMessageReceived);
+	connect(&m_serialPort, &QCommandSerialPort::matchingResponseReceived, this, &QSerialDevice::handleMatchingResponse);
+	connect(&m_serialPort, &QCommandSerialPort::messageReceived, this, &QSerialDevice::handleMessageReceived);
 	connect(&m_serialPort, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::handleConnectionUpdated);
 	connect(&m_serialPort, &QAsyncSerialPort::connectionUpdated, this, &QSerialDevice::connectionUpdated);
-	connect(&m_serialPort, &QMatchSerialPort::commandTimedOut, this, &QSerialDevice::commandTimedOut);
-	connect(&m_serialPort, &QMatchSerialPort::commandTimedOut, this, &QSerialDevice::handleCommandTimedOut);
+	connect(&m_serialPort, &QCommandSerialPort::commandTimedOut, this, &QSerialDevice::commandTimedOut);
+	connect(&m_serialPort, &QCommandSerialPort::commandTimedOut, this, &QSerialDevice::handleCommandTimedOut);
 }
 
 QSerialDevice::QSerialDevice(
-	QMatchSerialPort & serialPort,
+	QCommandSerialPort & serialPort,
 	const SerialCommandFactory & commandFactory,
 	QObject * parent
 ) :

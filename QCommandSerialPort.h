@@ -19,20 +19,20 @@ class QVariant;
 class QStringList;
 
 
-class QTSERIALCOMMANDS_EXPORT QMatchSerialPort : public QAsyncSerialPort
+class QTSERIALCOMMANDS_EXPORT QCommandSerialPort : public QAsyncSerialPort
 {
 	Q_OBJECT
 
 public:
-	QMatchSerialPort(
+	QCommandSerialPort(
 		const SerialPortSettings & settings, 
 		const SerialMessageFactory & serialMessagesFactory, 
 		bool isAutoReconnecting = false
 	);
-	QMatchSerialPort(const SerialPortSettings & settings, bool isAutoReconnecting = false);
-	QMatchSerialPort(const SerialMessageFactory & serialMessagesFactory, bool isAutoReconnecting = false);
-	QMatchSerialPort(bool isAutoReconnecting = false);
-	~QMatchSerialPort();
+	QCommandSerialPort(const SerialPortSettings & settings, bool isAutoReconnecting = false);
+	QCommandSerialPort(const SerialMessageFactory & serialMessagesFactory, bool isAutoReconnecting = false);
+	QCommandSerialPort(bool isAutoReconnecting = false);
+	~QCommandSerialPort();
 
 	void sendCommand(SerialCommand command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 	QByteArray sendCommandAwait(SerialCommand command, QList<SerialCommandArg> args = QList<SerialCommandArg>());

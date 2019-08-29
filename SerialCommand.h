@@ -24,7 +24,7 @@ public:
 
 	SerialCommand(
 		const QString & command,  									// What is actually sent to the device
-		const QString & name, 										// getName
+		const QString & name, 										// Name
 		const QRegularExpression & responseRegex,					// The response format we epxect
 		const QByteArrayList & expectedResponses,					// The exact responses we can expect from the device
 		const int nbBytesExpected,									// The exact number of bytes we expect from the device response
@@ -32,12 +32,12 @@ public:
 		const SerialOperationMode::FluxMode & fluxMode, 			// FluxMode
 		const QString & terminator = "", 							// Terminator
 		const int nbOfArgs = 0, 									// The number of arguments to send
-		const QString & argsSeparator = "", 						// separator
+		const QString & argsSeparator = "", 						// Separator
 		const IOType & ioType = IOType::Undefined, 					// IOType
-		const QString & family = "", 								// getFamily
-		const QString & shortDescription = "",						// short getDescription
-		const QString & description = "",							// description
-		const QString & tooltip = ""								// tooltip
+		const QString & family = "", 								// Family
+		const QString & shortDescription = "",						// Short getDescription
+		const QString & description = "",							// Description
+		const QString & tooltip = ""								// Tooltip
 	);
 
 	SerialCommand(

@@ -6,7 +6,7 @@
 #include <QString>
 #include <QList>
 
-#include "QMatchSerialPort.h"
+#include "QCommandSerialPort.h"
 #include "SerialCommand.h"
 #include "SerialCommandFactory.h"
 #include "SerialMessageFactory.h"
@@ -18,13 +18,13 @@ class QTSERIALCOMMANDS_EXPORT QSerialDevice : public QObject
 
 public:
 	QSerialDevice(
-		QMatchSerialPort & serialPort,
+		QCommandSerialPort & serialPort,
 		const SerialCommandFactory & commandFactory,
 		const SerialMessageFactory & messageFactory,
 		QObject *parent = nullptr
 	);
 	QSerialDevice(
-		QMatchSerialPort & serialPort,
+		QCommandSerialPort & serialPort,
 		const SerialCommandFactory & commandFactory,
 		QObject *parent = nullptr
 	);
@@ -43,7 +43,7 @@ public:
 	int getPort() const { return m_serialPort.getPort(); }
 
 protected:
-	QMatchSerialPort & m_serialPort;
+	QCommandSerialPort & m_serialPort;
 	QMap<QString, const SerialCommand *> m_serialCommands;
 	SerialMessages m_expectedMessages;
 
