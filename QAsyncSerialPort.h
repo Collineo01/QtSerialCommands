@@ -25,8 +25,8 @@ public:
 
 	SerialPortSettings getPortSettings() const { return m_portSettings; }
 	int getPort() const { return m_portSettings.getPort(); }
-	bool setPortSettings(const SerialPortSettings & settings);
-	bool setPort(unsigned int port);
+	bool setPortSettings(const SerialPortSettings & settings, bool reconnect = true);
+	bool setPort(unsigned int port, bool reconnect = true);
 	void setTimeout(unsigned int timeoutMs) { m_timeout = timeoutMs; }
 
 public slots:
@@ -41,7 +41,7 @@ private slots:
 
 signals:
 	void dataRead(QByteArray data);
-	void connectionUpdated(bool connected, bool failure = false);
+	void connectionUpdated(bool connected, bool failure = true);
 	void messageSent();
 	void updated(QString message);
 

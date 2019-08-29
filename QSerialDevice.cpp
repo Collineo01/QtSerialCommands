@@ -75,21 +75,26 @@ QByteArray QSerialDevice::sendCommandAwait(const QString & commandKey, QList<Ser
 	return m_serialPort.sendCommandAwait(*m_serialCommands[commandKey], args);
 }
 
-bool QSerialDevice::connectPort()
+bool QSerialDevice::openPort()
 {
-	if (!isConnected())
+	if (!isOpen())
 	{
 		return m_serialPort.openPort();
 	}
 	return true;
 }
 
-bool QSerialDevice::connectPort(int port)
+bool QSerialDevice::openPort(int port)
 {
 	setPort(port);
-	bool connected = connectPort();
+	bool connected = openPort();
 
 	return connected;
+}
+
+void QSerialDevice::setPort(unsigned int port, bool reconnect)
+{
+	m_serialPort.setPort(port, reconnect);
 }
 
 void QSerialDevice::closePort()
@@ -97,9 +102,14 @@ void QSerialDevice::closePort()
 	m_serialPort.closePort();
 }
 
-bool QSerialDevice::isConnected()
+bool QSerialDevice::isOpen()
 {
 	return m_serialPort.isOpen();
+}
+
+void QSerialDevice::clearBuffers()
+{
+	m_serialPort.clearBuffers();
 }
 
 void QSerialDevice::handleCommandTimedOut(QString commandKey, QList<SerialCommandArg> args, int port)

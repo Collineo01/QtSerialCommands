@@ -87,3 +87,9 @@ bool SerialPortSettings::isValid() {
 	return true;
 }
 
+SerialPortSettings SerialPortSettings::baudRate(BaudRate baudRate)
+{
+	m_baudRate = baudRate;
+	return *this;
+}
+

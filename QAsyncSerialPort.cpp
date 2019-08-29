@@ -96,11 +96,11 @@ QString QAsyncSerialPort::createPortName(int port)
 	return "COM" + QString::number(port);
 }
 
-bool QAsyncSerialPort::setPortSettings(const SerialPortSettings& settings)
+bool QAsyncSerialPort::setPortSettings(const SerialPortSettings& settings, bool reconnect)
 {
 	bool success = true;
 	m_portSettings = settings;
-	if (isOpen())
+	if (reconnect && isOpen())
 	{
 		closePort();
 		success = openPort();
@@ -109,10 +109,10 @@ bool QAsyncSerialPort::setPortSettings(const SerialPortSettings& settings)
 	return success;
 }
 
-bool QAsyncSerialPort::setPort(unsigned int port)
+bool QAsyncSerialPort::setPort(unsigned int port, bool reconnect)
 {
 	m_portSettings.setPort(port);
-	return setPortSettings(m_portSettings);
+	return setPortSettings(m_portSettings, reconnect);
 }
 
 bool QAsyncSerialPort::openPort()

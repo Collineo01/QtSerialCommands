@@ -73,7 +73,7 @@ int QSerialBuffer::getSentCommandListSize()
 	return size;
 }
 
-void QSerialBuffer::clearBuffersNow()
+void QSerialBuffer::clearBuffers()
 {
 	m_commandsToSendMutex.lock();
 	m_sentCommandsMutex.lock();

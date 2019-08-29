@@ -43,6 +43,8 @@ public:
 	void load(QString fileName);
 	bool isValid();
 
+	SerialPortSettings baudRate(BaudRate baudRate);
+
 	int getPort() const { return m_port; }
 	BaudRate getBaudRate() const { return m_baudRate; }
 	QSerialPort::StopBits  getStopBits() const { return m_stopBits; }
@@ -52,7 +54,7 @@ public:
 
 	void setPort(int port) { m_port = port; }
 
-private:
+protected:
 	int m_port;
 	BaudRate m_baudRate;
 	QSerialPort::StopBits m_stopBits;

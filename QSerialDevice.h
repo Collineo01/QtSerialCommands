@@ -33,14 +33,16 @@ public:
 	virtual void sendCommand(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 	virtual QByteArray sendCommandAwait(const QString & commandKey, QList<SerialCommandArg> args = QList<SerialCommandArg>());
 
-	bool connectPort();
-	bool connectPort(int port);
+	bool openPort();
+	bool openPort(int port);
 	void closePort();
 
-	bool isConnected();
+	bool isOpen();
 
-	void setPort(unsigned int port) { m_serialPort.setPort(port); }
+	void setPort(unsigned int port, bool reconnect = false);
 	int getPort() const { return m_serialPort.getPort(); }
+
+	void clearBuffers();
 
 protected:
 	QCommandSerialPort & m_serialPort;
@@ -53,9 +55,7 @@ protected slots:
 	virtual void handleMatchingResponse(const QByteArray & response, SerialCommand command) = 0;
 	virtual void handleMessageReceived(const QByteArray & message, const QString & description) = 0;
 	virtual void handleConnectionUpdated(bool connected, bool connectionFailed = false);
-
-private slots:
-	void handleCommandTimedOut(QString commandKey, QList<SerialCommandArg> args, int port);
+	virtual void handleCommandTimedOut(QString commandKey, QList<SerialCommandArg> args, int port);
 
 signals:
 	void responseMatchingCommandReceived(const QByteArray & response, const SerialCommand & command);

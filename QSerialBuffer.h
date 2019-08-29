@@ -24,7 +24,7 @@ public:
 	QList<SerialCommand>::iterator getSentCommandsEnd();
 	SerialCommand takeLastCommandSent();
 	QList<SerialCommand>::iterator eraseSentCommand(QList<SerialCommand>::iterator it);
-	void clearBuffersNow();
+	void clearBuffers();
 	int getSentCommandListSize();
 	QByteArray getResponseBuffer();
 	bool hasNextCommandToSend();

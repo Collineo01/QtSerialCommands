@@ -48,11 +48,6 @@ QCommandSerialPort::QCommandSerialPort(const SerialPortSettings & settings, bool
 {
 }
 
-QCommandSerialPort::QCommandSerialPort(const SerialMessageFactory & serialMessagesFactory, bool autoReconnect):
-	QCommandSerialPort(DefaultSerialPortSettings(), serialMessagesFactory, autoReconnect)
-{
-}
-
 QCommandSerialPort::QCommandSerialPort(bool autoReconnect):
 	QCommandSerialPort(DefaultSerialPortSettings(), DummySerialMessageFactory(), autoReconnect)
 {
@@ -152,7 +147,7 @@ void QCommandSerialPort::handleSmartMatchingModeChange(bool bypass)
 {
 	if (bypass) {
 		m_commandTimer.stop();
-		m_serialBuffer.clearBuffersNow();
+		m_serialBuffer.clearBuffers();
 	}
 }
 
@@ -161,9 +156,29 @@ void QCommandSerialPort::closePort()
 	if (isOpen())
 	{
 		m_commandTimer.stop();
-		m_serialBuffer.clearBuffersNow();
+		m_serialBuffer.clearBuffers();
 		QAsyncSerialPort::closePort();
 	}
+}
+
+void QCommandSerialPort::softResetPort()
+{
+	if (isOpen())
+	{
+		QAsyncSerialPort::closePort();
+	}
+	openPort();
+}
+
+void QCommandSerialPort::hardResetPort()
+{
+	closePort();
+	openPort();
+}
+
+void QCommandSerialPort::clearBuffers()
+{
+	m_serialBuffer.clearBuffers();
 }
 
 void QCommandSerialPort::handleNextCommandReadyToSend()

@@ -13,9 +13,7 @@ public:
 	~SerialMessages();
 
 	void insertMessage(QByteArray message, QString description = "");
-	void insertMessage(QString message, QString description = "");
 	QString getDescription(QByteArray message) const;
-	QString getDescription(QString message) const;
 	QByteArrayList getMessageList() const;
 	bool isEmpty() const;
 

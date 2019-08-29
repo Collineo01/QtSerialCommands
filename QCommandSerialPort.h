@@ -30,7 +30,6 @@ public:
 		bool isAutoReconnecting = false
 	);
 	QCommandSerialPort(const SerialPortSettings & settings, bool isAutoReconnecting = false);
-	QCommandSerialPort(const SerialMessageFactory & serialMessagesFactory, bool isAutoReconnecting = false);
 	QCommandSerialPort(bool isAutoReconnecting = false);
 	~QCommandSerialPort();
 
@@ -39,6 +38,9 @@ public:
 	bool isBypassingSmartMatching() const { return m_bypassSmartMatchingMode; }
 	void setBypassSmartMatchingMode(bool isBypassing);
 	void closePort() override;
+	void softResetPort();
+	void hardResetPort();
+	void clearBuffers();
 
 private:
 	QSerialBuffer m_serialBuffer;
