@@ -25,9 +25,12 @@ QSerialResponseProcessor::~QSerialResponseProcessor()
 void QSerialResponseProcessor::processResponses()
 {
 	QList<SerialCommand>::iterator sentCmdIterator = m_serialBuffer.getSentCommandsBegin();
-	while (sentCmdIterator != m_serialBuffer.getSentCommandsEnd() && m_serialBuffer.sentCommandListSize() != 0)
+	while (
+		sentCmdIterator != m_serialBuffer.getSentCommandsEnd() 
+		&& m_serialBuffer.getSentCommandListSize() > 0
+		&& !m_serialBuffer.isResponseBufferEmpty())
 	{
-		const SerialCommand & command = *sentCmdIterator;
+		SerialCommand command = *sentCmdIterator;
 		QByteArray response = takeCommandFirstMatch(command);
 		if (!response.isNull())
 		{
@@ -36,13 +39,11 @@ void QSerialResponseProcessor::processResponses()
 			// Pull mode
 			if (command.getOperationMode().fluxMode() == SerialOperationMode::FluxMode::Pull)
 			{
-				if (command.getOperationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking)
+				sentCmdIterator = m_serialBuffer.eraseSentCommand(sentCmdIterator);
+				if (command.getOperationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking
+					&& m_serialBuffer.hasNextCommandToSend())
 				{
-					sentCmdIterator = m_serialBuffer.eraseSentCommand(sentCmdIterator);
-					emit commandIsReadyToSend(m_serialBuffer.getNextCommandToSend()); // we waited for the response, now we can send the next getCommand
-				}
-				else {
-					sentCmdIterator = m_serialBuffer.eraseSentCommand(sentCmdIterator);
+					emit nextCommandReadyToSend(); // we waited for the response, now we can send the next command.
 				}
 				continue;
 			}
@@ -67,7 +68,7 @@ QByteArray QSerialResponseProcessor::takeCommandFirstMatch(const SerialCommand &
 
 	if (!matchingResponse.isNull())
 	{
-		m_serialBuffer.removeMatchedCommand(command);
+		m_serialBuffer.removeMatchedResponse(matchingResponse);
 	}
 	return matchingResponse;
 }

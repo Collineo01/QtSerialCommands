@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QSerialResponseProcessor_t {
     QByteArrayData data[11];
-    char stringdata0[150];
+    char stringdata0[152];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,14 +40,14 @@ QT_MOC_LITERAL(5, 71, 7), // "command"
 QT_MOC_LITERAL(6, 79, 12), // "foundMessage"
 QT_MOC_LITERAL(7, 92, 7), // "message"
 QT_MOC_LITERAL(8, 100, 11), // "description"
-QT_MOC_LITERAL(9, 112, 20), // "commandIsReadyToSend"
-QT_MOC_LITERAL(10, 133, 16) // "processResponses"
+QT_MOC_LITERAL(9, 112, 22), // "nextCommandReadyToSend"
+QT_MOC_LITERAL(10, 135, 16) // "processResponses"
 
     },
     "QSerialResponseProcessor\0foundMatchingResponse\0"
     "\0response\0SerialCommand\0command\0"
     "foundMessage\0message\0description\0"
-    "commandIsReadyToSend\0processResponses"
+    "nextCommandReadyToSend\0processResponses"
 };
 #undef QT_MOC_LITERAL
 
@@ -67,15 +67,15 @@ static const uint qt_meta_data_QSerialResponseProcessor[] = {
  // signals: name, argc, parameters, tag, flags
        1,    2,   34,    2, 0x06 /* Public */,
        6,    2,   39,    2, 0x06 /* Public */,
-       9,    1,   44,    2, 0x06 /* Public */,
+       9,    0,   44,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      10,    0,   47,    2, 0x0a /* Public */,
+      10,    0,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 4,    3,    5,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::QString,    7,    8,
-    QMetaType::Void, 0x80000000 | 4,    5,
+    QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void,
@@ -91,7 +91,7 @@ void QSerialResponseProcessor::qt_static_metacall(QObject *_o, QMetaObject::Call
         switch (_id) {
         case 0: _t->foundMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
         case 1: _t->foundMessage((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 2: _t->commandIsReadyToSend((*reinterpret_cast< const SerialCommand(*)>(_a[1]))); break;
+        case 2: _t->nextCommandReadyToSend(); break;
         case 3: _t->processResponses(); break;
         default: ;
         }
@@ -112,8 +112,8 @@ void QSerialResponseProcessor::qt_static_metacall(QObject *_o, QMetaObject::Call
             }
         }
         {
-            typedef void (QSerialResponseProcessor::*_t)(const SerialCommand & );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QSerialResponseProcessor::commandIsReadyToSend)) {
+            typedef void (QSerialResponseProcessor::*_t)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QSerialResponseProcessor::nextCommandReadyToSend)) {
                 *result = 2;
                 return;
             }
@@ -172,10 +172,9 @@ void QSerialResponseProcessor::foundMessage(const QByteArray & _t1, const QStrin
 }
 
 // SIGNAL 2
-void QSerialResponseProcessor::commandIsReadyToSend(const SerialCommand & _t1)
+void QSerialResponseProcessor::nextCommandReadyToSend()
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

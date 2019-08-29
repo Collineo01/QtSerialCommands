@@ -28,6 +28,7 @@
 #include "SerialCommandArg.h"
 #include "SerialOperationMode.h"
 #include "IOType.h"
+#include "MatchType.h"
 
 #include <QString>
 #include <QByteArray>
@@ -44,12 +45,12 @@ public:
 		const QString & command,  									// What is actually sent to the device
 		const QString & name, 										// getName
 		const QRegularExpression & responseRegex,					// The response format we epxect
-		const QByteArrayList & expectedResponses,				// The exact responses we can expect from the device
-		const int & nbBytesExpected,								// The exact number of bytes we expect from the device response
+		const QByteArrayList & expectedResponses,					// The exact responses we can expect from the device
+		const int nbBytesExpected,								// The exact number of bytes we expect from the device response
 		const SerialOperationMode::BlockingMode & blockingMode,		// BlockingMode
 		const SerialOperationMode::FluxMode & fluxMode, 			// FluxMode
 		const QString & terminator = "", 							// Terminator
-		const int & nbOfArgs = 0, 									// The number of arguments to send
+		const int nbOfArgs = 0, 									// The number of arguments to send
 		const QString & argsSeparator = "", 						// separator
 		const IOType & ioType = IOType::Undefined, 					// IOType
 		const QString & family = "", 								// getFamily
@@ -65,7 +66,7 @@ public:
 		const SerialOperationMode::BlockingMode & blockingMode,
 		const SerialOperationMode::FluxMode & fluxMode,
 		const QString & terminator = "",
-		const int & nbOfArgs = 0,
+		const int nbOfArgs = 0,
 		const QString & argsSeparator = "",
 		const IOType & ioType = IOType::Undefined,
 		const QString & family = "",
@@ -81,7 +82,7 @@ public:
 		const SerialOperationMode::BlockingMode & blockingMode,
 		const SerialOperationMode::FluxMode & fluxMode,
 		const QString & terminator = "",
-		const int & nbOfArgs = 0,
+		const int nbOfArgs = 0,
 		const QString & argsSeparator = "",
 		const IOType & ioType = IOType::Undefined,
 		const QString & family = "",
@@ -93,11 +94,11 @@ public:
 	SerialCommand(
 		const QString & command,
 		const QString & name,
-		const int & nbExpectedBytes,
+		const int nbExpectedBytes,
 		const SerialOperationMode::BlockingMode & blockingMode,
 		const SerialOperationMode::FluxMode & fluxMode,
 		const QString & terminator = "",
-		const int & nbOfArgs = 0,
+		const int nbOfArgs = 0,
 		const QString & argsSeparator = "",
 		const IOType & ioType = IOType::Undefined,
 		const QString & family = "",
@@ -133,6 +134,8 @@ public:
 	bool stopsPushMode(const SerialCommand & command) const;
 	void setArgs(QList<SerialCommandArg> args) { m_args = args; }
 
+	MatchType getMatchType() const { return m_matchType; }
+
 	QByteArray getSerialData() const;
 
 private:
@@ -155,4 +158,6 @@ private:
 	QList<const SerialCommand *> m_pushModeStopCommands;
 
 	QList<SerialCommandArg> m_args;
+
+	MatchType m_matchType;
 };

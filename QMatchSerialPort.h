@@ -27,14 +27,15 @@
 
 #include "qtserialcommands_global.h"
 
-#include <QList>
 #include "QAsyncSerialPort.h"
 #include "SerialCommand.h"
 #include "SerialPortSettings.h"
-
 #include "QSerialBuffer.h"
 #include "QSerialResponseProcessor.h"
 #include "SerialMessageFactory.h"
+
+#include <QList>
+#include <QThread>
 
 class QVariant;
 class QStringList;
@@ -64,13 +65,17 @@ public:
 private:
 	QSerialBuffer m_serialBuffer;
 	const SerialMessages & m_serialMessages;
+
+	QThread m_responseProcessingThread;
+	QSerialResponseProcessor m_responseProcessor;
+
 	bool m_autoReconnect;
 	bool m_gotDisconnected;
 	bool m_hasChangedSettings;
 	QTimer m_commandTimer;
 	bool m_bypassSmartMatchingMode;
-	SerialCommand * m_commandToSend;
-	QByteArray m_syncBlockingResponse;
+	SerialCommand * m_commandToSendAwait;
+	QByteArray m_awaitedResponse;
 
 private slots:
 	void handleNextCommandReadyToSend();
@@ -78,7 +83,6 @@ private slots:
 	void handleResponse(QByteArray data);
 	void handlePullCommandTimeout();
 	void handleSmartMatchingModeChange(bool isBypassing);
-	void handleSendCommandRequest(const SerialCommand & command);
 
 signals:
 	void sendCommandRequested(const SerialCommand & command);
@@ -86,6 +90,7 @@ signals:
 	void messageReceived(const QByteArray & message, const QString & translation);
 	void smartMatchingModeChanged(bool devMode);
 	void commandTimedOut(QString command, QList<SerialCommandArg> args, int port);
-	void removeLastCommandSentRequest();
-	void removeFirstCommandToSendRequest();
+	void removeLastCommandSentRequested();
+	void removeFirstCommandToSendRequested();
+	void processResponsesRequested();
 };

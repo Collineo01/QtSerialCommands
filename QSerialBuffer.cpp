@@ -47,20 +47,12 @@ void QSerialBuffer::removeNextCommandToSend()
 
 QList<SerialCommand>::iterator QSerialBuffer::getSentCommandsBegin()
 {
-	m_sentCommandsMutex.lock();
-	QList<SerialCommand>::iterator iterator = m_sentCommandList.begin();
-	m_sentCommandsMutex.unlock();
-
-	return iterator;
+	return m_sentCommandList.begin();
 }
 
 QList<SerialCommand>::iterator QSerialBuffer::getSentCommandsEnd()
 {
-	m_sentCommandsMutex.lock();
-	QList<SerialCommand>::iterator iterator = m_sentCommandList.end();
-	m_sentCommandsMutex.unlock();
-
-	return iterator;
+	return m_sentCommandList.end();
 }
 
 QList<SerialCommand>::iterator QSerialBuffer::eraseSentCommand(QList<SerialCommand>::iterator it)
@@ -72,7 +64,7 @@ QList<SerialCommand>::iterator QSerialBuffer::eraseSentCommand(QList<SerialComma
 	return iterator;
 }
 
-int QSerialBuffer::sentCommandListSize()
+int QSerialBuffer::getSentCommandListSize()
 {
 	m_sentCommandsMutex.lock();
 	int size = m_sentCommandList.size();
@@ -114,6 +106,15 @@ QByteArray QSerialBuffer::getResponseBuffer()
 	return responses;
 }
 
+bool QSerialBuffer::hasNextCommandToSend()
+{
+	m_responsesMutex.lock();
+	bool hasNext = !m_commandToSendList.isEmpty();
+	m_responsesMutex.unlock();
+
+	return hasNext;
+}
+
 SerialCommand QSerialBuffer::getNextCommandToSend()
 {
 	m_commandsToSendMutex.lock();
@@ -132,26 +133,25 @@ bool QSerialBuffer::isResponseBufferEmpty()
 	return bufferEmpty;
 }
 
-void QSerialBuffer::writeCommand(SerialCommand command, const QList<SerialCommandArg> & args)
+void QSerialBuffer::writeCommand(SerialCommand command)
 {
-	bool nextCommandReadyToSend = false;
+	bool nextCommandReady = false;
 	bool bufferFilled = false;
-
-	command.setArgs(args);
 
 	m_commandsToSendMutex.lock();
 	m_sentCommandsMutex.lock();
 
 	const bool commandIsInBuffer = m_commandToSendList.contains(command) || m_sentCommandList.contains(command);
-	const bool waitResponseBeforeSendingAgain = command.getOperationMode().blockingMode() == SerialOperationMode::BlockingMode::NonBlockingXCommandsOneResponse;
+	const bool waitResponseBeforeSendingAgain = 
+		commandIsInBuffer && command.getOperationMode().blockingMode() == SerialOperationMode::BlockingMode::NonBlockingXCommandsOneResponse;
 
-	if (!commandIsInBuffer || !waitResponseBeforeSendingAgain)
+	if (!waitResponseBeforeSendingAgain)
 	{
 		m_commandToSendList.append(command);
 
-		bool lastCommandSentIsNotBlocking = m_sentCommandList.isEmpty() || m_sentCommandList.last().getOperationMode().blockingMode() != SerialOperationMode::BlockingMode::Blocking;
-		if (m_commandToSendList.size() == 1 && lastCommandSentIsNotBlocking) {
-			nextCommandReadyToSend = true;
+		bool lastCommandSentIsBlocking = !m_sentCommandList.isEmpty() && m_sentCommandList.last().getOperationMode().blockingMode() == SerialOperationMode::BlockingMode::Blocking;
+		if (m_commandToSendList.size() == 1 && !lastCommandSentIsBlocking) {
+			nextCommandReady = true;
 		}
 		if (m_commandToSendList.size() >= m_maxSendBufferSize || m_sentCommandList.size() >= m_maxSendBufferSize) {
 			bufferFilled = true;
@@ -161,7 +161,7 @@ void QSerialBuffer::writeCommand(SerialCommand command, const QList<SerialComman
 	m_commandsToSendMutex.unlock();
 	m_sentCommandsMutex.unlock();
 
-	if (nextCommandReadyToSend) emit nextCommandIsReadyToSend();
+	if (nextCommandReady)		emit nextCommandReadyToSend();
 	if (bufferFilled)			emit commandBufferFilled();  // TODO : intercept signal.
 }
 
@@ -185,7 +185,7 @@ void QSerialBuffer::writeResponse(const QByteArray& response)
 
 void QSerialBuffer::handleSentCommandToSend()
 {
-	bool nextCommandReadyToSend = false;
+	bool nextCommandReady = false;
 
 	m_commandsToSendMutex.lock();
 	m_sentCommandsMutex.lock();
@@ -210,14 +210,20 @@ void QSerialBuffer::handleSentCommandToSend()
 	if (blockingMode == SerialOperationMode::BlockingMode::NonBlockingNoResponse)
 	{
 		m_commandToSendList.removeFirst();
-		nextCommandReadyToSend = true;
+		if (!m_commandToSendList.isEmpty())
+		{
+			nextCommandReady = true;
+		}
 	}
 	else if (
 		blockingMode == SerialOperationMode::BlockingMode::NonBlockingXCommandsXResponses
 		|| blockingMode == SerialOperationMode::BlockingMode::NonBlockingXCommandsOneResponse)
 	{
 		m_sentCommandList.append(m_commandToSendList.takeFirst());
-		nextCommandReadyToSend = true;
+		if (!m_commandToSendList.isEmpty())
+		{
+			nextCommandReady = true;
+		}
 	}
 	else if (blockingMode == SerialOperationMode::BlockingMode::Blocking)
 	{
@@ -227,5 +233,5 @@ void QSerialBuffer::handleSentCommandToSend()
 	m_commandsToSendMutex.unlock();
 	m_sentCommandsMutex.unlock();
 
-	if (nextCommandReadyToSend) emit nextCommandIsReadyToSend();
+	if (nextCommandReady) emit nextCommandReadyToSend();
 }

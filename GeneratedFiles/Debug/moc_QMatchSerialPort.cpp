@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_QMatchSerialPort_t {
     QByteArrayData data[26];
-    char stringdata0[444];
+    char stringdata0[449];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -48,16 +48,16 @@ QT_MOC_LITERAL(12, 164, 15), // "commandTimedOut"
 QT_MOC_LITERAL(13, 180, 23), // "QList<SerialCommandArg>"
 QT_MOC_LITERAL(14, 204, 4), // "args"
 QT_MOC_LITERAL(15, 209, 4), // "port"
-QT_MOC_LITERAL(16, 214, 28), // "removeLastCommandSentRequest"
-QT_MOC_LITERAL(17, 243, 31), // "removeFirstCommandToSendRequest"
-QT_MOC_LITERAL(18, 275, 28), // "handleNextCommandReadyToSend"
-QT_MOC_LITERAL(19, 304, 27), // "handleFoundMatchingResponse"
-QT_MOC_LITERAL(20, 332, 14), // "handleResponse"
-QT_MOC_LITERAL(21, 347, 4), // "data"
-QT_MOC_LITERAL(22, 352, 24), // "handlePullCommandTimeout"
-QT_MOC_LITERAL(23, 377, 29), // "handleSmartMatchingModeChange"
-QT_MOC_LITERAL(24, 407, 11), // "isBypassing"
-QT_MOC_LITERAL(25, 419, 24) // "handleSendCommandRequest"
+QT_MOC_LITERAL(16, 214, 30), // "removeLastCommandSentRequested"
+QT_MOC_LITERAL(17, 245, 33), // "removeFirstCommandToSendReque..."
+QT_MOC_LITERAL(18, 279, 25), // "processResponsesRequested"
+QT_MOC_LITERAL(19, 305, 28), // "handleNextCommandReadyToSend"
+QT_MOC_LITERAL(20, 334, 27), // "handleFoundMatchingResponse"
+QT_MOC_LITERAL(21, 362, 14), // "handleResponse"
+QT_MOC_LITERAL(22, 377, 4), // "data"
+QT_MOC_LITERAL(23, 382, 24), // "handlePullCommandTimeout"
+QT_MOC_LITERAL(24, 407, 29), // "handleSmartMatchingModeChange"
+QT_MOC_LITERAL(25, 437, 11) // "isBypassing"
 
     },
     "QMatchSerialPort\0sendCommandRequested\0"
@@ -65,13 +65,13 @@ QT_MOC_LITERAL(25, 419, 24) // "handleSendCommandRequest"
     "response\0messageReceived\0message\0"
     "translation\0smartMatchingModeChanged\0"
     "devMode\0commandTimedOut\0QList<SerialCommandArg>\0"
-    "args\0port\0removeLastCommandSentRequest\0"
-    "removeFirstCommandToSendRequest\0"
+    "args\0port\0removeLastCommandSentRequested\0"
+    "removeFirstCommandToSendRequested\0"
+    "processResponsesRequested\0"
     "handleNextCommandReadyToSend\0"
     "handleFoundMatchingResponse\0handleResponse\0"
     "data\0handlePullCommandTimeout\0"
-    "handleSmartMatchingModeChange\0isBypassing\0"
-    "handleSendCommandRequest"
+    "handleSmartMatchingModeChange\0isBypassing"
 };
 #undef QT_MOC_LITERAL
 
@@ -86,7 +86,7 @@ static const uint qt_meta_data_QMatchSerialPort[] = {
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       7,       // signalCount
+       8,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
        1,    1,   79,    2, 0x06 /* Public */,
@@ -96,14 +96,14 @@ static const uint qt_meta_data_QMatchSerialPort[] = {
       12,    3,   95,    2, 0x06 /* Public */,
       16,    0,  102,    2, 0x06 /* Public */,
       17,    0,  103,    2, 0x06 /* Public */,
+      18,    0,  104,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      18,    0,  104,    2, 0x08 /* Private */,
-      19,    2,  105,    2, 0x08 /* Private */,
-      20,    1,  110,    2, 0x08 /* Private */,
-      22,    0,  113,    2, 0x08 /* Private */,
-      23,    1,  114,    2, 0x08 /* Private */,
-      25,    1,  117,    2, 0x08 /* Private */,
+      19,    0,  105,    2, 0x08 /* Private */,
+      20,    2,  106,    2, 0x08 /* Private */,
+      21,    1,  111,    2, 0x08 /* Private */,
+      23,    0,  114,    2, 0x08 /* Private */,
+      24,    1,  115,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -113,14 +113,14 @@ static const uint qt_meta_data_QMatchSerialPort[] = {
     QMetaType::Void, QMetaType::QString, 0x80000000 | 13, QMetaType::Int,    4,   14,   15,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void, QMetaType::QByteArray, 0x80000000 | 3,    6,    4,
-    QMetaType::Void, QMetaType::QByteArray,   21,
+    QMetaType::Void, QMetaType::QByteArray,   22,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   24,
-    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void, QMetaType::Bool,   25,
 
        0        // eod
 };
@@ -136,14 +136,14 @@ void QMatchSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 2: _t->messageReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         case 3: _t->smartMatchingModeChanged((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 4: _t->commandTimedOut((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QList<SerialCommandArg>(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 5: _t->removeLastCommandSentRequest(); break;
-        case 6: _t->removeFirstCommandToSendRequest(); break;
-        case 7: _t->handleNextCommandReadyToSend(); break;
-        case 8: _t->handleFoundMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
-        case 9: _t->handleResponse((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
-        case 10: _t->handlePullCommandTimeout(); break;
-        case 11: _t->handleSmartMatchingModeChange((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 12: _t->handleSendCommandRequest((*reinterpret_cast< const SerialCommand(*)>(_a[1]))); break;
+        case 5: _t->removeLastCommandSentRequested(); break;
+        case 6: _t->removeFirstCommandToSendRequested(); break;
+        case 7: _t->processResponsesRequested(); break;
+        case 8: _t->handleNextCommandReadyToSend(); break;
+        case 9: _t->handleFoundMatchingResponse((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const SerialCommand(*)>(_a[2]))); break;
+        case 10: _t->handleResponse((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
+        case 11: _t->handlePullCommandTimeout(); break;
+        case 12: _t->handleSmartMatchingModeChange((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -185,15 +185,22 @@ void QMatchSerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         }
         {
             typedef void (QMatchSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QMatchSerialPort::removeLastCommandSentRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QMatchSerialPort::removeLastCommandSentRequested)) {
                 *result = 5;
                 return;
             }
         }
         {
             typedef void (QMatchSerialPort::*_t)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QMatchSerialPort::removeFirstCommandToSendRequest)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QMatchSerialPort::removeFirstCommandToSendRequested)) {
                 *result = 6;
+                return;
+            }
+        }
+        {
+            typedef void (QMatchSerialPort::*_t)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QMatchSerialPort::processResponsesRequested)) {
+                *result = 7;
                 return;
             }
         }
@@ -272,15 +279,21 @@ void QMatchSerialPort::commandTimedOut(QString _t1, QList<SerialCommandArg> _t2,
 }
 
 // SIGNAL 5
-void QMatchSerialPort::removeLastCommandSentRequest()
+void QMatchSerialPort::removeLastCommandSentRequested()
 {
     QMetaObject::activate(this, &staticMetaObject, 5, nullptr);
 }
 
 // SIGNAL 6
-void QMatchSerialPort::removeFirstCommandToSendRequest()
+void QMatchSerialPort::removeFirstCommandToSendRequested()
 {
     QMetaObject::activate(this, &staticMetaObject, 6, nullptr);
+}
+
+// SIGNAL 7
+void QMatchSerialPort::processResponsesRequested()
+{
+    QMetaObject::activate(this, &staticMetaObject, 7, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

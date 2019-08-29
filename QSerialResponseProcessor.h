@@ -25,6 +25,7 @@ private:
 	SerialResponseMatcher m_responseMatcher;
 
 	QByteArray takeCommandFirstMatch(const SerialCommand & command) const;
+
 	void takeMessages();
 
 public slots:
@@ -33,5 +34,5 @@ public slots:
 signals:
 	void foundMatchingResponse(const QByteArray & response, const SerialCommand & command);
 	void foundMessage(const QByteArray & message, const QString & description);
-	void commandIsReadyToSend(const SerialCommand & command);
+	void nextCommandReadyToSend();
 };

@@ -16,14 +16,17 @@ SerialResponseMatcher::~SerialResponseMatcher()
 
 QByteArray SerialResponseMatcher::getCommandFirstMatch(const QByteArray & responseBuffer, const SerialCommand & command) const
 {
-	const bool findMatchByRegularExpression = command.getResponseRegex().isValid();
-	const bool findMatchByNbOfBytes = command.getNbBytesExpected() != -1;
-	const bool findMatchByExpectedResponses = !command.getExpectedResponses().isEmpty();
-
-	if (findMatchByRegularExpression)	return getRegexMatch(responseBuffer, command);
-	if (findMatchByExpectedResponses)	return getExpectedResponsesMatch(responseBuffer, command);
-	if (findMatchByNbOfBytes)			return getNbExpectedBytesMatch(responseBuffer, command);
-	return QByteArray();
+	switch (command.getMatchType())
+	{
+		case MatchType::Regex:
+			return getRegexMatch(responseBuffer, command);
+		case MatchType::ExpectedResponses:
+			return getExpectedResponsesMatch(responseBuffer, command);
+		case MatchType::NbExpectedBytes:
+			return getNbExpectedBytesMatch(responseBuffer, command);
+		default:
+			return QByteArray();
+	}			
 }
 
 QByteArrayList SerialResponseMatcher::getMessages(const QByteArray& responsesBuffer) const
@@ -85,7 +88,7 @@ QByteArray SerialResponseMatcher::getExpectedResponsesMatch(const QByteArray & r
 QByteArray SerialResponseMatcher::getNbExpectedBytesMatch(const QByteArray & responsesBuffer, const SerialCommand & command) const
 {
 	QByteArray response;
-	if (command.getNbBytesExpected() > 0) {
+	if (command.getNbBytesExpected() > 0 && responsesBuffer.size() >= command.getNbBytesExpected()) {
 		response = responsesBuffer.left(command.getNbBytesExpected());
 	}
 	return response;

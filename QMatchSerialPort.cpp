@@ -17,22 +17,31 @@ QMatchSerialPort::QMatchSerialPort(
 ):
 	QAsyncSerialPort(settings),
 	m_serialMessages{ serialMessagesFactory.createSerialMessages() },
+	m_responseProcessor{ m_serialBuffer, m_serialMessages },
 	m_autoReconnect{ autoReconnect },
 	m_gotDisconnected{ false },
 	m_hasChangedSettings{ false },
 	m_bypassSmartMatchingMode{ false },
-	m_commandToSend{ nullptr }
+	m_commandToSendAwait{ nullptr }
 {
 	m_commandTimer.setSingleShot(true);
 
 	qRegisterMetaType<SerialCommand>("SerialCommand");
 
 
-	connect(&m_serialBuffer, &QSerialBuffer::nextCommandIsReadyToSend, this, &QMatchSerialPort::handleNextCommandReadyToSend);
+	connect(&m_serialBuffer, &QSerialBuffer::nextCommandReadyToSend, this, &QMatchSerialPort::handleNextCommandReadyToSend, Qt::QueuedConnection);
 	connect(this, &QAsyncSerialPort::dataRead, this, &QMatchSerialPort::handleResponse, Qt::QueuedConnection);
 	connect(&m_commandTimer, &QTimer::timeout, this, &QMatchSerialPort::handlePullCommandTimeout, Qt::QueuedConnection);
 	connect(this, &QMatchSerialPort::smartMatchingModeChanged, this, &QMatchSerialPort::handleSmartMatchingModeChange, Qt::QueuedConnection);
-	connect(this, &QMatchSerialPort::sendCommandRequested, this, &QMatchSerialPort::handleSendCommandRequest, Qt::QueuedConnection);
+
+	m_responseProcessor.moveToThread(&m_responseProcessingThread);
+	connect(&m_responseProcessor, &QSerialResponseProcessor::foundMatchingResponse, this, &QMatchSerialPort::handleFoundMatchingResponse, Qt::QueuedConnection);
+	connect(&m_responseProcessor, &QSerialResponseProcessor::nextCommandReadyToSend, this, &QMatchSerialPort::handleNextCommandReadyToSend, Qt::QueuedConnection);
+	connect(&m_responseProcessor, &QSerialResponseProcessor::foundMessage, this, &QMatchSerialPort::messageReceived, Qt::QueuedConnection);
+	connect(this, &QMatchSerialPort::processResponsesRequested, &m_responseProcessor, &QSerialResponseProcessor::processResponses, Qt::QueuedConnection);
+	//connect(&m_responseProcessingThread, &QThread::finished, &m_responseProcessor, &QObject::deleteLater);
+	//connect(&m_responseProcessingThread, &QThread::finished, &m_responseProcessingThread, &QThread::deleteLater);
+	m_responseProcessingThread.start();
 }
 
 QMatchSerialPort::QMatchSerialPort(const SerialPortSettings & settings, bool autoReconnect):
@@ -52,8 +61,13 @@ QMatchSerialPort::QMatchSerialPort(bool autoReconnect):
 
 QMatchSerialPort::~QMatchSerialPort()
 {
-
+	m_responseProcessingThread.quit();
+	m_responseProcessingThread.wait();
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Methods
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 void QMatchSerialPort::sendCommand(SerialCommand command, QList<SerialCommandArg> args)
 {
@@ -75,8 +89,7 @@ QByteArray QMatchSerialPort::sendCommandAwait(SerialCommand command, QList<Seria
 	{
 		command.setArgs(args);
 	}
-
-	m_commandToSend = &command;
+	m_commandToSendAwait = &command;
 
 	sendCommand(command);
 
@@ -84,28 +97,18 @@ QByteArray QMatchSerialPort::sendCommandAwait(SerialCommand command, QList<Seria
 	t.setSingleShot(true);
 	t.start(m_timeout);
 
-	while (m_commandToSend == &command && t.isActive()) {
+	while (m_commandToSendAwait == &command && t.isActive()) {
 		QCoreApplication::processEvents();
 	}
 
 	if (t.isActive()) {
 		t.stop();
-		return m_syncBlockingResponse;
+		return m_awaitedResponse;
 	}
 
 	qDebug() << "Response timeout for getCommand : " + command.getName() + " on port " + portName();
 
 	return QByteArray();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// Methods
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void QMatchSerialPort::handleSendCommandRequest(const SerialCommand & command)
-{
-	sendCommand(command);
 }
 
 //bool QMatchSerialPort::retrySend(QString getCommand) {
@@ -132,17 +135,7 @@ void QMatchSerialPort::handleResponse(QByteArray data)
 	if (!m_bypassSmartMatchingMode)
 	{
 		m_serialBuffer.writeResponse(data);
-
-		QThread responseAnalyzingThread;
-		QSerialResponseProcessor responseAnalyzer(m_serialBuffer, m_serialMessages);
-		responseAnalyzer.moveToThread(&responseAnalyzingThread);
-		connect(&responseAnalyzer, &QSerialResponseProcessor::foundMatchingResponse, this, &QMatchSerialPort::handleFoundMatchingResponse);
-		connect(&responseAnalyzer, &QSerialResponseProcessor::commandIsReadyToSend, this, &QMatchSerialPort::handleNextCommandReadyToSend);
-		connect(&responseAnalyzer, &QSerialResponseProcessor::foundMessage, this, &QMatchSerialPort::messageReceived);
-		connect(&responseAnalyzingThread, &QThread::started, &responseAnalyzer, &QSerialResponseProcessor::processResponses);
-		connect(&responseAnalyzingThread, &QThread::finished, &responseAnalyzer, &QObject::deleteLater);
-		connect(&responseAnalyzingThread, &QThread::finished, &responseAnalyzingThread, &QThread::deleteLater);
-		responseAnalyzingThread.start();
+		emit processResponsesRequested();
 	}
 }
 
@@ -192,10 +185,10 @@ void QMatchSerialPort::handleFoundMatchingResponse(const QByteArray & response, 
 	{
 		m_commandTimer.stop();
 	}
-	if (*m_commandToSend == command)
+	if (m_commandToSendAwait != nullptr && *m_commandToSendAwait == command)
 	{
-		m_syncBlockingResponse = response;
-		m_commandToSend = nullptr;
+		m_awaitedResponse = response;
+		m_commandToSendAwait = nullptr;
 	}
 	else
 	{

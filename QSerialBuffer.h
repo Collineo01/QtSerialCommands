@@ -25,18 +25,19 @@ public:
 	SerialCommand takeLastCommandSent();
 	QList<SerialCommand>::iterator eraseSentCommand(QList<SerialCommand>::iterator it);
 	void clearBuffersNow();
-	int sentCommandListSize();
+	int getSentCommandListSize();
 	QByteArray getResponseBuffer();
+	bool hasNextCommandToSend();
 	SerialCommand getNextCommandToSend();
 	bool isResponseBufferEmpty();
 	void handleSentCommandToSend();
 
 public slots:
-	void writeCommand(SerialCommand command, const QList<SerialCommandArg> & args = QList<SerialCommandArg>());
+	void writeCommand(SerialCommand command);
 	void writeResponse(const QByteArray & response);
 
 signals:
-	void nextCommandIsReadyToSend();
+	void nextCommandReadyToSend();
 	void commandBufferFilled();
 	void responseBufferFilled();
 

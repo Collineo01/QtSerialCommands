@@ -121,6 +121,7 @@
     <ClInclude Include="BaudRate.h" />
     <ClInclude Include="DefaultSerialPortSettings.h" />
     <ClInclude Include="IOType.h" />
+    <ClInclude Include="MatchType.h" />
     <ClInclude Include="SerialCommand.h" />
     <ClInclude Include="SerialCommandArg.h" />
     <ClInclude Include="SerialCommandFactory.h">

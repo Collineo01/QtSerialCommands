@@ -9,11 +9,11 @@ SerialCommand::SerialCommand(
 	const QString & name,
 	const QRegularExpression & responseRegex,
 	const QByteArrayList & expectedResponses,
-	const int & nbExpectedBytes,
+	const int nbExpectedBytes,
 	const SerialOperationMode::BlockingMode & blockingMode,
 	const SerialOperationMode::FluxMode & fluxMode,
 	const QString & terminator,
-	const int & nbOfArgs,
+	const int nbOfArgs,
 	const QString & argsSeparator,
 	const IOType & ioType,
 	const QString & family,
@@ -45,7 +45,7 @@ SerialCommand::SerialCommand(
 	const SerialOperationMode::BlockingMode & blockingMode,
 	const SerialOperationMode::FluxMode & fluxMode,
 	const QString & terminator,
-	const int & nbOfArgs,
+	const int nbOfArgs,
 	const QString & argsSeparator,
 	const IOType & ioType,
 	const QString & family,
@@ -71,6 +71,7 @@ SerialCommand::SerialCommand(
 		tooltip
 	)
 {
+	m_matchType = MatchType::Regex;
 }
 
 SerialCommand::SerialCommand(
@@ -80,7 +81,7 @@ SerialCommand::SerialCommand(
 	const SerialOperationMode::BlockingMode & blockingMode,
 	const SerialOperationMode::FluxMode & fluxMode,
 	const QString & terminator,
-	const int & nbOfArgs,
+	const int nbOfArgs,
 	const QString & argsSeparator,
 	const IOType & ioType,
 	const QString & family,
@@ -106,16 +107,17 @@ SerialCommand::SerialCommand(
 		tooltip
 	)
 {
+	m_matchType = MatchType::ExpectedResponses;
 }
 
 SerialCommand::SerialCommand(
 	const QString & command,
 	const QString & name,
-	const int & nbExpectedBytes,
+	const int nbExpectedBytes,
 	const SerialOperationMode::BlockingMode & blockingMode,
 	const SerialOperationMode::FluxMode & fluxMode,
 	const QString & terminator,
-	const int & nbOfArgs,
+	const int nbOfArgs,
 	const QString & argsSeparator,
 	const IOType & ioType,
 	const QString & family,
@@ -141,6 +143,7 @@ SerialCommand::SerialCommand(
 		tooltip
 	)
 {
+	m_matchType = MatchType::NbExpectedBytes;
 }
 
 SerialCommand::~SerialCommand()
@@ -200,7 +203,7 @@ void SerialCommand::addPushModeStopCommand(const SerialCommand * command) {
 }
 
 bool SerialCommand::stopsPushMode(const SerialCommand & command) const {
-	for (auto stopCommand : m_pushModeStopCommands) {
+	for (const SerialCommand * stopCommand : m_pushModeStopCommands) {
 		if (command == *stopCommand) {
 			return true;
 		}
