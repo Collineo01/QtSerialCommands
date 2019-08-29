@@ -1,25 +1,6 @@
 #pragma once
 
 /*!	\class SerialCommand
-*
-*	\brief Représente une commande série.
-*
-*	Fonctionne de concert avec la classe QMatchSerialPort.
-*	Voir sa documentation pour des détails sur la gestion des commandes selon leur mode d'opération (m_operationMode).
-*
-*	Construit la chaine de caractères à envoyer à l'aide de la méthode commandToSend().
-*	Possède un constructeur pour une commande en QByteArray et un autre pour une commande en QString.
-*	Normalement quand on envoie une commande, on s'attend à une réponse qui lui est propre.
-*	Pour vérifier qu'elle y correspond, on utilise 2 façons dépendamment du constructeur utilisé.
-*	Si la commande est en QByteArray, la réponse sera comparé à un QList<QByteArray>.
-*	Si la commande est en QString, la réponse sera évaluée à l'aide d'un QRegularExpression.
-*	La méthode getFirstCommandMatch() permet de trouver la première correspondance dans un QByteArray (ou QString) passé en paramètre.
-*
-*	Protocole simplifié : on s'attend à ce que l'appareil avec lequel on communique renvoie un format de réponse précis.
-*	Ce format est : "Commande:RéponseTerminator".
-*	Pour utiliser ce protocole, on doit initialiser m_responseRegex avec un constructeur vide.
-*	La méthode getResponseRegex() utilisera les variables m_command et m_terminator pour retourner le bon QRegularExpression
-*
 */
 
 
@@ -46,7 +27,7 @@ public:
 		const QString & name, 										// getName
 		const QRegularExpression & responseRegex,					// The response format we epxect
 		const QByteArrayList & expectedResponses,					// The exact responses we can expect from the device
-		const int nbBytesExpected,								// The exact number of bytes we expect from the device response
+		const int nbBytesExpected,									// The exact number of bytes we expect from the device response
 		const SerialOperationMode::BlockingMode & blockingMode,		// BlockingMode
 		const SerialOperationMode::FluxMode & fluxMode, 			// FluxMode
 		const QString & terminator = "", 							// Terminator

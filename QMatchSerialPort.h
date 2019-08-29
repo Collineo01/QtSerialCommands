@@ -1,28 +1,6 @@
 #pragma once
 
 /*!	\class QMatchSerialPort
-*
-*	\brief Gère les tampons d'envoi de commandes et de réponses.
-*
-*
-*	Permet d'envoyer des SerialCommand et d'analyser les réponses. Quand une réponse correspond à un SerialCommand envoyée,
-*	ceux-ci sont retirés de leur tampon respectif et le signal matchingResponseReceived() est émit.
-*	Si l'appareil connecté peut envoyer des messages de lui même, il faut appeler la fonction setDeviceMessages()
-*	afin de les reconnaître pour émettre le signal messageReceived() quand un message est reçu.
-*	La gestion des tampons d'envoie dépend de chaque mode d'opération des SerialCommand envoyés.
-*
-*
-*	Détails concernant les modes d'opération:
-*
-*	-SerialCommand avec mode d'opération OperationMode::BlockingMode::Blocking : quand la réponse attendue sera reçue,
-*		la commande et la réponse seront retirées de leur tampon, et la prochaine commande dans le tampon m_commandToSendList sera envoyée.
-*	-SerialCommand avec mode d'opération OperationMode::BlockingMode::NonBlockingWithResponse : une fois envoyé, le prochain SerialCommand dans m_commandToSendList sera directement envoyé.
-*		Quand la réponse correspondante du premier est reçue, il sera retiré du tampon m_sentCommandList.
-*	-SerialCommand avec mode d'opération OperationMode::BlockingMode::NonBlockingNoResponse : une fois envoyé, le prochain SerialCommand dans m_commandToSendList sera directement envoyé.
-*
-*	-SerialCommand avec mode d'opération OperationMode::FluxMode::Push : des réponses en continue sont attendues jusqu'à ce que la commande qui l'arrête soit envoyée.
-*		*Cette commande devra être ajouté à l'aide de la méthode addPushModeStopCommand() dans le SerialCommand en mode Push. Il sera alors retiré du tampon m_sentCommandList.
-*	-SerialCommand avec mode d'opération OperationMode::FluxMode::Pull : au maximum une réponse est attendue.
 */
 
 #include "qtserialcommands_global.h"

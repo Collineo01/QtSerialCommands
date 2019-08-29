@@ -10,11 +10,6 @@
 
 
 /*! \class QAsyncSerialPort
-*
-*	\brief Envoie et reçoit des données au getPort série.
-*
-*	Gère la connexion de l'appareil avec le getPort série (openPort() et closePort()).
-*	Envoie des signaux par rapport aux erreurs de communication série.
 */
 
 class QTSERIALCOMMANDS_EXPORT QAsyncSerialPort : public QSerialPort
@@ -46,7 +41,6 @@ private slots:
 
 signals:
 	void dataRead(QByteArray data);
-	//void responseRead(QString response);
 	void connectionUpdated(bool connected, bool failure = false);
 	void messageSent();
 	void updated(QString message);

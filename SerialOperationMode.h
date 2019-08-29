@@ -4,9 +4,6 @@
 
 
 /*! \class SerialOperationMode
-*
-*	\brief Conteneur pour les modes d'opération d'une commande
-*
 */
 
 class QTSERIALCOMMANDS_EXPORT SerialOperationMode

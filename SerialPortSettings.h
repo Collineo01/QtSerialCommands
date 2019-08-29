@@ -6,11 +6,6 @@
 #include "BaudRate.h"
 
 /*! \class SerialPortSettings
-*
-*	\brief Conteneur des paramètres d'un appareil de communication série. Permet la sauvegarde et le chargement de fichier ini.
-*
-*	save() pour sauvegarder et load() pour charger.
-*
 */
 
 

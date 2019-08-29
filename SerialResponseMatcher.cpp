@@ -49,7 +49,6 @@ QByteArrayList SerialResponseMatcher::getMessages(const QByteArray& responsesBuf
 		return responseMap.values();
 	}
 
-	// TODO : use a better sorting method.
 	QList<int> sortedKeys = responseMap.keys();
 	qSort(sortedKeys);
 	for (int key : responseMap.keys()) {

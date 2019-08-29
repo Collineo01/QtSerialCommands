@@ -18,10 +18,6 @@ QSerialResponseProcessor::~QSerialResponseProcessor()
 {
 }
 
-/*! À chaque réponse reçue, le tampon m_responseBuffer est analysé pour trouver toutes les réponses qui correspondent à l'une des commandes dans m_sentCommandList.
-*	Les tampons sont gérés en fonction du mode d'opération de chaque commande.
-*
-*/
 void QSerialResponseProcessor::processResponses()
 {
 	QList<SerialCommand>::iterator sentCmdIterator = m_serialBuffer.getSentCommandsBegin();

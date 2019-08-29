@@ -35,12 +35,12 @@ QMatchSerialPort::QMatchSerialPort(
 	connect(this, &QMatchSerialPort::smartMatchingModeChanged, this, &QMatchSerialPort::handleSmartMatchingModeChange, Qt::QueuedConnection);
 
 	m_responseProcessor.moveToThread(&m_responseProcessingThread);
+	
 	connect(&m_responseProcessor, &QSerialResponseProcessor::foundMatchingResponse, this, &QMatchSerialPort::handleFoundMatchingResponse, Qt::QueuedConnection);
 	connect(&m_responseProcessor, &QSerialResponseProcessor::nextCommandReadyToSend, this, &QMatchSerialPort::handleNextCommandReadyToSend, Qt::QueuedConnection);
 	connect(&m_responseProcessor, &QSerialResponseProcessor::foundMessage, this, &QMatchSerialPort::messageReceived, Qt::QueuedConnection);
 	connect(this, &QMatchSerialPort::processResponsesRequested, &m_responseProcessor, &QSerialResponseProcessor::processResponses, Qt::QueuedConnection);
-	//connect(&m_responseProcessingThread, &QThread::finished, &m_responseProcessor, &QObject::deleteLater);
-	//connect(&m_responseProcessingThread, &QThread::finished, &m_responseProcessingThread, &QThread::deleteLater);
+
 	m_responseProcessingThread.start();
 }
 
