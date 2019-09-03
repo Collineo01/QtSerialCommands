@@ -4,7 +4,10 @@ QSerialBuffer::QSerialBuffer(int sendBufferSize, int responsesBufferSize, QObjec
 	QObject(parent),
 	m_nbOfReadyCommands{ 0 },
 	m_maxSendBufferSize{ sendBufferSize },
-	m_maxResponseBufferSize{ responsesBufferSize }
+	m_maxResponseBufferSize{ responsesBufferSize },
+	m_commandsToSendMutex{ QMutex::Recursive },
+	m_sentCommandsMutex{ QMutex::Recursive },
+	m_responsesMutex{ QMutex::Recursive }
 {
 }
 
