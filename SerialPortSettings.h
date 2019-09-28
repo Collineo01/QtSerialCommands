@@ -36,7 +36,8 @@ public:
 		QSerialPort::Parity parity = DEFAULT_PARITY,
 		QSerialPort::FlowControl flowControl = DEFAULT_FLOW_CONTROL
 	);
-	SerialPortSettings();
+	SerialPortSettings(int port, bool defaultValues = false);
+	SerialPortSettings(bool defaultValues = false);
 	~SerialPortSettings();
 
 	void save(QString fileName);

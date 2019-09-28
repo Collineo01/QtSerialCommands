@@ -35,8 +35,20 @@ SerialPortSettings::SerialPortSettings(
 {
 }
 
-SerialPortSettings::SerialPortSettings():
-	SerialPortSettings(-1)
+SerialPortSettings::SerialPortSettings(int port, bool defaultValues) :
+	SerialPortSettings(
+		port,
+		BaudRate::BR9600,
+		QSerialPort::StopBits::OneStop,
+		QSerialPort::DataBits::Data8,
+		QSerialPort::Parity::NoParity,
+		QSerialPort::FlowControl::NoFlowControl
+	)
+{
+}
+
+SerialPortSettings::SerialPortSettings(bool defaultValues) :
+	SerialPortSettings(INVALID_PORT, defaultValues)
 {
 }
 

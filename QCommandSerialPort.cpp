@@ -1,6 +1,5 @@
 #include "QCommandSerialPort.h"
 #include "SerialPortSettings.h"
-#include "DefaultSerialPortSettings.h"
 
 #include <QVariant>
 #include <QTime>
@@ -12,11 +11,10 @@
 
 QCommandSerialPort::QCommandSerialPort(
 	const SerialPortSettings& settings,
-	const SerialMessageFactory& serialMessagesFactory, 
+	const QList<SerialMessageFactory> & serialMessageFactories, 
 	bool autoReconnect
 ):
 	QAsyncSerialPort(settings),
-	m_serialMessages{ serialMessagesFactory.createSerialMessages() },
 	m_responseProcessor{ m_serialBuffer, m_serialMessages },
 	m_autoReconnect{ autoReconnect },
 	m_gotDisconnected{ false },
@@ -27,6 +25,13 @@ QCommandSerialPort::QCommandSerialPort(
 	m_commandTimer.setSingleShot(true);
 
 	qRegisterMetaType<SerialCommand>("SerialCommand");
+
+	QList<SerialMessageFactory>::const_iterator serialMessageFactoryIterator = serialMessageFactories.begin();
+	while (serialMessageFactoryIterator != serialMessageFactories.end())
+	{
+		m_serialMessages.mergeWith(serialMessageFactoryIterator->createSerialMessages());
+		++serialMessageFactoryIterator;
+	}
 
 	connect(&m_serialBuffer, &QSerialBuffer::nextCommandReadyToSend, this, &QCommandSerialPort::handleNextCommandReadyToSend, Qt::QueuedConnection);
 	connect(this, &QAsyncSerialPort::dataRead, this, &QCommandSerialPort::handleResponse, Qt::QueuedConnection);
@@ -41,16 +46,6 @@ QCommandSerialPort::QCommandSerialPort(
 	connect(this, &QCommandSerialPort::processResponsesRequested, &m_responseProcessor, &QSerialResponseProcessor::processResponses, Qt::QueuedConnection);
 
 	m_responseProcessingThread.start();
-}
-
-QCommandSerialPort::QCommandSerialPort(const SerialPortSettings & settings, bool autoReconnect):
-	QCommandSerialPort(settings, DummySerialMessageFactory(), autoReconnect)
-{
-}
-
-QCommandSerialPort::QCommandSerialPort(bool autoReconnect):
-	QCommandSerialPort(DefaultSerialPortSettings(), DummySerialMessageFactory(), autoReconnect)
-{
 }
 
 QCommandSerialPort::~QCommandSerialPort()

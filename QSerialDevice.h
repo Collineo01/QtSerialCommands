@@ -46,7 +46,8 @@ public:
 
 protected:
 	QCommandSerialPort & m_serialPort;
-	QMap<QString, const SerialCommand *> m_serialCommands;
+	QMap<QString, const SerialCommand*> m_serialCommands;
+	QList<const SerialCommand *> m_emergencySerialCommands;
 	SerialMessages m_expectedMessages;
 
 	virtual void initDevice() = 0;

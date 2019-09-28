@@ -17,6 +17,8 @@ class QTSERIALCOMMANDS_EXPORT QAsyncSerialPort : public QSerialPort
 	Q_OBJECT
 
 public:
+	static const int DEFAULT_TIMEOUT;
+
 	QAsyncSerialPort(const SerialPortSettings & settings = SerialPortSettings());
 	~QAsyncSerialPort();
 

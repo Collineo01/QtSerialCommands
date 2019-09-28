@@ -14,7 +14,8 @@ QSerialDevice::QSerialDevice(
 ) :
 	QObject(parent),
 	m_serialPort{ serialPort },
-	m_serialCommands{ commandFactory.createSerialCommands() },
+	m_serialCommands{ commandFactory.createCommands() },
+	m_emergencySerialCommands{ commandFactory.createEmergencyCommands() },
 	m_expectedMessages{ messageFactory.createSerialMessages() }
 {
 	connect(&m_serialPort, &QCommandSerialPort::matchingResponseReceived, this, &QSerialDevice::handleMatchingResponse);
@@ -30,7 +31,7 @@ QSerialDevice::QSerialDevice(
 	const SerialCommandFactory & commandFactory,
 	QObject * parent
 ) :
-	QSerialDevice(serialPort, commandFactory, DummySerialMessageFactory(), parent)
+	QSerialDevice(serialPort, commandFactory, SerialMessageFactory(), parent)
 {
 }
 

@@ -5,13 +5,15 @@
 #include "SerialPortSettings.h"
 
 
+const int QAsyncSerialPort::DEFAULT_TIMEOUT{ 250 };
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 QAsyncSerialPort::QAsyncSerialPort(const SerialPortSettings & settings) :
 	m_portSettings{ settings },
-	m_timeout{ 5000 },
+	m_timeout{ DEFAULT_TIMEOUT },
 	m_nbOfBytesSent{ 0 }
 {
 	m_timer.setSingleShot(true);

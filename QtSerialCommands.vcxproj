@@ -103,7 +103,6 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DefaultSerialPortSettings.cpp" />
     <ClCompile Include="QAsyncSerialPort.cpp" />
     <ClCompile Include="QSerialBuffer.cpp" />
     <ClCompile Include="QSerialDevice.cpp" />
@@ -119,7 +118,6 @@
   <ItemGroup>
     <ClInclude Include="ArgType.h" />
     <ClInclude Include="BaudRate.h" />
-    <ClInclude Include="DefaultSerialPortSettings.h" />
     <ClInclude Include="IOType.h" />
     <ClInclude Include="MatchType.h" />
     <ClInclude Include="SerialCommand.h" />

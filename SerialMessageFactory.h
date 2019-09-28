@@ -10,14 +10,5 @@ public:
 	SerialMessageFactory() {}
 	virtual ~SerialMessageFactory() {};
 
-	virtual SerialMessages createSerialMessages() const = 0;
+	virtual SerialMessages createSerialMessages() const { return SerialMessages(); };
 };
-
-class DummySerialMessageFactory : public SerialMessageFactory
-{
-public:
-	DummySerialMessageFactory() {};
-	~DummySerialMessageFactory() = default;
-	SerialMessages createSerialMessages() const override { return SerialMessages(); }
-};
-

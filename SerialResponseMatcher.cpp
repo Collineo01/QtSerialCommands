@@ -44,7 +44,7 @@ QByteArrayList SerialResponseMatcher::getMessages(const QByteArray& responsesBuf
 		}
 	}
 
-	if (responseMap.size() <= 1) 
+	if (responseMap.size() <= 1)
 	{
 		return responseMap.values();
 	}

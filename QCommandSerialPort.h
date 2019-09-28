@@ -10,6 +10,7 @@
 #include "SerialPortSettings.h"
 #include "QSerialBuffer.h"
 #include "QSerialResponseProcessor.h"
+#include "SerialCommandFactory.h"
 #include "SerialMessageFactory.h"
 
 #include <QList>
@@ -26,11 +27,9 @@ class QTSERIALCOMMANDS_EXPORT QCommandSerialPort : public QAsyncSerialPort
 public:
 	QCommandSerialPort(
 		const SerialPortSettings & settings, 
-		const SerialMessageFactory & serialMessagesFactory, 
+		const QList<SerialMessageFactory> & serialMessageFactories = {},
 		bool isAutoReconnecting = false
 	);
-	QCommandSerialPort(const SerialPortSettings & settings, bool isAutoReconnecting = false);
-	QCommandSerialPort(bool isAutoReconnecting = false);
 	~QCommandSerialPort();
 
 	void sendCommand(SerialCommand command, QList<SerialCommandArg> args = QList<SerialCommandArg>());
@@ -44,7 +43,7 @@ public:
 
 private:
 	QSerialBuffer m_serialBuffer;
-	const SerialMessages & m_serialMessages;
+	SerialMessages m_serialMessages;
 
 	QThread m_responseProcessingThread;
 	QSerialResponseProcessor m_responseProcessor;

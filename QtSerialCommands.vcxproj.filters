@@ -53,9 +53,6 @@
     <ClCompile Include="SerialResponseMatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultSerialPortSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="QSerialResponseProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BaudRate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DefaultSerialPortSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SerialCommandFactory.h">
